@@ -1,37 +1,54 @@
-import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'dart:io';
-import 'package:porcupine_flutter/porcupine_error.dart';
-import 'package:porcupine_flutter/porcupine_manager.dart';
-import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
-import 'package:flutter/services.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:flutter_sms/flutter_sms.dart';
 
-// import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
+import 'package:flutter_sms/flutter_sms.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:porcupine_flutter/porcupine_manager.dart';
+import 'package:porcupine_flutter/porcupine_error.dart';
 
 void main() {
-  runApp(const MaterialApp(
+  runApp( MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: MainApp(),
+    home: const InstaHelp(),
+    theme: ThemeData.light().copyWith(
+      colorScheme: const ColorScheme.light().copyWith(
+        primary: Colors.red,
+      ),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Colors.red,
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: Colors.red,
+        selectedItemColor: Colors.white,
+        showSelectedLabels: false,
+        unselectedItemColor: Colors.black,
+        showUnselectedLabels: false,
+      )
+    ),
   ));
 }
 
-class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+class InstaHelp extends StatefulWidget {
+  const InstaHelp({super.key});
 
   @override
-  State<MainApp> createState() => _MainAppState();
+  State<InstaHelp> createState() => _InstaHelpState();
 }
 
-class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
+class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
+
+  // contact list variables
   final FlutterContactPicker _contactPicker = FlutterContactPicker();
   Contact? _contact;
   final FlutterContactPicker _contactPicker2 = FlutterContactPicker();
   Contact? _contact2;
   final FlutterContactPicker _contactPicker3 = FlutterContactPicker();
   Contact? _contact3;
+
   // choose keyword based on current operating system
   final String platform = Platform.isAndroid ? "android" : "ios";
 
@@ -55,10 +72,10 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   bool switchOneValue = true;
   bool switchTwoValue = true;
   bool switchThreeValue = true;
-  int currentIndex = 1;
+  int _currentIndex = 1;
   late PageController pageController;
 
-  String _menuMessage = "We've got you covered!";
+  String _menuMessage = "We're here to help!";
 
   // initialize wake word manager
   void createPorcupineManager() async {
@@ -89,30 +106,11 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
 
         setState(() {
           _menuMessage = "Help is on the way!";
-          _sendSMS(
-            "InstaHelp Alert! $_username needs your help at $_googleMapsLink",
-            _contactList,
-          );
+          // _sendSMS(
+          //   "InstaHelp Alert! $_username needs your help at $_googleMapsLink",
+          //   _contactList,
+          // );
         });
-        
-        
-        // String? encodeQueryParameters(Map<String, String> params) {
-        //   return params.entries
-        //       .map((MapEntry<String, String> e) =>
-        //           '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-        //       .join('&');
-        // }
-
-        // final Uri textNumber = Uri(
-        //   scheme: 'sms',
-        //   path: _phoneNumber,
-        //   query: encodeQueryParameters(<String, String>{
-        //     'body':
-        //         'InstaHelp Alert! $_username needs you help at $_googleMapsLink',
-        //   }),
-        // );
-
-        // launchUrl(textNumber);
       });
     }
   }
@@ -197,8 +195,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
       textDirection: TextDirection.ltr,
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 80,
-          title: const Text('INSTAHELP'),
+          title: const Text('InstaHelp'),
           backgroundColor: Colors.red,
         ),
         body: SizedBox.expand(
@@ -206,11 +203,11 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
             controller: pageController,
             onPageChanged: (index) {
               setState(() {
-                currentIndex = index;
+                _currentIndex = index;
               });
             },
             children: [
-              //CONTACTS
+              // contacts
               Container(
                 color: Colors.white,
                 child: Column(
@@ -218,7 +215,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                     const Padding(
                       padding: EdgeInsets.fromLTRB(0, 120, 0, 0),
                       child: Text(
-                        'CONTACTS',
+                        'Contacts',
                         style: TextStyle(
                           color: Colors.red,
                           fontSize: 30,
@@ -235,7 +232,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                             child: const Padding(
                               padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
                               child: Text(
-                                "SELECT CONTACT 1",
+                                "Select Contact 1",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 15,
@@ -254,7 +251,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                             padding: const EdgeInsets.all(13.0),
                             child: Text(
                               _contact == null
-                                  ? 'No contact selected.'
+                                  ? "No contact selected."
                                   : _contact.toString(),
                             ),
                           ),
@@ -263,7 +260,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                             child: const Padding(
                               padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
                               child: Text(
-                                "SELECT CONTACT 2",
+                                "Select Contact 2",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 15,
@@ -282,7 +279,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                             padding: const EdgeInsets.all(13.0),
                             child: Text(
                               _contact2 == null
-                                  ? 'No contact selected.'
+                                  ? "No contact selected."
                                   : _contact2.toString(),
                             ),
                           ),
@@ -291,7 +288,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                             child: const Padding(
                               padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
                               child: Text(
-                                "SELECT CONTACT 3",
+                                "Select Contact 3",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 15,
@@ -310,7 +307,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                             padding: const EdgeInsets.all(13.0),
                             child: Text(
                               _contact3 == null
-                                  ? 'No contact selected.'
+                                  ? "No contact selected."
                                   : _contact3.toString(),
                             ),
                           ),
@@ -320,20 +317,18 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                   ],
                 ),
               ),
-              //CONTACTS
-              //MAIN SCREEN
+              // contacts
+              // main screen
               Container(
                 color: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
                   child: Column(children: [
                     Stack(
-                      //alignment:new Alignment(x, y)
                       children: <Widget>[
                         Positioned(
                           child: Container(
                             margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
-                            //alignment:Alignment.center,
                             height: 230,
                             width: 230,
                             child: Material(
@@ -353,7 +348,6 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                         Positioned(
                           child: Container(
                             margin: const EdgeInsets.fromLTRB(13, 112, 0, 0),
-                            //alignment:Alignment.center,
                             height: 200,
                             width: 200,
                             child: Material(
@@ -362,40 +356,35 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                               color: switchValue
                                   ? const Color(0xffff8091)
                                   : const Color(0xff565656),
-                              child: const Icon(
-                                Icons.earbuds,
-                                size: 50,
-                                color: Colors.white,
-                              ),
                             ),
                           ),
                         ),
                         Positioned(
                           child: Container(
                             margin: const EdgeInsets.fromLTRB(33, 132, 0, 0),
-                            //alignment:Alignment.center,
                             height: 160,
                             width: 160,
                             child: Material(
                               borderRadius: BorderRadius.circular(
-                                  switchValue ? 160 * breathsize : 160),
+                                switchValue ? 160 * breathsize : 160
+                              ),
                               color: switchValue ? Colors.red : Colors.black,
                               child: switchValue
-                                  ? const Icon(
-                                      Icons.mic,
-                                      size: 50,
-                                      color: Colors.white,
-                                    )
-                                  : const Icon(
-                                      Icons.mic_none,
-                                      size: 50,
-                                      color: Colors.white,
-                                    ),
+                                ? const Icon(
+                                  Icons.mic,
+                                  size: 50,
+                                  color: Colors.white,
+                                )
+                                : const Icon(
+                                  Icons.mic_none,
+                                  size: 50,
+                                  color: Colors.white,
+                                ),
                             ),
                           ),
                         ),
                       ],
-                    ), //BREATHING ICON
+                    ), //Breating Icon
                     Padding(
                       padding: const EdgeInsets.all(30.0),
                       child: switchValue
@@ -413,15 +402,14 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                                 fontSize: 20,
                               ),
                             ),
-                    ), //TEXT
+                    ), // text
                     CupertinoSwitch(
-                      // This bool value toggles the switch.
+                      // this bool value toggles the switch.
                       value: switchValue,
                       activeColor: Colors.red,
                       onChanged: (bool value) {
                         setState(() {
                           switchValue = value;
-
                           // display encouraging message whether on or off
                           if (value) {
                             _menuMessage = "We've got you covered!";
@@ -434,8 +422,8 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                   ]),
                 ),
               ),
-              //MAIN SCREEN
-              //SETTINGS
+              // main screen
+              // settings
               Container(
                 color: Colors.white,
                 child: Padding(
@@ -459,7 +447,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                           width: 200,
                           child: TextField(
                             decoration: InputDecoration(
-                                hintText: "Enter Name",
+                                hintText: "Your Name",
                                 border: OutlineInputBorder()),
                           ),
                         ),
@@ -492,7 +480,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                           const Padding(
                             padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
                             child: Text(
-                              "Send Text",
+                              "Text Alert",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
@@ -518,7 +506,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                           const Padding(
                             padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
                             child: Text(
-                              "Location",
+                              "GPS Tracking",
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
@@ -546,29 +534,28 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
             ],
           ),
         ),
-        bottomNavigationBar: Container(
-          color: Colors.red,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-            child: GNav(
-              //TAB CHANGE
-              onTabChange: (index) {
-                pageController.jumpToPage(index);
-              },
-              //TAB CHANGE
-              backgroundColor: Colors.red,
-              color: Colors.white,
-              activeColor: Colors.white,
-              tabBackgroundColor: Colors.redAccent,
-              padding: const EdgeInsets.all(30),
-              gap: 4,
-              tabs: const [
-                GButton(icon: Icons.list, text: 'Contacts'),
-                GButton(icon: Icons.shield, text: 'Instahelp'),
-                GButton(icon: Icons.settings, text: 'Settings'),
-              ],
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: "Contacts",
             ),
-          ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shield),
+              label: "InstaHelp",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: "Settings",
+            )
+          ],
+          currentIndex: _currentIndex,
+          onTap: (index) {
+            pageController.jumpToPage(index);
+            setState(() {
+              _currentIndex = index;
+            });
+          },
         ),
       ),
     );
