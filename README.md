@@ -1,3 +1,3 @@
-# instahelp
+# InstaHelp
 
-A new Flutter project.
+Help is just a call away.
