@@ -41,6 +41,9 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   // styling variables
   var breath = 0.0;
   bool switchValue = true;
+  bool switchOneValue = true;
+  bool switchTwoValue = true;
+  bool switchThreeValue = true;
   int currentIndex = 1;
   late PageController pageController;
 
@@ -145,247 +148,273 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
         ),
         body: SizedBox.expand(
           child: PageView(
-              controller: pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  currentIndex = index;
-                });
-              },
-              children: [
-                //CONTACTS
-                Container(
-                  color: Colors.white,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 150, 0, 0),
-                        child: Text(
-                          'CONTACTS',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 30,
-                          ),
+            controller: pageController,
+            onPageChanged: (index) {
+              setState(() {
+                currentIndex = index;
+              });
+            },
+            children: [
+              //CONTACTS
+              Container(
+                color: Colors.white,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 150, 0, 0),
+                      child: Text(
+                        'CONTACTS',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 30,
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                        child: new Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            new MaterialButton(
-                              color: Colors.red,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(5, 13, 5, 13),
-                                child: new Text(
-                                  "SELECT CONTACT 1",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
-                              onPressed: () async {
-                                Contact? contact =
-                                    await _contactPicker.selectContact();
-                                setState(() {
-                                  _contact = contact;
-                                });
-                              },
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(13.0),
-                              child: new Text(
-                                _contact == null
-                                    ? 'No contact selected.'
-                                    : _contact.toString(),
-                              ),
-                            ),
-                            new MaterialButton(
-                              color: Colors.red,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(5, 13, 5, 13),
-                                child: new Text(
-                                  "SELECT CONTACT 2",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
-                              onPressed: () async {
-                                Contact? contact =
-                                    await _contactPicker2.selectContact();
-                                setState(() {
-                                  _contact2 = contact;
-                                });
-                              },
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(13.0),
-                              child: new Text(
-                                _contact2 == null
-                                    ? 'No contact selected.'
-                                    : _contact2.toString(),
-                              ),
-                            ),
-                            new MaterialButton(
-                              color: Colors.red,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(5, 13, 5, 13),
-                                child: new Text(
-                                  "SELECT CONTACT 3",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
-                              onPressed: () async {
-                                Contact? contact =
-                                    await _contactPicker3.selectContact();
-                                setState(() {
-                                  _contact3 = contact;
-                                });
-                              },
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(13.0),
-                              child: new Text(
-                                _contact3 == null
-                                    ? 'No contact selected.'
-                                    : _contact3.toString(),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                //CONTACTS
-                //MAIN SCREEN
-                Container(
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                    child: Column(children: [
-                      Stack(
-                        //alignment:new Alignment(x, y)
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                      child: new Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          Positioned(
-                            child: Container(
-                              margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
-                              //alignment:Alignment.center,
-                              height: 230,
-                              width: 230,
-                              child: Material(
-                                borderRadius: BorderRadius.circular(
-                                    switchValue ? 180 * breathsize : 180),
-                                color: switchValue
-                                    ? const Color(0xffffb5bd)
-                                    : const Color(0xff9f9f9f),
-                                child: const Icon(
-                                  Icons.earbuds,
-                                  size: 50,
+                          new MaterialButton(
+                            color: Colors.red,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
+                              child: new Text(
+                                "SELECT CONTACT 1",
+                                style: TextStyle(
                                   color: Colors.white,
+                                  fontSize: 15,
                                 ),
                               ),
                             ),
+                            onPressed: () async {
+                              Contact? contact =
+                                  await _contactPicker.selectContact();
+                              setState(() {
+                                _contact = contact;
+                              });
+                            },
                           ),
-                          Positioned(
-                            child: Container(
-                              margin: const EdgeInsets.fromLTRB(13, 112, 0, 0),
-                              //alignment:Alignment.center,
-                              height: 200,
-                              width: 200,
-                              child: Material(
-                                borderRadius: BorderRadius.circular(
-                                    switchValue ? 180 * breathsize : 180),
-                                color: switchValue
-                                    ? const Color(0xffff8091)
-                                    : const Color(0xff565656),
-                                child: const Icon(
-                                  Icons.earbuds,
-                                  size: 50,
+                          Padding(
+                            padding: const EdgeInsets.all(13.0),
+                            child: new Text(
+                              _contact == null
+                                  ? 'No contact selected.'
+                                  : _contact.toString(),
+                            ),
+                          ),
+                          new MaterialButton(
+                            color: Colors.red,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
+                              child: new Text(
+                                "SELECT CONTACT 2",
+                                style: TextStyle(
                                   color: Colors.white,
+                                  fontSize: 15,
                                 ),
                               ),
                             ),
+                            onPressed: () async {
+                              Contact? contact =
+                                  await _contactPicker2.selectContact();
+                              setState(() {
+                                _contact2 = contact;
+                              });
+                            },
                           ),
-                          Positioned(
-                            child: Container(
-                              margin: const EdgeInsets.fromLTRB(33, 132, 0, 0),
-                              //alignment:Alignment.center,
-                              height: 160,
-                              width: 160,
-                              child: Material(
-                                borderRadius: BorderRadius.circular(
-                                    switchValue ? 160 * breathsize : 160),
-                                color: switchValue ? Colors.red : Colors.black,
-                                child: switchValue
-                                    ? const Icon(
-                                        Icons.mic,
-                                        size: 50,
-                                        color: Colors.white,
-                                      )
-                                    : const Icon(
-                                        Icons.mic_none,
-                                        size: 50,
-                                        color: Colors.white,
-                                      ),
+                          Padding(
+                            padding: const EdgeInsets.all(13.0),
+                            child: new Text(
+                              _contact2 == null
+                                  ? 'No contact selected.'
+                                  : _contact2.toString(),
+                            ),
+                          ),
+                          new MaterialButton(
+                            color: Colors.red,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
+                              child: new Text(
+                                "SELECT CONTACT 3",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 15,
+                                ),
                               ),
+                            ),
+                            onPressed: () async {
+                              Contact? contact =
+                                  await _contactPicker3.selectContact();
+                              setState(() {
+                                _contact3 = contact;
+                              });
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(13.0),
+                            child: new Text(
+                              _contact3 == null
+                                  ? 'No contact selected.'
+                                  : _contact3.toString(),
                             ),
                           ),
                         ],
-                      ), //BREATHING ICON
-                      Padding(
-                        padding: const EdgeInsets.all(30.0),
-                        child: switchValue
-                            ? Text(
-                                _menuMessage,
-                                style: const TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 20,
-                                ),
-                              )
-                            : Text(
-                                _menuMessage,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20,
-                                ),
-                              ),
-                      ), //TEXT
-                      CupertinoSwitch(
-                        // This bool value toggles the switch.
-                        value: switchValue,
-                        activeColor: Colors.red,
-                        onChanged: (bool value) {
-                          setState(() {
-                            switchValue = value;
-
-                            // display encouraging message whether on or off
-                            if (value) {
-                              _menuMessage = "We've got you covered!";
-                            } else {
-                              _menuMessage = "Glad you're safe!";
-                            }
-                          });
-                        },
                       ),
-                    ]),
-                  ),
+                    ),
+                  ],
                 ),
-                //MAIN SCREEN
-                //SETTINGS
-                Container(
-                  color: Colors.black,
+              ),
+              //CONTACTS
+              //MAIN SCREEN
+              Container(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                  child: Column(children: [
+                    Stack(
+                      //alignment:new Alignment(x, y)
+                      children: <Widget>[
+                        Positioned(
+                          child: Container(
+                            margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
+                            //alignment:Alignment.center,
+                            height: 230,
+                            width: 230,
+                            child: Material(
+                              borderRadius: BorderRadius.circular(
+                                  switchValue ? 180 * breathsize : 180),
+                              color: switchValue
+                                  ? const Color(0xffffb5bd)
+                                  : const Color(0xff9f9f9f),
+                              child: const Icon(
+                                Icons.earbuds,
+                                size: 50,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          child: Container(
+                            margin: const EdgeInsets.fromLTRB(13, 112, 0, 0),
+                            //alignment:Alignment.center,
+                            height: 200,
+                            width: 200,
+                            child: Material(
+                              borderRadius: BorderRadius.circular(
+                                  switchValue ? 180 * breathsize : 180),
+                              color: switchValue
+                                  ? const Color(0xffff8091)
+                                  : const Color(0xff565656),
+                              child: const Icon(
+                                Icons.earbuds,
+                                size: 50,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          child: Container(
+                            margin: const EdgeInsets.fromLTRB(33, 132, 0, 0),
+                            //alignment:Alignment.center,
+                            height: 160,
+                            width: 160,
+                            child: Material(
+                              borderRadius: BorderRadius.circular(
+                                  switchValue ? 160 * breathsize : 160),
+                              color: switchValue ? Colors.red : Colors.black,
+                              child: switchValue
+                                  ? const Icon(
+                                      Icons.mic,
+                                      size: 50,
+                                      color: Colors.white,
+                                    )
+                                  : const Icon(
+                                      Icons.mic_none,
+                                      size: 50,
+                                      color: Colors.white,
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ), //BREATHING ICON
+                    Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: switchValue
+                          ? Text(
+                              _menuMessage,
+                              style: const TextStyle(
+                                color: Colors.red,
+                                fontSize: 20,
+                              ),
+                            )
+                          : Text(
+                              _menuMessage,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                              ),
+                            ),
+                    ), //TEXT
+                    CupertinoSwitch(
+                      // This bool value toggles the switch.
+                      value: switchValue,
+                      activeColor: Colors.red,
+                      onChanged: (bool value) {
+                        setState(() {
+                          switchValue = value;
+
+                          // display encouraging message whether on or off
+                          if (value) {
+                            _menuMessage = "We've got you covered!";
+                          } else {
+                            _menuMessage = "Glad you're safe!";
+                          }
+                        });
+                      },
+                    ),
+                  ]),
                 ),
-                //SETTINGS
-              ]),
+              ),
+              //MAIN SCREEN
+              //SETTINGS
+              Container(
+                color: Colors.white,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    CupertinoSwitch(
+                      value: switchOneValue,
+                      onChanged: (value) {
+                        setState(() {
+                          switchOneValue = value;
+                        });
+                      },
+                    ),
+                    CupertinoSwitch(
+                      value: switchTwoValue,
+                      onChanged: (value) {
+                        setState(() {
+                          switchTwoValue = value;
+                        });
+                      },
+                    ),
+                    CupertinoSwitch(
+                      value: switchThreeValue,
+                      onChanged: (value) {
+                        setState(() {
+                          switchThreeValue = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
         bottomNavigationBar: Container(
           color: Colors.red,
