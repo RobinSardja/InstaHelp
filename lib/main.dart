@@ -36,12 +36,13 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
 
   // speech detection variables
   late PorcupineManager _porcupineManager;
-  final String _accessKey = "lxZcL/ZMV0al2l0SayCeX/crV9B7g4GjuJzSqMCtCLrTnXQXk+f7hQ==";
+  final String _accessKey =
+      "lxZcL/ZMV0al2l0SayCeX/crV9B7g4GjuJzSqMCtCLrTnXQXk+f7hQ==";
 
   // gps variables
   late String _latitude;
   late String _longitude;
-  String _googleMapsLink="Google Maps";
+  String _googleMapsLink = "Google Maps";
 
   // styling variables
   late AnimationController breathController;
@@ -76,10 +77,11 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   // code to run when wake word detected
   void _wakeWordCallback(int keywordIndex) {
     if (keywordIndex == 0 || keywordIndex == 1) {
-      _getCurrentLocation().then( (value) {
+      _getCurrentLocation().then((value) {
         _latitude = "${value.latitude}";
         _longitude = "${value.longitude}";
-        _googleMapsLink = "www.google.com/maps/search/$_latitude,$_longitude/@$_latitude,$_longitude";
+        _googleMapsLink =
+            "www.google.com/maps/search/$_latitude,$_longitude/@$_latitude,$_longitude";
         setState(() {
           String? encodeQueryParameters(Map<String, String> params) {
             return params.entries
@@ -92,12 +94,13 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
             scheme: 'sms',
             path: _phoneNumber,
             query: encodeQueryParameters(<String, String>{
-              'body': 'InstaHelp Alert! $_username needs you help at $_googleMapsLink',
+              'body':
+                  'InstaHelp Alert! $_username needs you help at $_googleMapsLink',
             }),
           );
 
-        launchUrl(textNumber);
-      });
+          launchUrl(textNumber);
+        });
       });
     }
   }
@@ -114,20 +117,21 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   // get the user's current coordinates
   Future<Position> _getCurrentLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if( !serviceEnabled ) {
-      return Future.error( "Location services are disabled." );
+    if (!serviceEnabled) {
+      return Future.error("Location services are disabled.");
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
-    if( permission == LocationPermission.denied ) {
+    if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-        if( permission == LocationPermission.denied ) {
-          return Future.error( "Location permissions are denied." );
-        }
+      if (permission == LocationPermission.denied) {
+        return Future.error("Location permissions are denied.");
+      }
     }
 
-    if( permission == LocationPermission.deniedForever ) {
-      return Future.error( "Location permissions are permanently denied. We cannot track your location." );
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          "Location permissions are permanently denied. We cannot track your location.");
     }
 
     return await Geolocator.getCurrentPosition();
@@ -139,7 +143,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
     super.initState();
 
     createPorcupineManager();
-    
+
     breathController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2000));
     breathController.addStatusListener((status) {
@@ -196,7 +200,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                 child: Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 150, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(0, 120, 0, 0),
                       child: Text(
                         'CONTACTS',
                         style: TextStyle(
@@ -418,34 +422,109 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
               //SETTINGS
               Container(
                 color: Colors.white,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    CupertinoSwitch(
-                      value: switchOneValue,
-                      onChanged: (value) {
-                        setState(() {
-                          switchOneValue = value;
-                        });
-                      },
-                    ),
-                    CupertinoSwitch(
-                      value: switchTwoValue,
-                      onChanged: (value) {
-                        setState(() {
-                          switchTwoValue = value;
-                        });
-                      },
-                    ),
-                    CupertinoSwitch(
-                      value: switchThreeValue,
-                      onChanged: (value) {
-                        setState(() {
-                          switchThreeValue = value;
-                        });
-                      },
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(95, 0, 0, 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 100, 0),
+                        child: Text(
+                          "Enter Your Name",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 20, 100, 20),
+                        child: SizedBox(
+                          width: 200,
+                          child: TextField(
+                            decoration: InputDecoration(
+                                hintText: "Enter Name",
+                                border: OutlineInputBorder()),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                            child: Text(
+                              "Alarm Sound",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          CupertinoSwitch(
+                            value: switchOneValue,
+                            activeColor: Colors.red,
+                            onChanged: (value) {
+                              setState(() {
+                                switchOneValue = value;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                            child: Text(
+                              "Send Text",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(34, 0, 0, 0),
+                            child: CupertinoSwitch(
+                              value: switchTwoValue,
+                              activeColor: Colors.red,
+                              onChanged: (value) {
+                                setState(() {
+                                  switchTwoValue = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                            child: Text(
+                              "Location",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(46, 0, 0, 0),
+                            child: CupertinoSwitch(
+                              value: switchThreeValue,
+                              activeColor: Colors.red,
+                              onChanged: (value) {
+                                setState(() {
+                                  switchThreeValue = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

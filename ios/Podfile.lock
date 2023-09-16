@@ -5,6 +5,8 @@ PODS:
   - flutter_voice_processor (1.1.0):
     - Flutter
     - ios-voice-processor (~> 1.1.0)
+  - geolocator_apple (1.2.0):
+    - Flutter
   - ios-voice-processor (1.1.0)
   - path_provider_foundation (0.0.1):
     - Flutter
@@ -21,6 +23,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_native_contact_picker (from `.symlinks/plugins/flutter_native_contact_picker/ios`)
   - flutter_voice_processor (from `.symlinks/plugins/flutter_voice_processor/ios`)
+  - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - porcupine_flutter (from `.symlinks/plugins/porcupine_flutter/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
@@ -37,6 +40,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_native_contact_picker/ios"
   flutter_voice_processor:
     :path: ".symlinks/plugins/flutter_voice_processor/ios"
+  geolocator_apple:
+    :path: ".symlinks/plugins/geolocator_apple/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   porcupine_flutter:
@@ -48,6 +53,7 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_native_contact_picker: bd430ba0fbf82768bb50c2c52a69a65759a8f907
   flutter_voice_processor: 53afbf59ad3feb82f4a379fea9ed8dc98495210f
+  geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
   ios-voice-processor: 8e32d7f980a06d392d128ef1cd19cf6ddcaca3c1
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   Porcupine-iOS: df8e4a63d787b6c16bd5f988fd0f2c29a249a4bd
