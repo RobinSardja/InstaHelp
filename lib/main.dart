@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:porcupine_flutter/porcupine_error.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 
+import 'package:url_launcher/url_launcher.dart';
+
 void main() {
   runApp(const MainApp());
 }
@@ -20,6 +22,10 @@ class _MainAppState extends State<MainApp> {
 
   // choose keyword based on current operating system
   final String platform = Platform.isAndroid ? "android" : "ios";
+
+  // TO DO: set these variables in the settings route
+  final String _phoneNumber = "5551234567";
+  final String _username = "Robin";
 
   final String _accessKey = "hAHKQ8DcL6G15ApEwPYuh+IQIzfclLkl++sDQtuWHFZvqHUSlfH92w==";
   late PorcupineManager _porcupineManager;
@@ -50,6 +56,23 @@ class _MainAppState extends State<MainApp> {
     if( keywordIndex == 0 ) {
       setState(() {
         _menuMessage = "Help is on the way!";
+
+        String? encodeQueryParameters(Map<String, String> params) {
+          return params.entries
+            .map((MapEntry<String, String> e) =>
+              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+            .join('&');
+        }
+
+        final Uri textNumber = Uri(
+          scheme: 'sms',
+          path: _phoneNumber,
+          query: encodeQueryParameters(<String, String>{
+            'body': 'InstaHelp Alert! $_username needs you help!',
+          }),
+        );
+
+        launchUrl(textNumber);
       });
     }
   }

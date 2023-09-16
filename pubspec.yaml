@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   porcupine_flutter: ^2.2.2
+  url_launcher: ^6.1.14
 
 dev_dependencies:
   flutter_test:
