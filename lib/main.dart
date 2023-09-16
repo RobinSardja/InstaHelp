@@ -53,8 +53,8 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
   final String platform = Platform.isAndroid ? "android" : "ios";
 
   // TO DO: set these variables in the settings route
-  final List<String> _contactList = ["4076150853"];
-  final String _username = "Nathan";
+  final List<String> _contactList = ["5551234567"];
+  String _username = "Nathan";
 
   // speech detection variables
   late PorcupineManager _porcupineManager;
@@ -72,7 +72,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
   bool switchOneValue = true;
   bool switchTwoValue = true;
   bool switchThreeValue = true;
-  int _currentIndex = 1;
+  int _currentIndex = 0;
   late PageController pageController;
 
   String _menuMessage = "We're here to help!";
@@ -412,7 +412,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                           switchValue = value;
                           // display encouraging message whether on or off
                           if (value) {
-                            _menuMessage = "We've got you covered!";
+                            _menuMessage = "We're here to help!";
                           } else {
                             _menuMessage = "Glad you're safe!";
                           }
@@ -441,17 +441,31 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(0, 20, 100, 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 20, 100, 20),
                         child: SizedBox(
                           width: 200,
                           child: TextField(
-                            decoration: InputDecoration(
-                                hintText: "Your Name",
-                                border: OutlineInputBorder()),
+                            onChanged: (name) {
+                              setState(() {
+                                _username = name;
+                              });
+                            },
+                            decoration: const InputDecoration(
+                              hintText: "Your Name",
+                              border: OutlineInputBorder(),
+                            ),
                           ),
                         ),
                       ),
+                      // ElevatedButton(
+                      //   onPressed: () {
+                      //     setState(() {
+                      //       // _username = 
+                      //     });
+                      //   },
+                      //   child: const Text( "Confirm Name" ),
+                      // ),
                       Row(
                         children: [
                           const Padding(
@@ -549,6 +563,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
               label: "Settings",
             )
           ],
+          
           currentIndex: _currentIndex,
           onTap: (index) {
             pageController.jumpToPage(index);
