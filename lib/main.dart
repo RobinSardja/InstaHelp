@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:porcupine_flutter/porcupine_error.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 
 void main() {
   runApp( const MaterialApp(home: MainApp() ) );
@@ -18,7 +19,12 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
-
+  final FlutterContactPicker _contactPicker = new FlutterContactPicker();
+  Contact? _contact;
+  final FlutterContactPicker _contactPicker2 = new FlutterContactPicker();
+  Contact? _contact2;
+  final FlutterContactPicker _contactPicker3 = new FlutterContactPicker();
+  Contact? _contact3;
   // choose keyword based on current operating system
   final String platform = Platform.isAndroid ? "android" : "ios";
 
@@ -93,6 +99,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
 
   // initialize wake word manager upon starting app
   @override void initState() {
+
     super.initState();
     createPorcupineManager();
     breathController = AnimationController(
@@ -141,7 +148,96 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
               children: [
                 //CONTACTS
                 Container(
-                  color: Colors.blue,
+                color: Colors.white,
+                child:
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 150, 0, 0),
+                      child: Text(
+                        'CONTACTS',
+                        style: TextStyle(color: Colors.red,
+                          fontSize: 30,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                      child: new Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children:
+                        <Widget>[
+                          new MaterialButton(
+                            color: Colors.red,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
+                              child: new Text("SELECT CONTACT 1",
+                                style: TextStyle(color: Colors.white,
+                                  fontSize: 15,
+                                ),),
+                            ),
+                            onPressed: () async {
+                              Contact? contact = await _contactPicker.selectContact();
+                              setState(() {
+                                _contact = contact;
+                              });
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(13.0),
+                            child: new Text(
+                              _contact == null ? 'No contact selected.' : _contact.toString(),
+                            ),
+                          ),
+                          new MaterialButton(
+                            color: Colors.red,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
+                              child: new Text("SELECT CONTACT 2",
+                                style: TextStyle(color: Colors.white,
+                                  fontSize: 15,
+                                ),),
+                            ),
+                            onPressed: () async {
+                              Contact? contact = await _contactPicker2.selectContact();
+                              setState(() {
+                                _contact2 = contact;
+                              });
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(13.0),
+                            child: new Text(
+                              _contact2 == null ? 'No contact selected.' : _contact2.toString(),
+                            ),
+                          ),
+                          new MaterialButton(
+                            color: Colors.red,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
+                              child: new Text("SELECT CONTACT 3",
+                                style: TextStyle(color: Colors.white,
+                                  fontSize: 15,
+                                ),),
+                            ),
+                            onPressed: () async {
+                              Contact? contact = await _contactPicker3.selectContact();
+                              setState(() {
+                                _contact3 = contact;
+                              });
+                            },
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(13.0),
+                            child: new Text(
+                              _contact3 == null ? 'No contact selected.' : _contact3.toString(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 ),
                 //CONTACTS
                 //MAIN SCREEN
@@ -262,7 +358,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                 //MAIN SCREEN
                 //SETTINGS
                 Container(
-                  color: Colors.green,
+                  color: Colors.black,
                 ),
                 //SETTINGS
               ]
