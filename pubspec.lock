@@ -94,6 +94,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.4"
+  flutter_sms:
+    dependency: "direct main"
+    description:
+      path: "C:/Users/robin/Desktop/shellhacks/flutter_sms-2.3.3"
+      relative: false
+    source: path
+    version: "2.3.3"
   flutter_test:
     dependency: "direct dev"
     description: flutter

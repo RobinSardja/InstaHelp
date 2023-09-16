@@ -15,6 +15,8 @@ dependencies:
   google_nav_bar: ^5.0.6
   flutter_native_contact_picker: ^0.0.4
   geolocator: ^10.0.1
+  flutter_sms:
+    path: C:/Users/robin/Desktop/shellhacks/flutter_sms-2.3.3
 
 dev_dependencies:
   flutter_test:

@@ -4,13 +4,18 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:porcupine_flutter/porcupine_error.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_sms/flutter_sms.dart';
+
+// import 'package:url_launcher/url_launcher.dart';
 
 void main() {
-  runApp(const MaterialApp(home: MainApp()));
+  runApp(const MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: MainApp(),
+  ));
 }
 
 class MainApp extends StatefulWidget {
@@ -21,23 +26,22 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
-  final FlutterContactPicker _contactPicker = new FlutterContactPicker();
+  final FlutterContactPicker _contactPicker = FlutterContactPicker();
   Contact? _contact;
-  final FlutterContactPicker _contactPicker2 = new FlutterContactPicker();
+  final FlutterContactPicker _contactPicker2 = FlutterContactPicker();
   Contact? _contact2;
-  final FlutterContactPicker _contactPicker3 = new FlutterContactPicker();
+  final FlutterContactPicker _contactPicker3 = FlutterContactPicker();
   Contact? _contact3;
   // choose keyword based on current operating system
   final String platform = Platform.isAndroid ? "android" : "ios";
 
   // TO DO: set these variables in the settings route
-  final String _phoneNumber = "4076150853";
+  final List<String> _contactList = ["4076150853"];
   final String _username = "Nathan";
 
   // speech detection variables
   late PorcupineManager _porcupineManager;
-  final String _accessKey =
-      "lxZcL/ZMV0al2l0SayCeX/crV9B7g4GjuJzSqMCtCLrTnXQXk+f7hQ==";
+  final String _accessKey = "lxZcL/ZMV0al2l0SayCeX/crV9B7g4GjuJzSqMCtCLrTnXQXk+f7hQ==";
 
   // gps variables
   late String _latitude;
@@ -78,29 +82,37 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   void _wakeWordCallback(int keywordIndex) {
     if (keywordIndex == 0 || keywordIndex == 1) {
       _getCurrentLocation().then((value) {
+
         _latitude = "${value.latitude}";
         _longitude = "${value.longitude}";
-        _googleMapsLink =
-            "www.google.com/maps/search/$_latitude,$_longitude/@$_latitude,$_longitude";
+        _googleMapsLink = "www.google.com/maps/search/$_latitude,$_longitude/@$_latitude,$_longitude";
+
         setState(() {
-          String? encodeQueryParameters(Map<String, String> params) {
-            return params.entries
-                .map((MapEntry<String, String> e) =>
-                    '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-                .join('&');
-          }
-
-          final Uri textNumber = Uri(
-            scheme: 'sms',
-            path: _phoneNumber,
-            query: encodeQueryParameters(<String, String>{
-              'body':
-                  'InstaHelp Alert! $_username needs you help at $_googleMapsLink',
-            }),
+          _menuMessage = "Help is on the way!";
+          _sendSMS(
+            "InstaHelp Alert! $_username needs your help at $_googleMapsLink",
+            _contactList,
           );
-
-          launchUrl(textNumber);
         });
+        
+        
+        // String? encodeQueryParameters(Map<String, String> params) {
+        //   return params.entries
+        //       .map((MapEntry<String, String> e) =>
+        //           '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+        //       .join('&');
+        // }
+
+        // final Uri textNumber = Uri(
+        //   scheme: 'sms',
+        //   path: _phoneNumber,
+        //   query: encodeQueryParameters(<String, String>{
+        //     'body':
+        //         'InstaHelp Alert! $_username needs you help at $_googleMapsLink',
+        //   }),
+        // );
+
+        // launchUrl(textNumber);
       });
     }
   }
@@ -135,6 +147,10 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
     }
 
     return await Geolocator.getCurrentPosition();
+  }
+
+  void _sendSMS( String message, List<String> recipients ) async {
+    await sendSMS( message: message, recipients: recipients, sendDirect: true );
   }
 
   // initialize wake word manager and breath animation controller upon starting app
@@ -199,8 +215,8 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                 color: Colors.white,
                 child: Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 120, 0, 0),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(0, 120, 0, 0),
                       child: Text(
                         'CONTACTS',
                         style: TextStyle(
@@ -211,14 +227,14 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                     ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                      child: new Column(
+                      child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          new MaterialButton(
+                          MaterialButton(
                             color: Colors.red,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
-                              child: new Text(
+                            child: const Padding(
+                              padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
+                              child: Text(
                                 "SELECT CONTACT 1",
                                 style: TextStyle(
                                   color: Colors.white,
@@ -236,17 +252,17 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(13.0),
-                            child: new Text(
+                            child: Text(
                               _contact == null
                                   ? 'No contact selected.'
                                   : _contact.toString(),
                             ),
                           ),
-                          new MaterialButton(
+                          MaterialButton(
                             color: Colors.red,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
-                              child: new Text(
+                            child: const Padding(
+                              padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
+                              child: Text(
                                 "SELECT CONTACT 2",
                                 style: TextStyle(
                                   color: Colors.white,
@@ -264,17 +280,17 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(13.0),
-                            child: new Text(
+                            child: Text(
                               _contact2 == null
                                   ? 'No contact selected.'
                                   : _contact2.toString(),
                             ),
                           ),
-                          new MaterialButton(
+                          MaterialButton(
                             color: Colors.red,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
-                              child: new Text(
+                            child: const Padding(
+                              padding: EdgeInsets.fromLTRB(5, 13, 5, 13),
+                              child: Text(
                                 "SELECT CONTACT 3",
                                 style: TextStyle(
                                   color: Colors.white,
@@ -292,7 +308,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                           ),
                           Padding(
                             padding: const EdgeInsets.all(13.0),
-                            child: new Text(
+                            child: Text(
                               _contact3 == null
                                   ? 'No contact selected.'
                                   : _contact3.toString(),
@@ -427,18 +443,18 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 100, 0),
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(0, 0, 100, 0),
                         child: Text(
                           "Enter Your Name",
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: Colors.black,
                             fontSize: 20,
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 20, 100, 20),
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(0, 20, 100, 20),
                         child: SizedBox(
                           width: 200,
                           child: TextField(
@@ -450,11 +466,11 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                       ),
                       Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
                             child: Text(
                               "Alarm Sound",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
                               ),
@@ -473,11 +489,11 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                       ),
                       Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
                             child: Text(
                               "Send Text",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
                               ),
@@ -499,11 +515,11 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                       ),
                       Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
                             child: Text(
                               "Location",
-                              style: const TextStyle(
+                              style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
                               ),
