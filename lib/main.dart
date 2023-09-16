@@ -18,6 +18,7 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
+
   // choose keyword based on current operating system
   final String platform = Platform.isAndroid ? "android" : "ios";
 
@@ -25,11 +26,14 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   final String _phoneNumber = "5551234567";
   final String _username = "Robin";
   final String _accessKey = "hAHKQ8DcL6G15ApEwPYuh+IQIzfclLkl++sDQtuWHFZvqHUSlfH92w==";
+
   late PorcupineManager _porcupineManager;
   late AnimationController breathController;
+
+  // styling variables
   var breath = 0.0;
   bool switchValue = true;
-  int currentIndex = 0;
+  int currentIndex = 1;
   late PageController pageController;
 
   String _menuMessage = "We've got you covered!";
@@ -56,8 +60,6 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   void _wakeWordCallback(int keywordIndex) {
     if (keywordIndex == 0) {
       setState(() {
-        _menuMessage = "Help is on the way!";
-
         String? encodeQueryParameters(Map<String, String> params) {
           return params.entries
               .map((MapEntry<String, String> e) =>
@@ -238,9 +240,16 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                             // This bool value toggles the switch.
                             value: switchValue,
                             activeColor: Colors.red,
-                            onChanged: (bool? value) {
+                            onChanged: (bool value) {
                               setState(() {
-                                switchValue = value ?? false;
+                                switchValue = value;
+
+                                // display encouraging message whether on or off
+                                if( value ) {
+                                  _menuMessage = "We've got you covered!";
+                                } else {
+                                  _menuMessage = "Glad you're safe!";
+                                }
                               });
                             },
                           ),
