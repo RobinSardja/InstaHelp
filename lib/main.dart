@@ -141,6 +141,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
         appBar: AppBar(
           toolbarHeight: 80,
           title: const Text('INSTAHELP'),
+          backgroundColor: Colors.red,
         ),
         body: SizedBox.expand(
           child: PageView(
