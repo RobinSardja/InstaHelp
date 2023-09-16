@@ -6,6 +6,7 @@ import 'package:porcupine_flutter/porcupine_error.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp( const MaterialApp(home: MainApp() ) );
@@ -129,6 +130,10 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsFlutterBinding.ensureInitialized();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     final breathsize = breath;
     return Directionality(
       textDirection: TextDirection.ltr,
