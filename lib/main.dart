@@ -24,8 +24,8 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
 
   // TO DO: set these variables in the settings route
   final String _phoneNumber = "5551234567";
-  final String _username = "Robin";
-  final String _accessKey = "hAHKQ8DcL6G15ApEwPYuh+IQIzfclLkl++sDQtuWHFZvqHUSlfH92w==";
+  final String _username = "Nathan";
+  final String _accessKey = "lxZcL/ZMV0al2l0SayCeX/crV9B7g4GjuJzSqMCtCLrTnXQXk+f7hQ==";
 
   late PorcupineManager _porcupineManager;
   late AnimationController breathController;
@@ -46,6 +46,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
         _accessKey,
         [
           "assets/someone-help-me_en_${platform}_v2_2_0.ppn",
+          "assets/somebody-help_en_${platform}_v2_2_0.ppn",
         ],
         _wakeWordCallback,
       );
@@ -58,7 +59,8 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
 
   // code to run when wake word detected
   void _wakeWordCallback(int keywordIndex) {
-    if (keywordIndex == 0) {
+    if (keywordIndex == 0 ||
+        keywordIndex == 1 ) {
       setState(() {
         String? encodeQueryParameters(Map<String, String> params) {
           return params.entries
