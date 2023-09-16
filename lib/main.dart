@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:porcupine_flutter/porcupine.dart';
+import 'dart:io';
+
 import 'package:porcupine_flutter/porcupine_error.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 
@@ -17,17 +18,23 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
 
+  // choose keyword based on current operating system
+  final String platform = Platform.isAndroid ? "android" : "ios";
+
   final String _accessKey = "hAHKQ8DcL6G15ApEwPYuh+IQIzfclLkl++sDQtuWHFZvqHUSlfH92w==";
   late PorcupineManager _porcupineManager;
 
-  String _menuMessage = "Listening for voice.";
+  String _menuMessage = "We've got you covered!";
+
 
   // initialize wake word manager
   void createPorcupineManager() async {
     try {
-      _porcupineManager = await PorcupineManager.fromBuiltInKeywords(
+      _porcupineManager = await PorcupineManager.fromKeywordPaths(
         _accessKey,
-        [BuiltInKeyword.PORCUPINE],
+        [
+          "assets/someone-help-me_en_${platform}_v2_2_0.ppn",
+        ],
         _wakeWordCallback,
       );
 
@@ -42,7 +49,7 @@ class _MainAppState extends State<MainApp> {
   void _wakeWordCallback( int keywordIndex ) {
     if( keywordIndex == 0 ) {
       setState(() {
-        _menuMessage = "Voice detected!";
+        _menuMessage = "Help is on the way!";
       });
     }
   }
