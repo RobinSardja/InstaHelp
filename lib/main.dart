@@ -9,7 +9,7 @@ import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart
 import 'package:flutter/services.dart';
 
 void main() {
-  runApp( const MaterialApp(home: MainApp() ) );
+  runApp(const MaterialApp(home: MainApp()));
 }
 
 class MainApp extends StatefulWidget {
@@ -32,7 +32,8 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   // TO DO: set these variables in the settings route
   final String _phoneNumber = "5551234567";
   final String _username = "Nathan";
-  final String _accessKey = "lxZcL/ZMV0al2l0SayCeX/crV9B7g4GjuJzSqMCtCLrTnXQXk+f7hQ==";
+  final String _accessKey =
+      "lxZcL/ZMV0al2l0SayCeX/crV9B7g4GjuJzSqMCtCLrTnXQXk+f7hQ==";
 
   late PorcupineManager _porcupineManager;
   late AnimationController breathController;
@@ -44,7 +45,6 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   late PageController pageController;
 
   String _menuMessage = "We've got you covered!";
-
 
   // initialize wake word manager
   void createPorcupineManager() async {
@@ -66,13 +66,12 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
 
   // code to run when wake word detected
   void _wakeWordCallback(int keywordIndex) {
-    if (keywordIndex == 0 ||
-        keywordIndex == 1 ) {
+    if (keywordIndex == 0 || keywordIndex == 1) {
       setState(() {
         String? encodeQueryParameters(Map<String, String> params) {
           return params.entries
               .map((MapEntry<String, String> e) =>
-          '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                  '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
               .join('&');
         }
 
@@ -99,8 +98,8 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   }
 
   // initialize wake word manager upon starting app
-  @override void initState() {
-
+  @override
+  void initState() {
     super.initState();
     createPorcupineManager();
     breathController = AnimationController(
@@ -122,7 +121,8 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   }
 
   // delete wake word manager upon exiting app
-  @override void dispose() {
+  @override
+  void dispose() {
     super.dispose();
 
     _porcupineManager.delete();
@@ -153,96 +153,116 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
               children: [
                 //CONTACTS
                 Container(
-                color: Colors.white,
-                child:
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 150, 0, 0),
-                      child: Text(
-                        'CONTACTS',
-                        style: TextStyle(color: Colors.red,
-                          fontSize: 30,
+                  color: Colors.white,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 150, 0, 0),
+                        child: Text(
+                          'CONTACTS',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 30,
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                      child: new Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children:
-                        <Widget>[
-                          new MaterialButton(
-                            color: Colors.red,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
-                              child: new Text("SELECT CONTACT 1",
-                                style: TextStyle(color: Colors.white,
-                                  fontSize: 15,
-                                ),),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
+                        child: new Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            new MaterialButton(
+                              color: Colors.red,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(5, 13, 5, 13),
+                                child: new Text(
+                                  "SELECT CONTACT 1",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () async {
+                                Contact? contact =
+                                    await _contactPicker.selectContact();
+                                setState(() {
+                                  _contact = contact;
+                                });
+                              },
                             ),
-                            onPressed: () async {
-                              Contact? contact = await _contactPicker.selectContact();
-                              setState(() {
-                                _contact = contact;
-                              });
-                            },
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(13.0),
-                            child: new Text(
-                              _contact == null ? 'No contact selected.' : _contact.toString(),
+                            Padding(
+                              padding: const EdgeInsets.all(13.0),
+                              child: new Text(
+                                _contact == null
+                                    ? 'No contact selected.'
+                                    : _contact.toString(),
+                              ),
                             ),
-                          ),
-                          new MaterialButton(
-                            color: Colors.red,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
-                              child: new Text("SELECT CONTACT 2",
-                                style: TextStyle(color: Colors.white,
-                                  fontSize: 15,
-                                ),),
+                            new MaterialButton(
+                              color: Colors.red,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(5, 13, 5, 13),
+                                child: new Text(
+                                  "SELECT CONTACT 2",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () async {
+                                Contact? contact =
+                                    await _contactPicker2.selectContact();
+                                setState(() {
+                                  _contact2 = contact;
+                                });
+                              },
                             ),
-                            onPressed: () async {
-                              Contact? contact = await _contactPicker2.selectContact();
-                              setState(() {
-                                _contact2 = contact;
-                              });
-                            },
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(13.0),
-                            child: new Text(
-                              _contact2 == null ? 'No contact selected.' : _contact2.toString(),
+                            Padding(
+                              padding: const EdgeInsets.all(13.0),
+                              child: new Text(
+                                _contact2 == null
+                                    ? 'No contact selected.'
+                                    : _contact2.toString(),
+                              ),
                             ),
-                          ),
-                          new MaterialButton(
-                            color: Colors.red,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 13, 5, 13),
-                              child: new Text("SELECT CONTACT 3",
-                                style: TextStyle(color: Colors.white,
-                                  fontSize: 15,
-                                ),),
+                            new MaterialButton(
+                              color: Colors.red,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(5, 13, 5, 13),
+                                child: new Text(
+                                  "SELECT CONTACT 3",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () async {
+                                Contact? contact =
+                                    await _contactPicker3.selectContact();
+                                setState(() {
+                                  _contact3 = contact;
+                                });
+                              },
                             ),
-                            onPressed: () async {
-                              Contact? contact = await _contactPicker3.selectContact();
-                              setState(() {
-                                _contact3 = contact;
-                              });
-                            },
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(13.0),
-                            child: new Text(
-                              _contact3 == null ? 'No contact selected.' : _contact3.toString(),
+                            Padding(
+                              padding: const EdgeInsets.all(13.0),
+                              child: new Text(
+                                _contact3 == null
+                                    ? 'No contact selected.'
+                                    : _contact3.toString(),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
                 ),
                 //CONTACTS
                 //MAIN SCREEN
@@ -250,114 +270,112 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                   color: Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
-                    child: Column(
-                        children: [
-                          Stack(
-                            //alignment:new Alignment(x, y)
-                            children: <Widget>[
-                              Positioned(
-                                child: Container(
-                                  margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
-                                  //alignment:Alignment.center,
-                                  height: 230,
-                                  width: 230,
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(
-                                        switchValue ? 180 * breathsize : 180),
-                                    color: switchValue
-                                        ? const Color(0xffffb5bd)
-                                        : const Color(
-                                        0xff9f9f9f),
-                                    child: const Icon(
-                                      Icons.earbuds,
-                                      size: 50,
-                                      color: Colors.white,
-                                    ),
-                                  ),
+                    child: Column(children: [
+                      Stack(
+                        //alignment:new Alignment(x, y)
+                        children: <Widget>[
+                          Positioned(
+                            child: Container(
+                              margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
+                              //alignment:Alignment.center,
+                              height: 230,
+                              width: 230,
+                              child: Material(
+                                borderRadius: BorderRadius.circular(
+                                    switchValue ? 180 * breathsize : 180),
+                                color: switchValue
+                                    ? const Color(0xffffb5bd)
+                                    : const Color(0xff9f9f9f),
+                                child: const Icon(
+                                  Icons.earbuds,
+                                  size: 50,
+                                  color: Colors.white,
                                 ),
-                              ),
-                              Positioned(
-                                child: Container(
-                                  margin: const EdgeInsets.fromLTRB(
-                                      13, 112, 0, 0),
-                                  //alignment:Alignment.center,
-                                  height: 200,
-                                  width: 200,
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(
-                                        switchValue ? 180 * breathsize : 180),
-                                    color: switchValue
-                                        ? const Color(0xffff8091)
-                                        : const Color(
-                                        0xff565656),
-                                    child: const Icon(
-                                      Icons.earbuds,
-                                      size: 50,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                child: Container(
-                                  margin: const EdgeInsets.fromLTRB(
-                                      33, 132, 0, 0),
-                                  //alignment:Alignment.center,
-                                  height: 160,
-                                  width: 160,
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(
-                                        switchValue ? 160 * breathsize : 160),
-                                    color: switchValue ? Colors.red : Colors
-                                        .black,
-                                    child: switchValue ? const Icon(
-                                      Icons.mic,
-                                      size: 50,
-                                      color: Colors.white,
-                                    ) : const Icon(
-                                      Icons.mic_none,
-                                      size: 50,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ), //BREATHING ICON
-                          Padding(
-                            padding: const EdgeInsets.all(30.0),
-                            child:
-                            switchValue ? Text(
-                              _menuMessage,
-                              style: const TextStyle(color: Colors.red,
-                                fontSize: 20,
-                              ),
-                            ) : Text(
-                              _menuMessage,
-                              style: const TextStyle(color: Colors.black,
-                                fontSize: 20,
                               ),
                             ),
-                          ), //TEXT
-                          CupertinoSwitch(
-                            // This bool value toggles the switch.
-                            value: switchValue,
-                            activeColor: Colors.red,
-                            onChanged: (bool value) {
-                              setState(() {
-                                switchValue = value;
-
-                                // display encouraging message whether on or off
-                                if( value ) {
-                                  _menuMessage = "We've got you covered!";
-                                } else {
-                                  _menuMessage = "Glad you're safe!";
-                                }
-                              });
-                            },
                           ),
-                        ]
-                    ),
+                          Positioned(
+                            child: Container(
+                              margin: const EdgeInsets.fromLTRB(13, 112, 0, 0),
+                              //alignment:Alignment.center,
+                              height: 200,
+                              width: 200,
+                              child: Material(
+                                borderRadius: BorderRadius.circular(
+                                    switchValue ? 180 * breathsize : 180),
+                                color: switchValue
+                                    ? const Color(0xffff8091)
+                                    : const Color(0xff565656),
+                                child: const Icon(
+                                  Icons.earbuds,
+                                  size: 50,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            child: Container(
+                              margin: const EdgeInsets.fromLTRB(33, 132, 0, 0),
+                              //alignment:Alignment.center,
+                              height: 160,
+                              width: 160,
+                              child: Material(
+                                borderRadius: BorderRadius.circular(
+                                    switchValue ? 160 * breathsize : 160),
+                                color: switchValue ? Colors.red : Colors.black,
+                                child: switchValue
+                                    ? const Icon(
+                                        Icons.mic,
+                                        size: 50,
+                                        color: Colors.white,
+                                      )
+                                    : const Icon(
+                                        Icons.mic_none,
+                                        size: 50,
+                                        color: Colors.white,
+                                      ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ), //BREATHING ICON
+                      Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: switchValue
+                            ? Text(
+                                _menuMessage,
+                                style: const TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 20,
+                                ),
+                              )
+                            : Text(
+                                _menuMessage,
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20,
+                                ),
+                              ),
+                      ), //TEXT
+                      CupertinoSwitch(
+                        // This bool value toggles the switch.
+                        value: switchValue,
+                        activeColor: Colors.red,
+                        onChanged: (bool value) {
+                          setState(() {
+                            switchValue = value;
+
+                            // display encouraging message whether on or off
+                            if (value) {
+                              _menuMessage = "We've got you covered!";
+                            } else {
+                              _menuMessage = "Glad you're safe!";
+                            }
+                          });
+                        },
+                      ),
+                    ]),
                   ),
                 ),
                 //MAIN SCREEN
@@ -366,15 +384,12 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                   color: Colors.black,
                 ),
                 //SETTINGS
-              ]
-    
-          ),
+              ]),
         ),
         bottomNavigationBar: Container(
           color: Colors.red,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15,
-                vertical: 30),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
             child: GNav(
               //TAB CHANGE
               onTabChange: (index) {
@@ -388,18 +403,9 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
               padding: const EdgeInsets.all(30),
               gap: 4,
               tabs: const [
-                GButton(
-                    icon: Icons.list,
-                    text: 'Contacts'
-                ),
-                GButton(
-                    icon: Icons.shield,
-                    text: 'Instahelp'
-                ),
-                GButton(
-                    icon: Icons.settings,
-                    text: 'Settings'
-                ),
+                GButton(icon: Icons.list, text: 'Contacts'),
+                GButton(icon: Icons.shield, text: 'Instahelp'),
+                GButton(icon: Icons.settings, text: 'Settings'),
               ],
             ),
           ),

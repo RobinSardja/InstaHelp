@@ -24,6 +24,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/somebody-help_en_android_v2_2_0.ppn
-    - assets\somebody-help_en_ios_v2_2_0.ppn
+    - assets/somebody-help_en_ios_v2_2_0.ppn
     - assets/someone-help-me_en_android_v2_2_0.ppn
     - assets/someone-help-me_en_ios_v2_2_0.ppn
