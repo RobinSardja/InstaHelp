@@ -21,6 +21,7 @@ class MainApp extends StatefulWidget {
 class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   // choose keyword based on current operating system
   final String platform = Platform.isAndroid ? "android" : "ios";
+
   // TO DO: set these variables in the settings route
   final String _phoneNumber = "5551234567";
   final String _username = "Robin";
@@ -47,23 +48,22 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
       );
 
       startAudioCapture();
-
     } on PorcupineActivationException {
       // handle wake word initialization error
     }
   }
 
   // code to run when wake word detected
-  void _wakeWordCallback( int keywordIndex ) {
-    if( keywordIndex == 0 ) {
+  void _wakeWordCallback(int keywordIndex) {
+    if (keywordIndex == 0) {
       setState(() {
         _menuMessage = "Help is on the way!";
 
         String? encodeQueryParameters(Map<String, String> params) {
           return params.entries
-            .map((MapEntry<String, String> e) =>
-              '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-            .join('&');
+              .map((MapEntry<String, String> e) =>
+          '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+              .join('&');
         }
 
         final Uri textNumber = Uri(
@@ -123,7 +123,7 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80,
-        title: Text(widget.title),
+        title: Text('INSTAHELP'),
       ),
       body: SizedBox.expand(
         child: PageView(
@@ -150,14 +150,17 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                           //alignment:new Alignment(x, y)
                           children: <Widget>[
                             Positioned(
-                              child: Container (
+                              child: Container(
                                 margin: const EdgeInsets.fromLTRB(0, 100, 0, 0),
                                 //alignment:Alignment.center,
                                 height: 230,
                                 width: 230,
                                 child: Material(
-                                  borderRadius: BorderRadius.circular(switchValue ? 180 * breathsize : 180),
-                                  color: switchValue ? Color(0xffffb5bd) : Color(
+                                  borderRadius: BorderRadius.circular(
+                                      switchValue ? 180 * breathsize : 180),
+                                  color: switchValue
+                                      ? Color(0xffffb5bd)
+                                      : Color(
                                       0xff9f9f9f),
                                   child: Icon(
                                     Icons.earbuds,
@@ -168,40 +171,47 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
                               ),
                             ),
                             Positioned(
-                              child: Container (
-                                margin: const EdgeInsets.fromLTRB(13, 112, 0, 0),
+                              child: Container(
+                                margin: const EdgeInsets.fromLTRB(
+                                    13, 112, 0, 0),
                                 //alignment:Alignment.center,
                                 height: 200,
                                 width: 200,
                                 child: Material(
-                                  borderRadius: BorderRadius.circular(switchValue ? 180 * breathsize : 180),
-                                  color: switchValue ? Color(0xffff8091) : Color(
+                                  borderRadius: BorderRadius.circular(
+                                      switchValue ? 180 * breathsize : 180),
+                                  color: switchValue
+                                      ? Color(0xffff8091)
+                                      : Color(
                                       0xff565656),
                                   child: Icon(
                                     Icons.earbuds,
                                     size: 50,
-                                    color:Colors.white,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
                             ),
                             Positioned(
-                              child: Container (
-                                margin: const EdgeInsets.fromLTRB(33, 132, 0, 0),
+                              child: Container(
+                                margin: const EdgeInsets.fromLTRB(
+                                    33, 132, 0, 0),
                                 //alignment:Alignment.center,
                                 height: 160,
                                 width: 160,
                                 child: Material(
-                                  borderRadius: BorderRadius.circular(switchValue ? 160 * breathsize : 160),
-                                  color: switchValue ? Colors.red : Colors.black,
+                                  borderRadius: BorderRadius.circular(
+                                      switchValue ? 160 * breathsize : 160),
+                                  color: switchValue ? Colors.red : Colors
+                                      .black,
                                   child: switchValue ? Icon(
                                     Icons.mic,
                                     size: 50,
-                                    color:Colors.white,
+                                    color: Colors.white,
                                   ) : Icon(
                                     Icons.mic_none,
                                     size: 50,
-                                    color:Colors.white,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ),
@@ -284,3 +294,4 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
       ),
     );
   }
+}
