@@ -7,6 +7,7 @@ import 'package:porcupine_flutter/porcupine_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 
 void main() {
   runApp(const MaterialApp(home: MainApp()));
@@ -30,15 +31,20 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   final String platform = Platform.isAndroid ? "android" : "ios";
 
   // TO DO: set these variables in the settings route
-  final String _phoneNumber = "5551234567";
+  final String _phoneNumber = "4076150853";
   final String _username = "Nathan";
-  final String _accessKey =
-      "lxZcL/ZMV0al2l0SayCeX/crV9B7g4GjuJzSqMCtCLrTnXQXk+f7hQ==";
 
+  // speech detection variables
   late PorcupineManager _porcupineManager;
-  late AnimationController breathController;
+  final String _accessKey = "lxZcL/ZMV0al2l0SayCeX/crV9B7g4GjuJzSqMCtCLrTnXQXk+f7hQ==";
+
+  // gps variables
+  late String _latitude;
+  late String _longitude;
+  String _googleMapsLink="Google Maps";
 
   // styling variables
+  late AnimationController breathController;
   var breath = 0.0;
   bool switchValue = true;
   bool switchOneValue = true;
@@ -70,23 +76,28 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
   // code to run when wake word detected
   void _wakeWordCallback(int keywordIndex) {
     if (keywordIndex == 0 || keywordIndex == 1) {
-      setState(() {
-        String? encodeQueryParameters(Map<String, String> params) {
-          return params.entries
-              .map((MapEntry<String, String> e) =>
-                  '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
-              .join('&');
-        }
+      _getCurrentLocation().then( (value) {
+        _latitude = "${value.latitude}";
+        _longitude = "${value.longitude}";
+        _googleMapsLink = "www.google.com/maps/search/$_latitude,$_longitude/@$_latitude,$_longitude";
+        setState(() {
+          String? encodeQueryParameters(Map<String, String> params) {
+            return params.entries
+                .map((MapEntry<String, String> e) =>
+                    '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+                .join('&');
+          }
 
-        final Uri textNumber = Uri(
-          scheme: 'sms',
-          path: _phoneNumber,
-          query: encodeQueryParameters(<String, String>{
-            'body': 'InstaHelp Alert! $_username needs you help!',
-          }),
-        );
+          final Uri textNumber = Uri(
+            scheme: 'sms',
+            path: _phoneNumber,
+            query: encodeQueryParameters(<String, String>{
+              'body': 'InstaHelp Alert! $_username needs you help at $_googleMapsLink',
+            }),
+          );
 
         launchUrl(textNumber);
+      });
       });
     }
   }
@@ -100,11 +111,35 @@ class _MainAppState extends State<MainApp> with TickerProviderStateMixin {
     }
   }
 
-  // initialize wake word manager upon starting app
+  // get the user's current coordinates
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if( !serviceEnabled ) {
+      return Future.error( "Location services are disabled." );
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if( permission == LocationPermission.denied ) {
+      permission = await Geolocator.requestPermission();
+        if( permission == LocationPermission.denied ) {
+          return Future.error( "Location permissions are denied." );
+        }
+    }
+
+    if( permission == LocationPermission.deniedForever ) {
+      return Future.error( "Location permissions are permanently denied. We cannot track your location." );
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+  // initialize wake word manager and breath animation controller upon starting app
   @override
   void initState() {
     super.initState();
+
     createPorcupineManager();
+    
     breathController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 2000));
     breathController.addStatusListener((status) {
