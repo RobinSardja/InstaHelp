@@ -54,7 +54,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
 
   // TO DO: set these variables in the settings route
   final List<String> _contactList = ["5551234567"];
-  String _username = "Nathan";
+  String _username = "A loved one";
 
   // speech detection variables
   late PorcupineManager _porcupineManager;
@@ -106,10 +106,10 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
 
         setState(() {
           _menuMessage = "Help is on the way!";
-          // _sendSMS(
-          //   "InstaHelp Alert! $_username needs your help at $_googleMapsLink",
-          //   _contactList,
-          // );
+          _sendSMS(
+            "InstaHelp Alert! $_username needs your help at $_googleMapsLink",
+            _contactList,
+          );
         });
       });
     }
@@ -426,123 +426,23 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
               // settings
               Container(
                 color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(95, 0, 0, 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.fromLTRB(0, 0, 100, 0),
-                        child: Text(
-                          "Enter Your Name",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                          ),
+                child: Center(
+                  child:
+                    SizedBox(
+                      width: 300.0,
+                      child: TextField(
+                        onChanged: (name) {
+                          setState(() {
+                            _username = name;
+                          });
+                        },
+                        textAlign: TextAlign.center,
+                        decoration: const InputDecoration(
+                          hintText: "What's your name?",
+                          border: OutlineInputBorder(),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 20, 100, 20),
-                        child: SizedBox(
-                          width: 200,
-                          child: TextField(
-                            onChanged: (name) {
-                              setState(() {
-                                _username = name;
-                              });
-                            },
-                            decoration: const InputDecoration(
-                              hintText: "Your Name",
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                        ),
-                      ),
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     setState(() {
-                      //       // _username = 
-                      //     });
-                      //   },
-                      //   child: const Text( "Confirm Name" ),
-                      // ),
-                      Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-                            child: Text(
-                              "Alarm Sound",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                          CupertinoSwitch(
-                            value: switchOneValue,
-                            activeColor: Colors.red,
-                            onChanged: (value) {
-                              setState(() {
-                                switchOneValue = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-                            child: Text(
-                              "Text Alert",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(34, 0, 0, 0),
-                            child: CupertinoSwitch(
-                              value: switchTwoValue,
-                              activeColor: Colors.red,
-                              onChanged: (value) {
-                                setState(() {
-                                  switchTwoValue = value;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-                            child: Text(
-                              "GPS Tracking",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(46, 0, 0, 0),
-                            child: CupertinoSwitch(
-                              value: switchThreeValue,
-                              activeColor: Colors.red,
-                              onChanged: (value) {
-                                setState(() {
-                                  switchThreeValue = value;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                    )
                 ),
               ),
             ],
