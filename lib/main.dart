@@ -119,8 +119,6 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
             "InstaHelp Alert! $_username needs your help at $_googleMapsLink",
             _contactList,
           );
-          SystemSound.play(SystemSoundType.click);
-          //AudioPlayer().play(AssetSource('audio/ice.mp3'));
         });
       });
     }
