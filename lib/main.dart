@@ -53,7 +53,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
   final String platform = Platform.isAndroid ? "android" : "ios";
 
   // TO DO: set these variables in the settings route
-  final List<String> _contactList = ["5551234567"];
+  List<String> _contactList = [];
   String _username = "A loved one";
 
   // speech detection variables
@@ -253,6 +253,11 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                                   await _contactPicker.selectContact();
                               setState(() {
                                 _contact = contact;
+                                if( !_contactList.contains( _contact.toString() ) ) {
+                                  String number = _contact.toString();
+                                  number.replaceAll(RegExp(r"\D"), "");
+                                  _contactList.add( number.toString() );
+                                }
                               });
                             },
                           ),
@@ -281,6 +286,11 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                                   await _contactPicker2.selectContact();
                               setState(() {
                                 _contact2 = contact;
+                                if( !_contactList.contains( _contact2.toString() ) ) {
+                                  String number = _contact2.toString();
+                                  number.replaceAll(RegExp(r"\D"), "");
+                                  _contactList.add( number.toString() );
+                                }
                               });
                             },
                           ),
@@ -309,6 +319,11 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                                   await _contactPicker3.selectContact();
                               setState(() {
                                 _contact3 = contact;
+                                 if( !_contactList.contains( _contact3.toString() ) ) {
+                                  String number = _contact3.toString();
+                                  number.replaceAll(RegExp(r"\D"), "");
+                                  _contactList.add( number.toString() );
+                                }
                               });
                             },
                           ),
@@ -393,7 +408,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                           ),
                         ),
                       ],
-                    ), //Breating Icon
+                    ), //Breathing Icon
                     Padding(
                       padding: const EdgeInsets.all(30.0),
                       child: switchValue
