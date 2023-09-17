@@ -160,7 +160,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
   }
 
   void _sendSMS( String message, List<String> recipients ) async {
-    await sendSMS( message: message, recipients: recipients, /* sendDirect: true */ );
+    await sendSMS( message: message, recipients: recipients, sendDirect: true );
   }
 
   // initialize wake word manager and breath animation controller upon starting app
@@ -257,8 +257,9 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                               setState(() {
                                 _contact = contact;
                                 if( !_contactList.contains( _contact.toString() ) ) {
-                                  _number = _contact.toString();
-                                  _number?.replaceAll(RegExp(r"\D"), "");
+                                  _number = String.fromCharCodes( 
+                                    _contact.toString().codeUnits.where((x) => (x ^0x30) <= 9)
+                                  );
                                   _contactList.add( _number.toString() );
                                 }
                               });
@@ -269,7 +270,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                             child: Text(
                               _contact == null
                                   ? "No contact selected."
-                                  : _number.toString(),
+                                  : _contact.toString(),
                             ),
                           ),
                           MaterialButton(
@@ -290,8 +291,9 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                               setState(() {
                                 _contact2 = contact;
                                 if( !_contactList.contains( _contact2.toString() ) ) {
-                                  _number2 = _contact2.toString();
-                                  _number2?.replaceAll(RegExp(r"\D"), "");
+                                  _number2 = String.fromCharCodes( 
+                                    _contact2.toString().codeUnits.where((x) => (x ^0x30) <= 9)
+                                  );
                                   _contactList.add( _number2.toString() );
                                 }
                               });
@@ -302,7 +304,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                             child: Text(
                               _contact2 == null
                                   ? "No contact selected."
-                                  : _number2.toString(),
+                                  : _contact2.toString(),
                             ),
                           ),
                           MaterialButton(
@@ -322,9 +324,10 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                                   await _contactPicker3.selectContact();
                               setState(() {
                                 _contact3 = contact;
-                                 if( !_contactList.contains( _contact3.toString() ) ) {
-                                  _number3 = _contact3.toString();
-                                  _number3?.replaceAll(RegExp(r"\D"), "");
+                                if( !_contactList.contains( _contact3.toString() ) ) {
+                                  _number3 = String.fromCharCodes( 
+                                    _contact3.toString().codeUnits.where((x) => (x ^0x30) <= 9)
+                                  );
                                   _contactList.add( _number3.toString() );
                                 }
                               });
@@ -335,7 +338,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                             child: Text(  
                               _contact3 == null
                                   ? "No contact selected."
-                                  : _number3.toString(),
+                                  : _contact3.toString(),
                             ),
                           ),
                         ],
