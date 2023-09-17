@@ -106,6 +106,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
 
         setState(() {
           _menuMessage = "Help is on the way!";
+
           _sendSMS(
             "InstaHelp Alert! $_username needs your help at $_googleMapsLink",
             _contactList,
@@ -119,6 +120,14 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
   void startAudioCapture() async {
     try {
       await _porcupineManager.start();
+    } on PorcupineException {
+      // handle audio exception
+    }
+  }
+
+  void pauseAudioCapture() async {
+    try {
+      await _porcupineManager.stop();
     } on PorcupineException {
       // handle audio exception
     }
@@ -413,8 +422,10 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                           // display encouraging message whether on or off
                           if (value) {
                             _menuMessage = "We're here to help!";
+                            startAudioCapture();
                           } else {
                             _menuMessage = "Glad you're safe!";
+                            pauseAudioCapture();
                           }
                         });
                       },
@@ -451,7 +462,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.list),
+              icon: Icon(Icons.sms),
               label: "Contacts",
             ),
             BottomNavigationBarItem(
