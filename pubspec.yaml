@@ -17,6 +17,14 @@ dependencies:
   geolocator: ^10.0.1
   flutter_sms:
     path: C:/Users/robin/Desktop/shellhacks/flutter_sms-2.3.3
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  adaptive_icon_foreground: "assets/instahelp foreground.png"
+  adaptive_icon_background: "assets/instahelp background.png"
+  ios: true
+  image_path: "assets/instahelp logo.png"
 
 dev_dependencies:
   flutter_test:
