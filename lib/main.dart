@@ -44,16 +44,19 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
   // contact list variables
   final FlutterContactPicker _contactPicker = FlutterContactPicker();
   Contact? _contact;
+  String? _number;
   final FlutterContactPicker _contactPicker2 = FlutterContactPicker();
   Contact? _contact2;
+  String? _number2;
   final FlutterContactPicker _contactPicker3 = FlutterContactPicker();
   Contact? _contact3;
+  String? _number3;
 
   // choose keyword based on current operating system
   final String platform = Platform.isAndroid ? "android" : "ios";
 
   // TO DO: set these variables in the settings route
-  List<String> _contactList = [];
+  final List<String> _contactList = [];
   String _username = "A loved one";
 
   // speech detection variables
@@ -157,7 +160,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
   }
 
   void _sendSMS( String message, List<String> recipients ) async {
-    await sendSMS( message: message, recipients: recipients, sendDirect: true );
+    await sendSMS( message: message, recipients: recipients, /* sendDirect: true */ );
   }
 
   // initialize wake word manager and breath animation controller upon starting app
@@ -254,9 +257,9 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                               setState(() {
                                 _contact = contact;
                                 if( !_contactList.contains( _contact.toString() ) ) {
-                                  String number = _contact.toString();
-                                  number.replaceAll(RegExp(r"\D"), "");
-                                  _contactList.add( number.toString() );
+                                  _number = _contact.toString();
+                                  _number?.replaceAll(RegExp(r"\D"), "");
+                                  _contactList.add( _number.toString() );
                                 }
                               });
                             },
@@ -266,7 +269,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                             child: Text(
                               _contact == null
                                   ? "No contact selected."
-                                  : _contact.toString(),
+                                  : _number.toString(),
                             ),
                           ),
                           MaterialButton(
@@ -287,9 +290,9 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                               setState(() {
                                 _contact2 = contact;
                                 if( !_contactList.contains( _contact2.toString() ) ) {
-                                  String number = _contact2.toString();
-                                  number.replaceAll(RegExp(r"\D"), "");
-                                  _contactList.add( number.toString() );
+                                  _number2 = _contact2.toString();
+                                  _number2?.replaceAll(RegExp(r"\D"), "");
+                                  _contactList.add( _number2.toString() );
                                 }
                               });
                             },
@@ -299,7 +302,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                             child: Text(
                               _contact2 == null
                                   ? "No contact selected."
-                                  : _contact2.toString(),
+                                  : _number2.toString(),
                             ),
                           ),
                           MaterialButton(
@@ -320,19 +323,19 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                               setState(() {
                                 _contact3 = contact;
                                  if( !_contactList.contains( _contact3.toString() ) ) {
-                                  String number = _contact3.toString();
-                                  number.replaceAll(RegExp(r"\D"), "");
-                                  _contactList.add( number.toString() );
+                                  _number3 = _contact3.toString();
+                                  _number3?.replaceAll(RegExp(r"\D"), "");
+                                  _contactList.add( _number3.toString() );
                                 }
                               });
                             },
                           ),
                           Padding(
                             padding: const EdgeInsets.all(13.0),
-                            child: Text(
+                            child: Text(  
                               _contact3 == null
                                   ? "No contact selected."
-                                  : _contact3.toString(),
+                                  : _number3.toString(),
                             ),
                           ),
                         ],
