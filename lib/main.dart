@@ -9,6 +9,7 @@ import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 import 'package:porcupine_flutter/porcupine_error.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   runApp( MaterialApp(
@@ -62,6 +63,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
   // speech detection variables
   late PorcupineManager _porcupineManager;
   final String _accessKey = "lxZcL/ZMV0al2l0SayCeX/crV9B7g4GjuJzSqMCtCLrTnXQXk+f7hQ==";
+  int blobbystate = 0;
 
   // gps variables
   late String _latitude;
@@ -77,6 +79,11 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
   bool switchThreeValue = true;
   int _currentIndex = 0;
   late PageController pageController;
+
+  List<Color> outpallette = [const Color(0xffffb5bd), const Color(0xff9f9f9f),Color.fromARGB(255, 180, 255, 163)];
+  List<Color> midpallette = [const Color(0xffff8091), const Color(0xff565656),Color.fromARGB(255, 128, 255, 100)];
+  List<Color> inpallette = [Colors.red, Colors.black,Color.fromARGB(255, 0, 219, 37)];
+  List<Color> butpallette = [Colors.red, Colors.black, Colors.black];
 
   String _menuMessage = "We're here to help!";
 
@@ -109,11 +116,13 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
 
         setState(() {
           _menuMessage = "Help is on the way!";
-
+          blobbystate = 2;
           _sendSMS(
             "InstaHelp Alert! $_username needs your help at $_googleMapsLink",
             _contactList,
           );
+          SystemSound.play(SystemSoundType.click);
+          //AudioPlayer().play(AssetSource('audio/ice.mp3'));
         });
       });
     }
@@ -207,6 +216,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
       textDirection: TextDirection.ltr,
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text('InstaHelp'),
           backgroundColor: Colors.red,
         ),
@@ -364,9 +374,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                             child: Material(
                               borderRadius: BorderRadius.circular(
                                   switchValue ? 180 * breathsize : 180),
-                              color: switchValue
-                                  ? const Color(0xffffb5bd)
-                                  : const Color(0xff9f9f9f),
+                              color: outpallette[blobbystate],
                               child: const Icon(
                                 Icons.earbuds,
                                 size: 50,
@@ -383,9 +391,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                             child: Material(
                               borderRadius: BorderRadius.circular(
                                   switchValue ? 180 * breathsize : 180),
-                              color: switchValue
-                                  ? const Color(0xffff8091)
-                                  : const Color(0xff565656),
+                              color: midpallette[blobbystate],
                             ),
                           ),
                         ),
@@ -398,7 +404,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                               borderRadius: BorderRadius.circular(
                                 switchValue ? 160 * breathsize : 160
                               ),
-                              color: switchValue ? Colors.red : Colors.black,
+                              color: inpallette[blobbystate],
                               child: switchValue
                                 ? const Icon(
                                   Icons.mic,
@@ -420,16 +426,16 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                       child: switchValue
                           ? Text(
                               _menuMessage,
-                              style: const TextStyle(
-                                color: Colors.red,
-                                fontSize: 20,
+                              style: TextStyle(
+                                color: butpallette[blobbystate],
+                                fontSize: 30,
                               ),
                             )
                           : Text(
                               _menuMessage,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
+                              style: TextStyle(
+                                color: butpallette[blobbystate],
+                                fontSize: 30,
                               ),
                             ),
                     ), // text
@@ -442,9 +448,11 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
                           switchValue = value;
                           // display encouraging message whether on or off
                           if (value) {
+                            blobbystate = 0;
                             _menuMessage = "We're here to help!";
                             startAudioCapture();
                           } else {
+                            blobbystate = 1;
                             _menuMessage = "Glad you're safe!";
                             pauseAudioCapture();
                           }
