@@ -9,8 +9,6 @@ import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 import 'package:porcupine_flutter/porcupine_error.dart';
-import 'package:audioplayers/audioplayers.dart';
-
 void main() {
   runApp( MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -80,9 +78,9 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
   int _currentIndex = 0;
   late PageController pageController;
 
-  List<Color> outpallette = [const Color(0xffffb5bd), const Color(0xff9f9f9f),Color.fromARGB(255, 180, 255, 163)];
-  List<Color> midpallette = [const Color(0xffff8091), const Color(0xff565656),Color.fromARGB(255, 128, 255, 100)];
-  List<Color> inpallette = [Colors.red, Colors.black,Color.fromARGB(255, 0, 219, 37)];
+  List<Color> outpallette = [const Color(0xffffb5bd), const Color(0xff9f9f9f),const Color.fromARGB(255, 180, 255, 163)];
+  List<Color> midpallette = [const Color(0xffff8091), const Color(0xff565656),const Color.fromARGB(255, 128, 255, 100)];
+  List<Color> inpallette = [Colors.red, Colors.black,const Color.fromARGB(255, 0, 219, 37)];
   List<Color> butpallette = [Colors.red, Colors.black, Colors.black];
 
   String _menuMessage = "We're here to help!";
