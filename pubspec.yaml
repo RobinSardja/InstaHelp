@@ -16,7 +16,7 @@ dependencies:
   flutter_native_contact_picker: ^0.0.4
   geolocator: ^10.0.1
   flutter_sms:
-    path: C:/Users/robin/Desktop/shellhacks/flutter_sms-2.3.3
+    path: ./assets/flutter_sms-2.3.3
   flutter_launcher_icons: ^0.13.1
 
 flutter_launcher_icons:

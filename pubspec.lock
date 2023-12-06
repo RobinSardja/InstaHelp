@@ -145,8 +145,8 @@ packages:
   flutter_sms:
     dependency: "direct main"
     description:
-      path: "C:/Users/robin/Desktop/shellhacks/flutter_sms-2.3.3"
-      relative: false
+      path: "assets/flutter_sms-2.3.3"
+      relative: true
     source: path
     version: "2.3.3"
   flutter_test:

@@ -60,7 +60,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
 
   // speech detection variables
   late PorcupineManager _porcupineManager;
-  final String _accessKey = "lxZcL/ZMV0al2l0SayCeX/crV9B7g4GjuJzSqMCtCLrTnXQXk+f7hQ==";
+  final String _accessKey = "hAHKQ8DcL6G15ApEwPYuh+IQIzfclLkl++sDQtuWHFZvqHUSlfH92w==";
   int blobbystate = 0;
 
   // gps variables
