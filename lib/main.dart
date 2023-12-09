@@ -9,6 +9,7 @@ import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 import 'package:porcupine_flutter/porcupine_error.dart';
+
 void main() {
   runApp( MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -60,7 +61,7 @@ class _InstaHelpState extends State<InstaHelp> with TickerProviderStateMixin {
 
   // speech detection variables
   late PorcupineManager _porcupineManager;
-  final String _accessKey = "hAHKQ8DcL6G15ApEwPYuh+IQIzfclLkl++sDQtuWHFZvqHUSlfH92w==";
+  static const String _accessKey = String.fromEnvironment('picovoice', defaultValue: 'none');
   int blobbystate = 0;
 
   // gps variables
