@@ -29,6 +29,10 @@ flutter:
     - assets/someone-help-me_en_ios_v2_2_0.ppn
 
 flutter_launcher_icons:
-  image_path: 'assets/InstaHelp icon.png'
   android: true
+  adaptive_icon_foreground: "assets/android icon foreground.png"
+  adaptive_icon_background: "assets/android icon background.png"
+
   ios: true
+  image_path: 'assets/InstaHelp icon.png'
+  remove_alpha_ios: true

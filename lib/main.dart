@@ -92,17 +92,18 @@ class _InstaHelpState extends State<InstaHelp> {
 
   // determines if all required permissions have been granted
   PermissionStatus micPermStatus = PermissionStatus.denied;
+  // PermissionStatus mapPermStatus = PermissionStatus.denied;
 
-  // updates permission variables with current device permissions
-  void updatePermissions() async {
+  // updates all permission variables with current device permissions
+  void checkPermissions() async {
     final newMicPermStatus = await Permission.microphone.status;
-    setState(() => micPermStatus = newMicPermStatus );
+    setState( () => micPermStatus = newMicPermStatus );
   }
   
   // requests for all permissions required
   void requestPermissions() async {
     await openAppSettings();
-    updatePermissions();
+    checkPermissions();
   }
 
   @override
@@ -110,7 +111,7 @@ class _InstaHelpState extends State<InstaHelp> {
     super.initState();
 
     createPorcupineManager();
-    updatePermissions();
+    checkPermissions();
   }
 
   @override
