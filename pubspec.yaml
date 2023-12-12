@@ -4,27 +4,14 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: '>=3.1.0-262.2.beta <4.0.0'
+  sdk: '>=3.1.5 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  porcupine_flutter: ^2.2.2
-  url_launcher: ^6.1.14
-  cupertino_icons: ^1.0.2
-  google_nav_bar: ^5.0.6
-  flutter_native_contact_picker: ^0.0.4
-  geolocator: ^10.0.1
-  flutter_sms:
-    path: ./assets/flutter_sms-2.3.3
   flutter_launcher_icons: ^0.13.1
-
-flutter_launcher_icons:
-  android: true
-  adaptive_icon_foreground: "assets/instahelp foreground.png"
-  adaptive_icon_background: "assets/instahelp background.png"
-  ios: true
-  image_path: "assets/instahelp logo.png"
+  permission_handler: ^11.0.1
+  porcupine_flutter: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -34,7 +21,14 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/get-away-from-me_en_android_v3_0_0.ppn
+    - assets/get-away-from-me_en_ios_v3_0_0.ppn
     - assets/somebody-help_en_android_v2_2_0.ppn
     - assets/somebody-help_en_ios_v2_2_0.ppn
     - assets/someone-help-me_en_android_v2_2_0.ppn
     - assets/someone-help-me_en_ios_v2_2_0.ppn
+
+flutter_launcher_icons:
+  image_path: 'assets/InstaHelp icon.png'
+  android: true
+  ios: true
