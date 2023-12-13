@@ -124,9 +124,13 @@ class _InstaHelpState extends State<InstaHelp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.light().copyWith(
+      theme: ThemeData.light().copyWith( // app theme
         appBarTheme: const AppBarTheme(
           color: Colors.red,
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+          )
         ),
         elevatedButtonTheme: const ElevatedButtonThemeData(
           style: ButtonStyle(
@@ -134,6 +138,7 @@ class _InstaHelpState extends State<InstaHelp> {
           )
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          foregroundColor: Colors.white,
           backgroundColor: Colors.red,
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -141,7 +146,11 @@ class _InstaHelpState extends State<InstaHelp> {
           selectedIconTheme: IconThemeData(
             color: Colors.white,
           ),
+          unselectedIconTheme: IconThemeData(
+            color: Colors.black,
+          ),
           selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.black,
         ),
       ),
       debugShowCheckedModeBanner: false,
