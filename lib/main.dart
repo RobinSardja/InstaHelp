@@ -102,7 +102,8 @@ class _InstaHelpState extends State<InstaHelp> {
   
   // requests for all permissions required
   void requestPermissions() async {
-    await openAppSettings();
+    checkPermissions();
+    if( !micPermStatus.isGranted ) await openAppSettings();
     checkPermissions();
   }
 
