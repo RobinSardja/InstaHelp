@@ -3,9 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:porcupine_flutter/porcupine.dart';
-import 'package:porcupine_flutter/porcupine_manager.dart';
 import 'package:porcupine_flutter/porcupine_error.dart';
+import 'package:porcupine_flutter/porcupine_manager.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 
@@ -38,10 +37,10 @@ class _InstaHelpState extends State<InstaHelp> {
   final platform = Platform.isAndroid ? "android" : "ios";
   void createPorcupineManager() async {
     try {
-      porcupineManager = await PorcupineManager.fromBuiltInKeywords(
+      porcupineManager = await PorcupineManager.fromKeywordPaths(
         accessKey,
         [
-          BuiltInKeyword.HEY_GOOGLE,
+          "assets/get-away-from-me_en_${platform}_v3_0_0.ppn",
         ],
         wakeWordCallback,
       );
@@ -103,7 +102,7 @@ class _InstaHelpState extends State<InstaHelp> {
   // requests for all permissions required
   void requestPermissions() async {
     checkPermissions();
-    if( !micPermStatus.isGranted ) await openAppSettings();
+    if( micPermStatus.isDenied ) await openAppSettings();
     checkPermissions();
   }
 
