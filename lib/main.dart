@@ -87,7 +87,7 @@ class _InstaHelpState extends State<InstaHelp> {
     try {
         Position location = await getLocation();
         await sendSMS(
-          message: "InstaHelp alert! Someone needs your help at ${location.latitude}, ${location.longitude}!",
+          message: "InstaHelp alert! Someone needs your help at www.google.com/maps/search/${location.latitude},${location.longitude}/@${location.latitude},${location.longitude}!",
           recipients: [emergencyContact],
           sendDirect: true,
         );
