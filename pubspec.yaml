@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
+  flutter_sms:
+    path: assets/flutter_sms-master
   permission_handler: ^11.0.1
   porcupine_flutter: ^3.0.1
 

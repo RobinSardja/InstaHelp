@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:porcupine_flutter/porcupine_error.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 
+import 'package:flutter_sms/flutter_sms.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
@@ -35,6 +36,7 @@ class _InstaHelpState extends State<InstaHelp> {
   late PorcupineManager porcupineManager;
   static const accessKey = String.fromEnvironment('picovoice', defaultValue: 'none');
   final platform = Platform.isAndroid ? "android" : "ios";
+
   void createPorcupineManager() async {
     try {
       porcupineManager = await PorcupineManager.fromKeywordPaths(
@@ -53,8 +55,9 @@ class _InstaHelpState extends State<InstaHelp> {
 
   // controls actions when wake word detected
   void wakeWordCallback(keywordIndex) {
+    sendInstaHelpAlert();
     setState(() {
-      message = "Hello!";
+      message = "Help is on the way!";
     });
   }
 
@@ -76,8 +79,45 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
+  // sends text message alert
+  static const emergencyContact = String.fromEnvironment('contact', defaultValue: 'none');
+
+  void sendInstaHelpAlert() async {
+    try {
+        await sendSMS(
+          message: "InstaHelp alert! Someone needs your help!",
+          recipients: [emergencyContact],
+          sendDirect: true,
+        );
+    } on Error {
+      // handle sending text message error
+    }
+  }
+
+  // determines if all required permissions have been granted
+  PermissionStatus mapPermStatus = PermissionStatus.denied;
+  PermissionStatus micPermStatus = PermissionStatus.denied;
+  PermissionStatus smsPermStatus = PermissionStatus.denied;
+
+  // updates all permission variables with current device permissions
+  void checkPermissions() async {
+    final newMicPermStatus = await Permission.microphone.status;
+    setState( () => micPermStatus = newMicPermStatus );
+    final newSmsPermStatus = await Permission.sms.status;
+    setState( () => smsPermStatus = newSmsPermStatus );
+  }
+  
+  // requests for all permissions required
+  void requestPermissions() async {
+    await Permission.microphone.request().then( (value) async {
+      await Permission.sms.request();
+    });
+    checkPermissions();
+  }
+
   // controls switching between pages
   int currentIndex = 1;
+
   void changeIndex(selectedIndex) {
     setState(() {
       currentIndex = selectedIndex;
@@ -88,23 +128,6 @@ class _InstaHelpState extends State<InstaHelp> {
   final pageController = PageController(
     initialPage: 1,
   );
-
-  // determines if all required permissions have been granted
-  PermissionStatus micPermStatus = PermissionStatus.denied;
-  // PermissionStatus mapPermStatus = PermissionStatus.denied;
-
-  // updates all permission variables with current device permissions
-  void checkPermissions() async {
-    final newMicPermStatus = await Permission.microphone.status;
-    setState( () => micPermStatus = newMicPermStatus );
-  }
-  
-  // requests for all permissions required
-  void requestPermissions() async {
-    checkPermissions();
-    if( micPermStatus.isDenied ) await openAppSettings();
-    checkPermissions();
-  }
 
   @override
   void initState() {    
@@ -134,6 +157,7 @@ class _InstaHelpState extends State<InstaHelp> {
         ),
         elevatedButtonTheme: const ElevatedButtonThemeData(
           style: ButtonStyle(
+            foregroundColor: MaterialStatePropertyAll( Colors.white ),
             backgroundColor: MaterialStatePropertyAll( Colors.red ),
           )
         ),
@@ -165,7 +189,8 @@ class _InstaHelpState extends State<InstaHelp> {
           },
           children: [
             profile(),
-            micPermStatus.isGranted ? home() : permissionRequestPage(),
+            micPermStatus.isGranted && smsPermStatus.isGranted ?
+            home() : permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
             settings(),
           ],
         ),
@@ -224,7 +249,7 @@ class _InstaHelpState extends State<InstaHelp> {
           const Text("Please grant all required permissions"),
           ElevatedButton(
             onPressed: () { requestPermissions(); },
-            child: const Text("Open app settings"),
+            child: const Text("Request required permissions"),
           )
         ],
       ),
