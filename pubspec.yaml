@@ -12,13 +12,14 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_sms:
     path: assets/flutter_sms-master
+  geolocator: ^10.1.0
   permission_handler: ^11.0.1
   porcupine_flutter: ^3.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
 
 flutter_launcher_icons:
   android: true

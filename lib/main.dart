@@ -7,6 +7,7 @@ import 'package:porcupine_flutter/porcupine_error.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 
 import 'package:flutter_sms/flutter_sms.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
@@ -84,8 +85,9 @@ class _InstaHelpState extends State<InstaHelp> {
 
   void sendInstaHelpAlert() async {
     try {
+        Position location = await getLocation();
         await sendSMS(
-          message: "InstaHelp alert! Someone needs your help!",
+          message: "InstaHelp alert! Someone needs your help at ${location.latitude}, ${location.longitude}!",
           recipients: [emergencyContact],
           sendDirect: true,
         );
@@ -94,13 +96,38 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
+  // get current location of user
+  Future<Position> getLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if( !serviceEnabled ) {
+      return Future.error( "Location services are disabled." );
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if( permission == LocationPermission.denied ) {
+      permission = await Geolocator.requestPermission();
+
+      if( permission == LocationPermission.denied ) {
+        return Future.error( "Location permissions are denied." );
+      }
+    }
+
+    if( permission == LocationPermission.deniedForever ) {
+      return Future.error( "Location permissions are permanently denied, we cannot request permissions." );
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
   // determines if all required permissions have been granted
-  PermissionStatus mapPermStatus = PermissionStatus.denied;
+  LocationPermission mapPermStatus = LocationPermission.denied;
   PermissionStatus micPermStatus = PermissionStatus.denied;
   PermissionStatus smsPermStatus = PermissionStatus.denied;
 
   // updates all permission variables with current device permissions
   void checkPermissions() async {
+    final newMapPermStatus = await Geolocator.checkPermission();
+    setState( () => mapPermStatus = newMapPermStatus );
     final newMicPermStatus = await Permission.microphone.status;
     setState( () => micPermStatus = newMicPermStatus );
     final newSmsPermStatus = await Permission.sms.status;
@@ -109,8 +136,10 @@ class _InstaHelpState extends State<InstaHelp> {
   
   // requests for all permissions required
   void requestPermissions() async {
-    await Permission.microphone.request().then( (value) async {
-      await Permission.sms.request();
+    await Geolocator.requestPermission().then( (value) async {
+      await Permission.microphone.request().then( (value) async {
+        await Permission.sms.request();
+      });
     });
     checkPermissions();
   }
