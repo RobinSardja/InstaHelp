@@ -128,7 +128,7 @@ class _InstaHelpState extends State<InstaHelp> {
   PermissionStatus smsPermStatus = PermissionStatus.denied;
 
   // updates all permission variables with current device permissions
-  void checkPermissions() async {
+  void checkAllPermissions() async {
     final newMapPermStatus = await Geolocator.checkPermission();
     setState( () => mapPermStatus = newMapPermStatus );
     final newMicPermStatus = await Permission.microphone.status;
@@ -138,13 +138,13 @@ class _InstaHelpState extends State<InstaHelp> {
   }
   
   // requests for all permissions required
-  void requestPermissions() async {
+  void requestAllPermissions() async {
     await Geolocator.requestPermission().then( (value) async {
       await Permission.microphone.request().then( (value) async {
         await Permission.sms.request();
       });
     });
-    checkPermissions();
+    checkAllPermissions();
   }
 
   // controls switching between pages
@@ -166,7 +166,7 @@ class _InstaHelpState extends State<InstaHelp> {
     super.initState();
 
     createPorcupineManager();
-    checkPermissions();
+    requestAllPermissions();
   }
 
   @override
@@ -221,7 +221,7 @@ class _InstaHelpState extends State<InstaHelp> {
           },
           children: [
             const ProfilePage(),
-            micPermStatus.isGranted && smsPermStatus.isGranted ?
+            ( mapPermStatus == LocationPermission.always || mapPermStatus == LocationPermission.whileInUse ) && micPermStatus.isGranted && smsPermStatus.isGranted ?
             homePage() : permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
             const SettingsPage(),
           ],
@@ -273,7 +273,7 @@ class _InstaHelpState extends State<InstaHelp> {
         children: [
           const Text("Please grant all required permissions"),
           ElevatedButton(
-            onPressed: () { requestPermissions(); },
+            onPressed: () { requestAllPermissions(); },
             child: const Text("Request required permissions"),
           )
         ],
