@@ -10,6 +10,9 @@ import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'profile_page.dart';
+import 'settings_page.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -35,7 +38,7 @@ class _InstaHelpState extends State<InstaHelp> {
 
   // initialize porcupine wake word manager
   late PorcupineManager porcupineManager;
-  static const accessKey = String.fromEnvironment('picovoice', defaultValue: 'none');
+  static const accessKey = String.fromEnvironment("picovoice", defaultValue: "none");
   final platform = Platform.isAndroid ? "android" : "ios";
 
   void createPorcupineManager() async {
@@ -81,7 +84,7 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   // sends text message alert
-  static const emergencyContact = String.fromEnvironment('contact', defaultValue: 'none');
+  static const emergencyContact = String.fromEnvironment("contact", defaultValue: "none");
 
   void sendInstaHelpAlert() async {
     try {
@@ -217,10 +220,10 @@ class _InstaHelpState extends State<InstaHelp> {
             changeIndex(selectedIndex),
           },
           children: [
-            profile(),
+            const ProfilePage(),
             micPermStatus.isGranted && smsPermStatus.isGranted ?
-            home() : permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
-            settings(),
+            homePage() : permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
+            const SettingsPage(),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -259,17 +262,10 @@ class _InstaHelpState extends State<InstaHelp> {
     );
   }
 
-  // home page
-  Widget profile() {
-    return const Center( child: Text("Profile") );
-  }
-
-  // InstaHelp page
-  Widget home() {
+  Widget homePage() {
     return Center( child: Text(message) );
   }
 
-  // to display when any permissions are not granted
   Widget permissionRequestPage() {
     return Center(
       child: Column( 
@@ -284,10 +280,4 @@ class _InstaHelpState extends State<InstaHelp> {
       ),
     );
   }
-
-  // settings page
-  Widget settings() {
-    return const Center( child: Text("Settings") );
-  }
-
 }
