@@ -54,5 +54,17 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs access to location when in the background.</string>
 
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.854468667727-uvqujej61j12i3qiomvri4dq54mc4vpl</string>
+			</array>
+		</dict>
+	</array>
+
 </dict>
 </plist>

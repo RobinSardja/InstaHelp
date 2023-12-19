@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'package:instahelp/firebase_options.dart';
+
 import 'package:porcupine_flutter/porcupine_error.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 
@@ -13,8 +16,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'profile_page.dart';
 import 'settings_page.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   // ensure app stays in portrait mode
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((value) =>
@@ -228,17 +234,6 @@ class _InstaHelpState extends State<InstaHelp> {
             const SettingsPage(),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          child: muted ? const Icon( Icons.mic_off ) : const Icon( Icons.mic ),
-          onPressed: () {
-            setState(() {
-              muted = !muted;
-              message = muted ? "Muted" : "Listening";
-            });
-            muted ? pauseAudioCapture() : startAudioCapture();
-          }
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         bottomNavigationBar: BottomNavigationBar(
           items: const [
             BottomNavigationBarItem(
@@ -265,7 +260,20 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   Widget homePage() {
-    return Center( child: Text(message) );
+    return Scaffold(
+      body: Center( child: Text( message ) ),
+      floatingActionButton: FloatingActionButton(
+        child: muted ? const Icon( Icons.mic_off ) : const Icon( Icons.mic ),
+        onPressed: () {
+          setState(() {
+            muted = !muted;
+            message = muted ? "Muted" : "Listening";
+          });
+          muted ? pauseAudioCapture() : startAudioCapture();
+        }
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
   }
 
   Widget permissionRequestPage() {

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "854468667727",
+    "project_id": "instahelp-sardja",
+    "storage_bucket": "instahelp-sardja.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854468667727:android:4c6dde55e2877e141d3d3a",
+        "android_client_info": {
+          "package_name": "com.example.instahelp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "854468667727-onuae0m3uqbnqsaggg7ej3sb4qgb9h32.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4tIcB17xlozLerfykdroUd8_NEyh8LqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "854468667727-onuae0m3uqbnqsaggg7ej3sb4qgb9h32.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "854468667727-uvqujej61j12i3qiomvri4dq54mc4vpl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.instahelp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
