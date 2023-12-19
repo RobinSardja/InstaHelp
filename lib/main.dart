@@ -119,17 +119,19 @@ class _InstaHelpState extends State<InstaHelp> {
       return Future.error( "Location permissions are permanently denied, we cannot request permissions." );
     }
 
+    // TODO: handle when only approximate location is permitted
+
     return await Geolocator.getCurrentPosition();
   }
 
   // determines if all required permissions have been granted
-  LocationPermission mapPermStatus = LocationPermission.denied;
+  PermissionStatus mapPermStatus = PermissionStatus.denied;
   PermissionStatus micPermStatus = PermissionStatus.denied;
   PermissionStatus smsPermStatus = PermissionStatus.denied;
 
   // updates all permission variables with current device permissions
   void checkAllPermissions() async {
-    final newMapPermStatus = await Geolocator.checkPermission();
+    final newMapPermStatus = await Permission.location.status;
     setState( () => mapPermStatus = newMapPermStatus );
     final newMicPermStatus = await Permission.microphone.status;
     setState( () => micPermStatus = newMicPermStatus );
@@ -139,7 +141,7 @@ class _InstaHelpState extends State<InstaHelp> {
   
   // requests for all permissions required
   void requestAllPermissions() async {
-    await Geolocator.requestPermission().then( (value) async {
+    await Permission.location.request().then( (value) async {
       await Permission.microphone.request().then( (value) async {
         await Permission.sms.request();
       });
@@ -221,7 +223,7 @@ class _InstaHelpState extends State<InstaHelp> {
           },
           children: [
             const ProfilePage(),
-            ( mapPermStatus == LocationPermission.always || mapPermStatus == LocationPermission.whileInUse ) && micPermStatus.isGranted && smsPermStatus.isGranted ?
+            mapPermStatus.isGranted && micPermStatus.isGranted && smsPermStatus.isGranted ?
             homePage() : permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
             const SettingsPage(),
           ],
