@@ -39,7 +39,7 @@ class InstaHelp extends StatefulWidget {
 
 class _InstaHelpState extends State<InstaHelp> {
 
-  String message = "Listening";
+  String message = "We've got your back!";
   bool muted = false;
 
   // initialize porcupine wake word manager
@@ -65,7 +65,8 @@ class _InstaHelpState extends State<InstaHelp> {
 
   // controls actions when wake word detected
   void wakeWordCallback(keywordIndex) {
-    sendInstaHelpAlert();
+    sendTextMessageAlert();
+    // showSnackBarMessage();
     setState(() {
       message = "Help is on the way!";
     });
@@ -92,7 +93,7 @@ class _InstaHelpState extends State<InstaHelp> {
   // sends text message alert
   static const emergencyContact = String.fromEnvironment("contact", defaultValue: "none");
 
-  void sendInstaHelpAlert() async {
+  void sendTextMessageAlert() async {
     try {
         Position location = await getLocation();
         await sendSMS(
@@ -104,6 +105,22 @@ class _InstaHelpState extends State<InstaHelp> {
       // handle sending text message error
     }
   }
+
+  // TODO: implement snack bar message
+  // // show snack bar message when distress detected
+  // void showSnackBarMessage() {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: const Text("Help is on the way!"),
+  //       action: SnackBarAction(
+  //         label: "OK",
+  //         onPressed: () {
+
+  //         },
+  //       )
+  //     )
+  //   );
+  // }
 
   // get current location of user
   Future<Position> getLocation() async {
@@ -267,7 +284,7 @@ class _InstaHelpState extends State<InstaHelp> {
         onPressed: () {
           setState(() {
             muted = !muted;
-            message = muted ? "Muted" : "Listening";
+            message = muted ? "Glad you're safe!" : "We've got your back!";
           });
           muted ? pauseAudioCapture() : startAudioCapture();
         }
