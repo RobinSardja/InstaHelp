@@ -216,11 +216,19 @@ class _InstaHelpState extends State<InstaHelp> {
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.black,
         ),
+        snackBarTheme: const SnackBarThemeData(
+          backgroundColor: Colors.white,
+          actionTextColor: Colors.red,
+          contentTextStyle: TextStyle(
+            color: Colors.black,
+          )
+        )
       ),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
-          title: const Center( child: Text("InstaHelp") ),
+          title: const Text("InstaHelp"),
+          centerTitle: true,
         ),
         body: PageView(
           controller: pageController,

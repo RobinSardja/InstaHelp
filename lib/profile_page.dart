@@ -35,7 +35,12 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             ElevatedButton(
               onPressed: () {
-
+                Navigator.push(
+                  context,
+                  MaterialPageRoute<ProfilePage>(
+                    builder: (context) => editProfilePage(),
+                  )
+                );
               },
               child: const Center( child: Text( "Edit profile" ) ),
             )
@@ -52,6 +57,49 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         );
       }
+    );
+  }
+
+  late String snackBarMessage;
+
+  Widget editProfilePage() {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: const Center( child: Text( "Edit profile" ) ),
+        centerTitle: true,
+      ),
+      body: const Center(
+        child: Text( "edit profile page" )
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon( Icons.save ),
+            label: "Save",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon( Icons.delete ),
+            label: "Delete",
+          )
+        ],
+        onTap: (selectedIndex) {
+          snackBarMessage = selectedIndex == 0 ? "Profile changes saved!" : "Profile changes deleted";
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(snackBarMessage),
+              behavior: SnackBarBehavior.floating,
+              action: SnackBarAction(
+                label: "OK",
+                onPressed: () {
+
+                },
+              ),
+            ),
+          );
+          Navigator.pop(context);
+        },
+      ),
     );
   }
 }
