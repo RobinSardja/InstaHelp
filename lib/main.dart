@@ -13,8 +13,8 @@ import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'map_page.dart';
 import 'profile_page.dart';
-import 'settings_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,7 +66,6 @@ class _InstaHelpState extends State<InstaHelp> {
   // controls actions when wake word detected
   void wakeWordCallback(keywordIndex) {
     sendTextMessageAlert();
-    // showSnackBarMessage();
     setState(() {
       message = "Help is on the way!";
     });
@@ -105,22 +104,6 @@ class _InstaHelpState extends State<InstaHelp> {
       // handle sending text message error
     }
   }
-
-  // TODO: implement snack bar message
-  // // show snack bar message when distress detected
-  // void showSnackBarMessage() {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: const Text("Help is on the way!"),
-  //       action: SnackBarAction(
-  //         label: "OK",
-  //         onPressed: () {
-
-  //         },
-  //       )
-  //     )
-  //   );
-  // }
 
   // get current location of user
   Future<Position> getLocation() async {
@@ -244,11 +227,11 @@ class _InstaHelpState extends State<InstaHelp> {
           onPageChanged: (selectedIndex) => {
             changeIndex(selectedIndex),
           },
-          children: [
+          children: [ // pages shown in app
             const ProfilePage(),
             mapPermStatus.isGranted && micPermStatus.isGranted && smsPermStatus.isGranted ?
             homePage() : permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
-            const SettingsPage(),
+            const MapPage(),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -262,8 +245,8 @@ class _InstaHelpState extends State<InstaHelp> {
               label: "InstaHelp",
             ),
             BottomNavigationBarItem(
-              icon: Icon( Icons.settings ),
-              label: "Settings",
+              icon: Icon( Icons.location_on ),
+              label: "Map",
             ),
           ],
           currentIndex: currentIndex,

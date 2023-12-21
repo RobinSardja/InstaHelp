@@ -31,6 +31,15 @@ class _ProfilePageState extends State<ProfilePage> {
               });
             })
           ],
+          showDeleteConfirmationDialog: true,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+
+              },
+              child: const Center( child: Text( "Edit profile" ) ),
+            )
+          ]
         ) : 
         SignInScreen( // sign in screen to show when no one logged in
           providers: [
