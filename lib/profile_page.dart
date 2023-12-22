@@ -17,9 +17,23 @@ class _ProfilePageState extends State<ProfilePage> {
   // static const googleClientID = String.fromEnvironment("google", defaultValue: "none");
   bool loggedIn = false;
   final userDetection = FirebaseAuth.instance.authStateChanges();
+
   late User currentUser;
-  late Map<String, dynamic> userData;
   late FirebaseFirestore db;
+  late DocumentReference<Map<String, dynamic>> docRef;
+  late Map<String, dynamic> userData;
+
+  void updateFirestore() {
+    db = FirebaseFirestore.instance;
+
+    // get current user's data
+    docRef = db.collection( "user_options" ).doc( currentUser.uid );
+    docRef.get().then(
+      (DocumentSnapshot doc) {
+        userData = doc.data() as Map<String, dynamic>;
+      }
+    );
+  }
 
   @override
   Widget build( BuildContext context ) {
@@ -36,15 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
           }
         });
 
-        db = FirebaseFirestore.instance;
-
-        // get current user's data
-        final docRef = db.collection( "user_options" ).doc( currentUser.uid );
-        docRef.get().then(
-          (DocumentSnapshot doc) {
-            userData = doc.data() as Map<String, dynamic>;
-          }
-        );
+        updateFirestore();
 
         return loggedIn ?
         ProfileScreen( // profile screen to show when user already logged in
@@ -153,11 +159,11 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon( Icons.delete ),
-            label: "Delete",
+            label: "Discard",
           )
         ],
         onTap: (selectedIndex) {
-          snackBarMessage = selectedIndex == 0 ? "Profile changes saved!" : "Profile changes deleted";
+          snackBarMessage = selectedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded";
 
           if( selectedIndex == 0 ) {
             db
@@ -178,6 +184,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           );
+
+          updateFirestore();
           Navigator.pop(context);
         },
       ),
