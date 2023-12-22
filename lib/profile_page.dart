@@ -23,6 +23,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late DocumentReference<Map<String, dynamic>> docRef;
   late Map<String, dynamic> userData;
 
+  // update database
   void updateFirestore() {
     db = FirebaseFirestore.instance;
 
@@ -109,9 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: DropdownMenu( // selected blood type
                 label: const Text( "Select blood type" ),
                 initialSelection: userData["bloodType"],
-                onSelected: (selectedEntry) {
-                  userData["bloodType"] = selectedEntry;
-                },
+                onSelected: (selectedEntry) => userData["bloodType"] = selectedEntry,
                 dropdownMenuEntries: const [
                   DropdownMenuEntry(
                     value: "O+",
@@ -146,6 +145,42 @@ class _ProfilePageState extends State<ProfilePage> {
                     label: "AB-",
                   ),
                 ],
+              ),
+            ),
+            Center(
+              child: Row( // location signal
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text( "Location signal" ),
+                  Switch(
+                    value:  userData["locationSignal"],
+                    onChanged: (value) => userData["locationSignal"] = value,
+                  )
+                ]
+              ),
+            ),
+            Center(
+              child: Row( // text message alert
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text( "Text message alert" ),
+                  Switch(
+                    value: userData["textMessageAlert"],
+                    onChanged: (value) => userData["textMessageAlert"] = value,
+                  )
+                ]
+              ),
+            ),
+            Center(
+              child: Row( // sound alarm
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text( "Sound alarm" ),
+                  Switch(
+                    value: userData["soundAlarm"],
+                    onChanged: (value) => userData["soundAlarm"] = value,
+                  )
+                ]
               ),
             )
           ],

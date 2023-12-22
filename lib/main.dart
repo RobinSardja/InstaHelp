@@ -222,6 +222,16 @@ class _InstaHelpState extends State<InstaHelp> {
           contentTextStyle: TextStyle(
             color: Colors.black,
           )
+        ),
+        switchTheme: SwitchThemeData(
+          trackColor: MaterialStateProperty.resolveWith<Color?>(
+            ( Set<MaterialState> states ) {
+              if( states.contains( MaterialState.selected ) ) {
+                return Colors.red;
+              }
+              return null;
+            }
+          )
         )
       ),
       debugShowCheckedModeBanner: false,
