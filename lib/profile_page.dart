@@ -62,11 +62,10 @@ class _ProfilePageState extends State<ProfilePage> {
         userDetection.listen((User? user) {
           if( user != null ) {
             currentUser = user;
+            updateFirestore();
           }
         });
-        
-        updateFirestore();
-
+      
         return loggedIn ?
         ProfileScreen( // profile screen to show when user already logged in
           actions: [
@@ -169,6 +168,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                                 Center(
+                                  child: TextField(
+                                    enabled: textMessageAlert,
+                                    decoration: const InputDecoration(
+                                      labelText: "Emergency contact phone number",
+                                    ),
+                                  ),
+                                ),
+                                Center(
                                   child: Row( // sound alarm
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
@@ -187,21 +194,11 @@ class _ProfilePageState extends State<ProfilePage> {
                               ],
                             ),
                           ),
-                          bottomNavigationBar: BottomNavigationBar(
-                            items: const [
-                              BottomNavigationBarItem(
-                                icon: Icon( Icons.save ),
-                                label: "Save",
-                              ),
-                              BottomNavigationBarItem(
-                                icon: Icon( Icons.delete ),
-                                label: "Discard",
-                              )
-                            ],
-                            onTap: (selectedIndex) {
-                              snackBarMessage = selectedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded";
+                          bottomNavigationBar: NavigationBar(
+                            onDestinationSelected: (updatedIndex) {
+                              snackBarMessage = updatedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded";
 
-                              if( selectedIndex == 0 ) {
+                              if( updatedIndex == 0 ) {
                                 userData["bloodType"] = bloodType;
                                 userData["locationSignal"] = locationSignal;
                                 userData["textMessageAlert"] = textMessageAlert;
@@ -229,6 +226,16 @@ class _ProfilePageState extends State<ProfilePage> {
                               updateFirestore();
                               Navigator.pop(context);
                             },
+                            destinations: const [
+                              NavigationDestination(
+                                icon: Icon( Icons.save ),
+                                label: "Save",
+                              ),
+                              NavigationDestination(
+                                icon: Icon( Icons.delete ),
+                                label: "Discard",
+                              ),
+                            ],
                           ),
                         );
                       });

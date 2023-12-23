@@ -233,12 +233,17 @@ class _InstaHelpState extends State<InstaHelp> {
             }
           ),
         ),
+        dropdownMenuTheme: const DropdownMenuThemeData(
+          menuStyle: MenuStyle(
+            backgroundColor: MaterialStatePropertyAll( Colors.white ),
+          )
+        ),
         snackBarTheme: const SnackBarThemeData(
           backgroundColor: Colors.white,
           actionTextColor: Colors.red,
           contentTextStyle: TextStyle(
             color: Colors.black,
-          )
+          ),
         ),
         switchTheme: SwitchThemeData(
           trackColor: MaterialStateProperty.resolveWith<Color?>(
@@ -248,8 +253,26 @@ class _InstaHelpState extends State<InstaHelp> {
               }
               return null;
             }
-          )
-        )
+          ),
+        ),
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Colors.black,
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.black,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Colors.black,
+            ),
+          ),
+          floatingLabelStyle: TextStyle(
+            color: Colors.black,
+          ),
+        ),
       ),
       debugShowCheckedModeBanner: false,
       home: Scaffold(
