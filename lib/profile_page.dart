@@ -23,6 +23,13 @@ class _ProfilePageState extends State<ProfilePage> {
   late DocumentReference<Map<String, dynamic>> docRef;
   late Map<String, dynamic> userData;
 
+  late String bloodType;
+  late bool locationSignal;
+  late bool textMessageAlert; 
+  late bool soundAlarm;
+
+  late String snackBarMessage;
+
   // update database
   void updateFirestore() {
     db = FirebaseFirestore.instance;
@@ -34,6 +41,13 @@ class _ProfilePageState extends State<ProfilePage> {
         userData = doc.data() as Map<String, dynamic>;
       }
     );
+  }
+
+  void setTempVariables() {
+    bloodType = userData["bloodType"];
+    locationSignal = userData["locationSignal"];
+    textMessageAlert = userData["textMessageAlert"];
+    soundAlarm = userData["soundAlarm"];
   }
 
   @override
@@ -50,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
             currentUser = user;
           }
         });
-
+        
         updateFirestore();
 
         return loggedIn ?
@@ -66,10 +80,159 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute<ProfilePage>(
-                    builder: (context) => editProfilePage(),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) {
+                      setTempVariables();
+                      return StatefulBuilder( builder: (context, setState) {
+                        return Scaffold(
+                          appBar: AppBar(
+                            automaticallyImplyLeading: false,
+                            title: const Center( child: Text( "Edit profile" ) ),
+                            centerTitle: true,
+                          ),
+                          body: Center(
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: [
+                                Center(
+                                  child: DropdownMenu( // selected blood type
+                                    label: const Text( "Select blood type" ),
+                                    initialSelection: bloodType,
+                                    onSelected: (selectedEntry) => bloodType = selectedEntry as String,
+                                    dropdownMenuEntries: const [
+                                      DropdownMenuEntry(
+                                        value: "O+",
+                                        label: "O+",
+                                      ),
+                                      DropdownMenuEntry(
+                                        value: "O-",
+                                        label: "O-",
+                                      ),
+                                      DropdownMenuEntry(
+                                        value: "A+",
+                                        label: "A+",
+                                      ),
+                                      DropdownMenuEntry(
+                                        value: "A-",
+                                        label: "A-",
+                                      ),
+                                      DropdownMenuEntry(
+                                        value: "B+",
+                                        label: "B+",
+                                      ),
+                                      DropdownMenuEntry(
+                                        value: "B-",
+                                        label: "B-",
+                                      ),
+                                      DropdownMenuEntry(
+                                        value: "AB+",
+                                        label: "AB+",
+                                      ),
+                                      DropdownMenuEntry(
+                                        value: "AB-",
+                                        label: "AB-",
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Center(
+                                  child: Row( // location signal
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text( "Location signal" ),
+                                      Switch(
+                                        value: locationSignal,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            locationSignal = value;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Center(
+                                  child: Row( // text message alert
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text( "Text message alert" ),
+                                      Switch(
+                                        value: textMessageAlert,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            textMessageAlert = value;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Center(
+                                  child: Row( // sound alarm
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text( "Sound alarm" ),
+                                      Switch(
+                                        value: soundAlarm,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            soundAlarm = value;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          bottomNavigationBar: BottomNavigationBar(
+                            items: const [
+                              BottomNavigationBarItem(
+                                icon: Icon( Icons.save ),
+                                label: "Save",
+                              ),
+                              BottomNavigationBarItem(
+                                icon: Icon( Icons.delete ),
+                                label: "Discard",
+                              )
+                            ],
+                            onTap: (selectedIndex) {
+                              snackBarMessage = selectedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded";
+
+                              if( selectedIndex == 0 ) {
+                                userData["bloodType"] = bloodType;
+                                userData["locationSignal"] = locationSignal;
+                                userData["textMessageAlert"] = textMessageAlert;
+                                userData["soundAlarm"] = soundAlarm;
+
+                                db
+                                  .collection( "user_options" )
+                                  .doc( currentUser.uid )
+                                  .set( userData );
+                              }
+
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(snackBarMessage),
+                                  behavior: SnackBarBehavior.floating,
+                                  action: SnackBarAction(
+                                    label: "OK",
+                                    onPressed: () {
+
+                                    },
+                                  ),
+                                ),
+                              );
+
+                              updateFirestore();
+                              Navigator.pop(context);
+                            },
+                          ),
+                        );
+                      });
+                    },
                   )
                 );
               },
@@ -88,142 +251,6 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         );
       }
-    );
-  }
-
-
-  Widget editProfilePage() {
-
-    late String snackBarMessage;
-
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Center( child: Text( "Edit profile" ) ),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            Center(
-              child: DropdownMenu( // selected blood type
-                label: const Text( "Select blood type" ),
-                initialSelection: userData["bloodType"],
-                onSelected: (selectedEntry) => userData["bloodType"] = selectedEntry,
-                dropdownMenuEntries: const [
-                  DropdownMenuEntry(
-                    value: "O+",
-                    label: "O+",
-                  ),
-                  DropdownMenuEntry(
-                    value: "O-",
-                    label: "O-",
-                  ),
-                  DropdownMenuEntry(
-                    value: "A+",
-                    label: "A+",
-                  ),
-                  DropdownMenuEntry(
-                    value: "A-",
-                    label: "A-",
-                  ),
-                  DropdownMenuEntry(
-                    value: "B+",
-                    label: "B+",
-                  ),
-                  DropdownMenuEntry(
-                    value: "B-",
-                    label: "B-",
-                  ),
-                  DropdownMenuEntry(
-                    value: "AB+",
-                    label: "AB+",
-                  ),
-                  DropdownMenuEntry(
-                    value: "AB-",
-                    label: "AB-",
-                  ),
-                ],
-              ),
-            ),
-            Center(
-              child: Row( // location signal
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text( "Location signal" ),
-                  Switch(
-                    value:  userData["locationSignal"],
-                    onChanged: (value) => userData["locationSignal"] = value,
-                  )
-                ]
-              ),
-            ),
-            Center(
-              child: Row( // text message alert
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text( "Text message alert" ),
-                  Switch(
-                    value: userData["textMessageAlert"],
-                    onChanged: (value) => userData["textMessageAlert"] = value,
-                  )
-                ]
-              ),
-            ),
-            Center(
-              child: Row( // sound alarm
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text( "Sound alarm" ),
-                  Switch(
-                    value: userData["soundAlarm"],
-                    onChanged: (value) => userData["soundAlarm"] = value,
-                  )
-                ]
-              ),
-            )
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon( Icons.save ),
-            label: "Save",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon( Icons.delete ),
-            label: "Discard",
-          )
-        ],
-        onTap: (selectedIndex) {
-          snackBarMessage = selectedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded";
-
-          if( selectedIndex == 0 ) {
-            db
-              .collection( "user_options" )
-              .doc( currentUser.uid )
-              .set( userData );
-          }
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(snackBarMessage),
-              behavior: SnackBarBehavior.floating,
-              action: SnackBarAction(
-                label: "OK",
-                onPressed: () {
-
-                },
-              ),
-            ),
-          );
-
-          updateFirestore();
-          Navigator.pop(context);
-        },
-      ),
     );
   }
 }
