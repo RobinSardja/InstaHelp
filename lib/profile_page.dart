@@ -45,20 +45,20 @@ class _ProfilePageState extends State<ProfilePage> {
     docRef = db.collection( "user_options" ).doc( currentUser.uid );
     docRef.get().then(
       (DocumentSnapshot doc) {
-        userData = doc.data() as Map<String, dynamic>;
+        if( doc.data() == null ) {
+          userData = { // default values for newly created users
+            "bloodType": bloodType = "O+",
+            "locationSignal" : locationSignal = true,
+            "proximityDistance" : proximityDistance = 1.0,
+            "textMessageAlert" : textMessageAlert = true,
+            "emergencyContact" : emergencyContact = "",
+            "soundAlarm" : soundAlarm = true,
+          };
+        } else {
+          userData = doc.data() as Map<String, dynamic>;
+        }
       }
     );
-
-    if( userData.isEmpty ) {
-      userData = { // default values for newly created users
-        "bloodType": bloodType = "O+",
-        "locationSignal" : locationSignal = true,
-        "proximityDistance" : proximityDistance = 1.0,
-        "textMessageAlert" : textMessageAlert = true,
-        "emergencyContact" : emergencyContact = "",
-        "soundAlarm" : soundAlarm = true,
-      };
-    } 
   }
 
   void setTempVariables() {
