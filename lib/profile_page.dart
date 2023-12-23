@@ -24,13 +24,13 @@ class _ProfilePageState extends State<ProfilePage> {
   late User currentUser;
   late FirebaseFirestore db;
   late DocumentReference<Map<String, dynamic>> docRef;
-  late Map<String, dynamic> userData;
+  Map<String, dynamic> userData = {};
 
   late String bloodType;
   late bool locationSignal;
   late double proximityDistance;
   late bool textMessageAlert;
-  late int emergencyContact;
+  late String emergencyContact;
   late bool soundAlarm;
 
   final FlutterContactPicker contactPicker = FlutterContactPicker();
@@ -48,6 +48,17 @@ class _ProfilePageState extends State<ProfilePage> {
         userData = doc.data() as Map<String, dynamic>;
       }
     );
+
+    if( userData.isEmpty ) {
+      userData = { // default values for newly created users
+        "bloodType": bloodType = "O+",
+        "locationSignal" : locationSignal = true,
+        "proximityDistance" : proximityDistance = 1.0,
+        "textMessageAlert" : textMessageAlert = true,
+        "emergencyContact" : emergencyContact = "",
+        "soundAlarm" : soundAlarm = true,
+      };
+    } 
   }
 
   void setTempVariables() {
@@ -86,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
           showDeleteConfirmationDialog: true,
           children: [
-            ElevatedButton(
+            ElevatedButton( // edit profile button
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
@@ -198,11 +209,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                       if( textMessageAlert) {
                                         Contact? value = await contactPicker.selectContact();
                                         setState(() {
-                                          emergencyContact = int.parse(String.fromCharCodes(value.toString().codeUnits.where((x) => (x ^0x30) <= 9)));
+                                          emergencyContact = value == null ? "" : String.fromCharCodes(value.toString().codeUnits.where((x) => (x ^0x30) <= 9));
                                         });
                                       }
                                     },
-                                    child: Text( textMessageAlert ? emergencyContact.toString() : "Text message alert disabled" ),
+                                    child: Text( textMessageAlert ? emergencyContact == "" ? "No emergency contact selected" : emergencyContact : "Text message alert disabled" ),
                                   )
                                 ),
                                 Center(
@@ -256,6 +267,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               );
 
                               updateFirestore();
+                              userData = {};
                               Navigator.pop(context);
                             },
                             destinations: const [
@@ -276,8 +288,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
               },
               child: const Center( child: Text( "Edit profile" ) ),
-            )
-          ]
+            ),
+          ],
         ) : 
         SignInScreen( // sign in screen to show when no one logged in
           providers: [
