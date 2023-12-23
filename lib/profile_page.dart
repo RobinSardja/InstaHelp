@@ -25,6 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   late String bloodType;
   late bool locationSignal;
+  late double proximityDistance;
   late bool textMessageAlert; 
   late bool soundAlarm;
 
@@ -46,6 +47,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void setTempVariables() {
     bloodType = userData["bloodType"];
     locationSignal = userData["locationSignal"];
+    proximityDistance = userData["proximityDistance"];
     textMessageAlert = userData["textMessageAlert"];
     soundAlarm = userData["soundAlarm"];
   }
@@ -98,7 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   child: DropdownMenu( // selected blood type
                                     label: const Text( "Select blood type" ),
                                     initialSelection: bloodType,
-                                    onSelected: (selectedEntry) => bloodType = selectedEntry as String,
+                                    onSelected: (value) => bloodType = value as String,
                                     dropdownMenuEntries: const [
                                       DropdownMenuEntry(
                                         value: "O+",
@@ -151,6 +153,19 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ],
                                   ),
                                 ),
+                                Center( child: Text( "Proximity distance: $proximityDistance ${proximityDistance == 1 ? "mile" : "miles"}" ) ),
+                                Center(
+                                  child: Slider( // proximity distance in miles
+                                    min: 1.0,
+                                    max: 10.0,
+                                    value: proximityDistance,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        proximityDistance = double.parse((value).toStringAsFixed(1)); // rounds to 2 decimal places
+                                      });
+                                    },
+                                  ),
+                                ),
                                 Center(
                                   child: Row( // text message alert
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -167,13 +182,14 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ],
                                   ),
                                 ),
+                                const Center( child: Text( "Designated emergency contact:") ),
                                 Center(
-                                  child: TextField(
-                                    enabled: textMessageAlert,
-                                    decoration: const InputDecoration(
-                                      labelText: "Emergency contact phone number",
-                                    ),
-                                  ),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+
+                                    },
+                                    child: const Text( "Select emergency contact" ),
+                                  )
                                 ),
                                 Center(
                                   child: Row( // sound alarm
@@ -201,6 +217,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               if( updatedIndex == 0 ) {
                                 userData["bloodType"] = bloodType;
                                 userData["locationSignal"] = locationSignal;
+                                userData["proximityDistance"] = proximityDistance;
                                 userData["textMessageAlert"] = textMessageAlert;
                                 userData["soundAlarm"] = soundAlarm;
 

@@ -199,7 +199,7 @@ class _InstaHelpState extends State<InstaHelp> {
           style: ButtonStyle(
             foregroundColor: MaterialStatePropertyAll( Colors.white ),
             backgroundColor: MaterialStatePropertyAll( Colors.red ),
-          )
+          ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           foregroundColor: Colors.white,
@@ -238,6 +238,11 @@ class _InstaHelpState extends State<InstaHelp> {
             backgroundColor: MaterialStatePropertyAll( Colors.white ),
           )
         ),
+        sliderTheme: const SliderThemeData(
+          activeTrackColor: Colors.red,
+          inactiveTrackColor: Colors.black,
+          thumbColor: Colors.red,
+        ),
         snackBarTheme: const SnackBarThemeData(
           backgroundColor: Colors.white,
           actionTextColor: Colors.red,
@@ -253,24 +258,6 @@ class _InstaHelpState extends State<InstaHelp> {
               }
               return null;
             }
-          ),
-        ),
-        textSelectionTheme: const TextSelectionThemeData(
-          cursorColor: Colors.black,
-        ),
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.black,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: Colors.black,
-            ),
-          ),
-          floatingLabelStyle: TextStyle(
-            color: Colors.black,
           ),
         ),
       ),
