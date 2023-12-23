@@ -156,11 +156,11 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   // controls switching between pages
-  int currentIndex = 1;
+  int selectedIndex = 1;
 
-  void changeIndex(selectedIndex) {
+  void changeIndex(updatedIndex) {
     setState(() {
-      currentIndex = selectedIndex;
+      selectedIndex = updatedIndex;
     });
   }
 
@@ -205,16 +205,33 @@ class _InstaHelpState extends State<InstaHelp> {
           foregroundColor: Colors.white,
           backgroundColor: Colors.red,
         ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        navigationBarTheme: NavigationBarThemeData(
           backgroundColor: Colors.red,
-          selectedIconTheme: IconThemeData(
-            color: Colors.white,
+          indicatorColor: Colors.white,
+          labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>(
+            ( Set<MaterialState> states ) {
+              if( states.contains( MaterialState.selected ) ) {
+                return const TextStyle(
+                  color: Colors.white,
+                );
+              }
+              return const TextStyle(
+                color: Colors.black,
+              );
+            }
           ),
-          unselectedIconTheme: IconThemeData(
-            color: Colors.black,
+          iconTheme: MaterialStateProperty.resolveWith<IconThemeData>(
+            ( Set<MaterialState> states ) {
+              if( states.contains( MaterialState.selected ) ) {
+                return const IconThemeData(
+                  color: Colors.red,
+                );
+              }
+              return const IconThemeData(
+                color: Colors.black,
+              );
+            }
           ),
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.black,
         ),
         snackBarTheme: const SnackBarThemeData(
           backgroundColor: Colors.white,
@@ -252,27 +269,27 @@ class _InstaHelpState extends State<InstaHelp> {
             const MapPage(),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(
+        bottomNavigationBar: NavigationBar(
+          onDestinationSelected: (updatedIndex) {
+            changeIndex(updatedIndex);
+            pageController.jumpToPage(updatedIndex);
+          },
+          selectedIndex: selectedIndex,
+          destinations: const [
+            NavigationDestination(
               icon: Icon( Icons.person ),
               label: "Profile",
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: Icon( Icons.home ),
               label: "InstaHelp",
             ),
-            BottomNavigationBarItem(
-              icon: Icon( Icons.location_on ),
+            NavigationDestination(
+              icon: Icon( Icons.map ),
               label: "Map",
             ),
-          ],
-          currentIndex: currentIndex,
-          onTap: (selectedIndex) => {
-            changeIndex(selectedIndex),
-            pageController.jumpToPage(selectedIndex),
-          },
-        ),
+          ],          
+        )
       ),
     );
   }
