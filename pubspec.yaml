@@ -15,6 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_launcher_icons: ^0.13.1
+  flutter_native_contact_picker: ^0.0.6
   flutter_sms:
     path: assets/flutter_sms-master
   geolocator: ^10.1.0
