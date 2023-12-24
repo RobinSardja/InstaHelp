@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
@@ -20,6 +19,7 @@ class _ProfilePageState extends State<ProfilePage> {
   // static const googleClientID = String.fromEnvironment("google", defaultValue: "none");
   bool loggedIn = false;
   final userDetection = FirebaseAuth.instance.authStateChanges();
+  final FlutterContactPicker contactPicker = FlutterContactPicker();
 
   late User currentUser;
   late FirebaseFirestore db;
@@ -33,8 +33,6 @@ class _ProfilePageState extends State<ProfilePage> {
   late String emergencyContact;
   late bool soundAlarm;
 
-  final FlutterContactPicker contactPicker = FlutterContactPicker();
-
   late String snackBarMessage;
 
   // update database
@@ -45,18 +43,14 @@ class _ProfilePageState extends State<ProfilePage> {
     docRef = db.collection( "user_options" ).doc( currentUser.uid );
     docRef.get().then(
       (DocumentSnapshot doc) {
-        if( doc.data() == null ) {
-          userData = { // default values for newly created users
-            "bloodType": bloodType = "O+",
-            "locationSignal" : locationSignal = true,
-            "proximityDistance" : proximityDistance = 1.0,
-            "textMessageAlert" : textMessageAlert = true,
-            "emergencyContact" : emergencyContact = "",
-            "soundAlarm" : soundAlarm = true,
-          };
-        } else {
-          userData = doc.data() as Map<String, dynamic>;
-        }
+        userData = doc.data() == null ? { // default values for newly created users
+          "bloodType": bloodType = "O+",
+          "locationSignal" : locationSignal = true,
+          "proximityDistance" : proximityDistance = 1.0,
+          "textMessageAlert" : textMessageAlert = true,
+          "emergencyContact" : emergencyContact = "",
+          "soundAlarm" : soundAlarm = true,
+        } : doc.data() as Map<String, dynamic>;
       }
     );
   }
