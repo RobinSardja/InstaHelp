@@ -26,6 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late DocumentReference<Map<String, dynamic>> docRef;
   Map<String, dynamic> userData = {};
 
+  late bool medicalInfo;
   late String bloodType;
   late bool locationSignal;
   late double proximityDistance;
@@ -33,7 +34,8 @@ class _ProfilePageState extends State<ProfilePage> {
   late String emergencyContact;
   late bool soundAlarm;
 
-  late String snackBarMessage;
+  String bloodTypeDropDownMenuLabel = "Select blood type";
+  String snackBarMessage = "Profile changes saved";
 
   // update database
   void updateFirestore() {
@@ -44,9 +46,10 @@ class _ProfilePageState extends State<ProfilePage> {
     docRef.get().then(
       (DocumentSnapshot doc) {
         userData = doc.data() == null ? { // default values for newly created users
+          "medicalInfo": medicalInfo = true,
           "bloodType": bloodType = "O+",
           "locationSignal" : locationSignal = true,
-          "proximityDistance" : proximityDistance = 1.0,
+          "proximityDistance" : proximityDistance = 5.0,
           "textMessageAlert" : textMessageAlert = true,
           "emergencyContact" : emergencyContact = "",
           "soundAlarm" : soundAlarm = true,
@@ -56,6 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void setTempVariables() {
+    medicalInfo = userData["medicalInfo"];
     bloodType = userData["bloodType"];
     locationSignal = userData["locationSignal"];
     proximityDistance = userData["proximityDistance"];
@@ -109,8 +113,26 @@ class _ProfilePageState extends State<ProfilePage> {
                               shrinkWrap: true,
                               children: [
                                 Center(
+                                  child: Row( // choose to send medical information
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text( "Send medical information" ),
+                                      Switch(
+                                        value: medicalInfo,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            medicalInfo = value;
+                                            bloodTypeDropDownMenuLabel = medicalInfo ? "Select blood type" : "Disabled";
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Center(
                                   child: DropdownMenu( // selected blood type
-                                    label: const Text( "Select blood type" ),
+                                    label: Text( bloodTypeDropDownMenuLabel ),
+                                    enabled: medicalInfo,
                                     initialSelection: bloodType,
                                     onSelected: (value) => bloodType = value as String,
                                     dropdownMenuEntries: const [
@@ -159,6 +181,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                         onChanged: (value) {
                                           setState(() {
                                             locationSignal = value;
+                                            if( value == false ) {
+                                              proximityDistance = 5.0;
+                                            }
                                           });
                                         },
                                       ),
@@ -190,6 +215,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                         onChanged: (value) {
                                           setState(() {
                                             textMessageAlert = value;
+                                            if( value == false ) {
+                                              emergencyContact = "";
+                                            }
                                           });
                                         },
                                       ),
@@ -234,6 +262,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               snackBarMessage = updatedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded";
 
                               if( updatedIndex == 0 ) {
+                                userData["medicalInfo"] = medicalInfo;
                                 userData["bloodType"] = bloodType;
                                 userData["locationSignal"] = locationSignal;
                                 userData["proximityDistance"] = proximityDistance;
