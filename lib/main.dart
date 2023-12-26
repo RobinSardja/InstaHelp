@@ -39,6 +39,9 @@ class InstaHelp extends StatefulWidget {
 
 class _InstaHelpState extends State<InstaHelp> {
 
+  ProfilePage profilePage = const ProfilePage();
+  MapPage mapPage = const MapPage();
+
   String message = "We've got your back!";
   bool muted = false;
 
@@ -89,15 +92,12 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
-  // sends text message alert
-  static const emergencyContact = String.fromEnvironment("contact", defaultValue: "none");
-
   void sendTextMessageAlert() async {
     try {
         Position location = await getLocation();
         await sendSMS(
           message: "InstaHelp alert! Someone needs your help at www.google.com/maps/search/${location.latitude},${location.longitude}/@${location.latitude},${location.longitude}!",
-          recipients: [emergencyContact],
+          recipients: [userData["emergencyContact"]],
           sendDirect: true,
         );
     } on Error {
@@ -273,10 +273,10 @@ class _InstaHelpState extends State<InstaHelp> {
             changeIndex(selectedIndex),
           },
           children: [ // pages shown in app
-            const ProfilePage(),
+            profilePage,
             mapPermStatus.isGranted && micPermStatus.isGranted && smsPermStatus.isGranted ?
             homePage() : permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
-            const MapPage(),
+            mapPage,
           ],
         ),
         bottomNavigationBar: NavigationBar(

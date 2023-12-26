@@ -7,6 +7,8 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 
+Map<String, dynamic> userData = {};
+
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -24,7 +26,6 @@ class _ProfilePageState extends State<ProfilePage> {
   late User currentUser;
   late FirebaseFirestore db;
   late DocumentReference<Map<String, dynamic>> docRef;
-  Map<String, dynamic> userData = {};
 
   late bool medicalInfo;
   late String bloodType;
