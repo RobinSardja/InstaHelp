@@ -1,3 +1,3 @@
-# instahelp
+# InstaHelp
 
-A new Flutter project.
+A faster and more discreet emergency contact solution
