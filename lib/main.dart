@@ -122,6 +122,7 @@ class _InstaHelpState extends State<InstaHelp> {
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
+
     if( permission == LocationPermission.denied ) {
       permission = await Geolocator.requestPermission();
 
@@ -134,7 +135,10 @@ class _InstaHelpState extends State<InstaHelp> {
       return Future.error( "Location permissions are permanently denied, we cannot request permissions." );
     }
 
-    // TODO: handle when only approximate location is permitted
+    LocationAccuracyStatus accuracyStatus = await Geolocator.getLocationAccuracy();
+    if( accuracyStatus == LocationAccuracyStatus.reduced ) {
+      return Future.error( "Location permissions are reduced, we need precise accuracy." );
+    }
 
     return await Geolocator.getCurrentPosition();
   }
@@ -342,11 +346,16 @@ class _InstaHelpState extends State<InstaHelp> {
       child: Column( 
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text("Please grant all required permissions"),
+          const Text("Please grant all requested permissions"),
           ElevatedButton(
-            onPressed: () { requestAllPermissions(); },
-            child: const Text("Request required permissions"),
-          )
+            onPressed: () => requestAllPermissions(),
+            child: const Text("Request permissions and check status"),
+          ),
+          const Text("Alternatively, grant permissions from app settings"),
+          ElevatedButton(
+            onPressed: () async => await openAppSettings(),
+            child: const Text("Grant permissions from app settings"),
+          ),
         ],
       ),
     );
