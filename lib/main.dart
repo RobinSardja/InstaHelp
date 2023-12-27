@@ -11,6 +11,7 @@ import 'package:porcupine_flutter/porcupine_manager.dart';
 
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'map_page.dart';
@@ -39,9 +40,6 @@ class InstaHelp extends StatefulWidget {
 
 class _InstaHelpState extends State<InstaHelp> {
 
-  ProfilePage profilePage = const ProfilePage();
-  MapPage mapPage = const MapPage();
-
   String message = "We've got your back!";
   bool muted = false;
 
@@ -68,10 +66,15 @@ class _InstaHelpState extends State<InstaHelp> {
 
   // controls actions when wake word detected
   void wakeWordCallback(keywordIndex) {
-    sendTextMessageAlert();
     setState(() {
       message = "Help is on the way!";
     });
+    if( userData["textMessageAlert"] ) {
+      sendTextMessageAlert();
+    }
+    if( userData["soundAlarm"] ) {
+      playSoundAlarm();
+    }
   }
 
   // start listening for porcupine wake word
@@ -97,12 +100,18 @@ class _InstaHelpState extends State<InstaHelp> {
         Position location = await getLocation();
         await sendSMS(
           message: "InstaHelp alert! Someone needs your help at www.google.com/maps/search/${location.latitude},${location.longitude}/@${location.latitude},${location.longitude}!",
-          recipients: [userData["emergencyContact"]],
+          recipients: [ userData["emergencyContact"], ],
           sendDirect: true,
         );
     } on Error {
       // handle sending text message error
     }
+  }
+
+  final player = AudioPlayer()..setAsset("assets/sound-alarm.mp3");
+  void playSoundAlarm() async {
+    await player.seek( const Duration(seconds: 0) );
+    await player.play();
   }
 
   // get current location of user
@@ -156,7 +165,7 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   // controls switching between pages
-  int selectedIndex = 1;
+  int selectedIndex = 0;
 
   void changeIndex(updatedIndex) {
     setState(() {
@@ -166,7 +175,7 @@ class _InstaHelpState extends State<InstaHelp> {
 
   // controls swiping between pages
   final pageController = PageController(
-    initialPage: 1,
+    initialPage: 0,
   );
 
   @override
@@ -180,12 +189,14 @@ class _InstaHelpState extends State<InstaHelp> {
   @override
   void dispose() {
     porcupineManager.delete();
+    player.dispose();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       theme: ThemeData.light().copyWith( // app theme
         appBarTheme: const AppBarTheme(
@@ -273,10 +284,10 @@ class _InstaHelpState extends State<InstaHelp> {
             changeIndex(selectedIndex),
           },
           children: [ // pages shown in app
-            profilePage,
+            const ProfilePage(),
             mapPermStatus.isGranted && micPermStatus.isGranted && smsPermStatus.isGranted ?
             homePage() : permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
-            mapPage,
+            const MapPage(),
           ],
         ),
         bottomNavigationBar: NavigationBar(
@@ -314,7 +325,12 @@ class _InstaHelpState extends State<InstaHelp> {
             muted = !muted;
             message = muted ? "Glad you're safe!" : "We've got your back!";
           });
-          muted ? pauseAudioCapture() : startAudioCapture();
+          if( muted ) {
+            pauseAudioCapture();
+            player.pause();
+          } else {
+            startAudioCapture();
+          }
         }
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

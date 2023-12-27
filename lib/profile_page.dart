@@ -7,14 +7,14 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 
-Map<String, dynamic> userData = {};
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
 }
+
+Map<String, dynamic> userData = {};
 
 class _ProfilePageState extends State<ProfilePage> {
 
@@ -67,6 +67,16 @@ class _ProfilePageState extends State<ProfilePage> {
     textMessageAlert = userData["textMessageAlert"];
     emergencyContact = userData["emergencyContact"];
     soundAlarm = userData["soundAlarm"];
+  }
+
+  void setFinalVariables() {
+    userData["medicalInfo"] = medicalInfo;
+    userData["bloodType"] = bloodType;
+    userData["locationSignal"] = locationSignal;
+    userData["proximityDistance"] = proximityDistance;
+    userData["textMessageAlert"] = textMessageAlert;
+    userData["emergencyContact"] = emergencyContact;
+    userData["soundAlarm"] = soundAlarm;
   }
 
   @override
@@ -263,14 +273,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               snackBarMessage = updatedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded";
 
                               if( updatedIndex == 0 ) {
-                                userData["medicalInfo"] = medicalInfo;
-                                userData["bloodType"] = bloodType;
-                                userData["locationSignal"] = locationSignal;
-                                userData["proximityDistance"] = proximityDistance;
-                                userData["textMessageAlert"] = textMessageAlert;
-                                userData["emergencyContact"] = emergencyContact;
-                                userData["soundAlarm"] = soundAlarm;
-
+                                setFinalVariables();
                                 db
                                   .collection( "user_options" )
                                   .doc( currentUser.uid )
