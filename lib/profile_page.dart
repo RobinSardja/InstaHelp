@@ -14,7 +14,7 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-Map<String, dynamic> userData = {};
+ Map<String, dynamic> userData = {};
 
 class _ProfilePageState extends State<ProfilePage> {
 
@@ -265,6 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ],
                                   ),
                                 ),
+                                const Center( child: Text("Remember to turn up volume to play sound alarm") ),
                               ],
                             ),
                           ),

@@ -108,9 +108,9 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
-  final player = AudioPlayer()..setAsset("assets/sound-alarm.mp3");
+  final player = AudioPlayer()..setAsset("assets/sound-alarm.mp3")..setLoopMode(LoopMode.one);
   void playSoundAlarm() async {
-    await player.seek( const Duration(seconds: 0) );
+    await player.seek( const Duration(seconds: 0) ); // reset to beginning of sound effect
     await player.play();
   }
 
