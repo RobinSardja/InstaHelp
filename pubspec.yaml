@@ -23,6 +23,7 @@ dependencies:
   just_audio: ^0.9.36
   permission_handler: ^11.0.1
   porcupine_flutter: ^3.0.1
+  torch_light: ^1.0.0
 
 dev_dependencies:
   flutter_test:

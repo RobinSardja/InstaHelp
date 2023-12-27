@@ -14,7 +14,7 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
- Map<String, dynamic> userData = {};
+Map<String, dynamic> userData = {};
 
 class _ProfilePageState extends State<ProfilePage> {
 
@@ -35,6 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late bool textMessageAlert;
   late String emergencyContact;
   late bool soundAlarm;
+  late bool blinkFlashlight;
 
   String bloodTypeDropDownMenuLabel = "Select blood type";
   String snackBarMessage = "Profile changes saved";
@@ -55,8 +56,9 @@ class _ProfilePageState extends State<ProfilePage> {
           "textMessageAlert" : textMessageAlert = true,
           "emergencyContact" : emergencyContact = "",
           "soundAlarm" : soundAlarm = true,
+          "blinkFlashlight" : blinkFlashlight = true,
         } : doc.data() as Map<String, dynamic>;
-      }
+      },
     );
   }
 
@@ -68,6 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
     textMessageAlert = userData["textMessageAlert"];
     emergencyContact = userData["emergencyContact"];
     soundAlarm = userData["soundAlarm"];
+    blinkFlashlight = userData["blinkFlashlight"];
   }
 
   void setFinalVariables() {
@@ -78,6 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
     userData["textMessageAlert"] = textMessageAlert;
     userData["emergencyContact"] = emergencyContact;
     userData["soundAlarm"] = soundAlarm;
+    userData["blinkFlashlight"] = blinkFlashlight;
   }
 
   @override
@@ -103,7 +107,7 @@ class _ProfilePageState extends State<ProfilePage> {
               setState(() {
                 loggedIn = snapshot.hasData;
               });
-            })
+            }),
           ],
           showDeleteConfirmationDialog: true,
           children: [
@@ -267,6 +271,22 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                                 if( soundAlarm ) const Center( child: Text("Remember to turn up volume to play sound alarm") ),
+                                Center(
+                                  child: Row( // text message alert
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text( "Blink flashlight" ),
+                                      Switch(
+                                        value: blinkFlashlight,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            blinkFlashlight = value;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -313,7 +333,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         );
                       });
                     },
-                  )
+                  ),
                 );
               },
               child: const Center( child: Text( "Edit profile" ) ),
@@ -329,7 +349,7 @@ class _ProfilePageState extends State<ProfilePage> {
             return const Center( child: Text( "InstaHelp accounts are completely optional" ) );
           },
         );
-      }
+      },
     );
   }
 }

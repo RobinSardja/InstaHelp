@@ -13,6 +13,7 @@ import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:torch_light/torch_light.dart';
 
 import 'map_page.dart';
 import 'profile_page.dart';
@@ -75,6 +76,9 @@ class _InstaHelpState extends State<InstaHelp> {
     if( userData["soundAlarm"] ) {
       playSoundAlarm();
     }
+    if( userData["blinkFlashlight"] ) {
+      startBlinkingFlashlight();
+    }
   }
 
   // start listening for porcupine wake word
@@ -95,9 +99,15 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
+  // get last known location of user
+  late Position location;
+  void getCurrentLocation() async {
+    location = await getLocation();
+  }
+
   void sendTextMessageAlert() async {
+    getCurrentLocation();
     try {
-        Position location = await getLocation();
         await sendSMS(
           message: "InstaHelp alert! Someone needs your help at www.google.com/maps/search/${location.latitude},${location.longitude}/@${location.latitude},${location.longitude}!",
           recipients: [ userData["emergencyContact"], ],
@@ -112,6 +122,22 @@ class _InstaHelpState extends State<InstaHelp> {
   void playSoundAlarm() async {
     await player.seek( const Duration(seconds: 0) ); // reset to beginning of sound effect
     await player.play();
+  }
+
+  void startBlinkingFlashlight() async {
+    final isTorchAvailable = await TorchLight.isTorchAvailable();
+    if( isTorchAvailable ) {
+      while( !muted ) {
+        await TorchLight.enableTorch();
+        await Future.delayed( const Duration(milliseconds: 250) );
+        await TorchLight.disableTorch();
+        await Future.delayed( const Duration(milliseconds: 250) );
+      } 
+    }
+  }
+
+  void turnOffFlashlight() async {
+    await TorchLight.disableTorch();
   }
 
   // get current location of user
@@ -188,12 +214,14 @@ class _InstaHelpState extends State<InstaHelp> {
 
     createPorcupineManager();
     requestAllPermissions();
+    getCurrentLocation();
   }
 
   @override
   void dispose() {
     porcupineManager.delete();
     player.dispose();
+    turnOffFlashlight();
 
     super.dispose();
   }
@@ -208,7 +236,7 @@ class _InstaHelpState extends State<InstaHelp> {
           titleTextStyle: TextStyle(
             color: Colors.white,
             fontSize: 24,
-          )
+          ),
         ),
         elevatedButtonTheme: const ElevatedButtonThemeData(
           style: ButtonStyle(
@@ -233,7 +261,7 @@ class _InstaHelpState extends State<InstaHelp> {
               return const TextStyle(
                 color: Colors.black,
               );
-            }
+            },
           ),
           iconTheme: MaterialStateProperty.resolveWith<IconThemeData>(
             ( Set<MaterialState> states ) {
@@ -245,7 +273,7 @@ class _InstaHelpState extends State<InstaHelp> {
               return const IconThemeData(
                 color: Colors.black,
               );
-            }
+            },
           ),
         ),
         dropdownMenuTheme: const DropdownMenuThemeData(
@@ -272,7 +300,7 @@ class _InstaHelpState extends State<InstaHelp> {
                 return Colors.red;
               }
               return null;
-            }
+            },
           ),
         ),
       ),
@@ -314,7 +342,7 @@ class _InstaHelpState extends State<InstaHelp> {
               label: "Map",
             ),
           ],          
-        )
+        ),
       ),
     );
   }
@@ -332,10 +360,11 @@ class _InstaHelpState extends State<InstaHelp> {
           if( muted ) {
             pauseAudioCapture();
             player.pause();
+            turnOffFlashlight();
           } else {
             startAudioCapture();
           }
-        }
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
