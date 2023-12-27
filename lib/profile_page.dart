@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-// import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 
@@ -18,7 +18,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 
-  // static const googleClientID = String.fromEnvironment("google", defaultValue: "none");
+  static const googleClientID = String.fromEnvironment("google", defaultValue: "none");
+
   bool loggedIn = false;
   final userDetection = FirebaseAuth.instance.authStateChanges();
   final FlutterContactPicker contactPicker = FlutterContactPicker();
@@ -265,7 +266,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ],
                                   ),
                                 ),
-                                const Center( child: Text("Remember to turn up volume to play sound alarm") ),
+                                if( soundAlarm ) const Center( child: Text("Remember to turn up volume to play sound alarm") ),
                               ],
                             ),
                           ),
@@ -322,8 +323,7 @@ class _ProfilePageState extends State<ProfilePage> {
         SignInScreen( // sign in screen to show when no one logged in
           providers: [
             EmailAuthProvider(),
-            // TODO: get google sign in to work
-            // GoogleProvider( clientId: googleClientID )
+            GoogleProvider( clientId: googleClientID ),
           ],
           footerBuilder: (context, action) {
             return const Center( child: Text( "InstaHelp accounts are completely optional" ) );
