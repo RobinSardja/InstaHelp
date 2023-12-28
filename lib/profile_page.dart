@@ -215,11 +215,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                   child: Slider( // proximity distance in miles
                                     min: 1.0,
                                     max: 10.0,
+                                    divisions: 18,
                                     value: locationSignal ? proximityDistance : 1.0,
                                     onChanged: (value) {
                                       if( locationSignal ) {
                                         setState(() {
-                                          proximityDistance = double.parse((value).toStringAsFixed(1)); // rounds to 2 decimal places
+                                          proximityDistance = value;
                                         });
                                       }
                                     },
