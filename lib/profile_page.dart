@@ -6,6 +6,7 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
+import 'package:volume_controller/volume_controller.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -37,6 +38,10 @@ class _ProfilePageState extends State<ProfilePage> {
   late bool soundAlarm;
   late bool blinkFlashlight;
   late num blinkSpeed;
+
+  double volumeListenerValue = 0;
+  double getVolume = 0;
+  double setVolumeValue = 0;
 
   String bloodTypeDropDownMenuLabel = "Select blood type";
   String snackBarMessage = "Profile changes saved";
@@ -86,6 +91,24 @@ class _ProfilePageState extends State<ProfilePage> {
     userData["soundAlarm"] = soundAlarm;
     userData["blinkFlashlight"] = blinkFlashlight;
     userData["blinkSpeed"] = blinkSpeed;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    VolumeController().listener((volume) {
+      setState(() => volumeListenerValue = volume);
+    });
+
+    VolumeController().getVolume().then((volume) => setVolumeValue = volume);
+  }
+
+  @override
+  void dispose() {
+    VolumeController().removeListener();
+
+    super.dispose();
   }
 
   @override
@@ -275,7 +298,22 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ],
                                   ),
                                 ),
-                                if( soundAlarm ) const Center( child: Text("Remember to turn up volume to play sound alarm") ),
+                                Center( child: Text( soundAlarm ? "Sound volume: ${setVolumeValue == 0 ? "Muted" : "${(setVolumeValue * 100).ceil()}%" }" : "Sound alarm disabled" ) ),
+                                Center(
+                                  child: Slider( // proximity distance in miles
+                                    min: 0,
+                                    max: 1,
+                                    value: soundAlarm ? setVolumeValue : 0,
+                                    onChanged: (value) {
+                                      if( soundAlarm ) {
+                                        setState(() {
+                                          setVolumeValue = value;
+                                          VolumeController().setVolume(setVolumeValue);
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
                                 Center(
                                   child: Row( // text message alert
                                     mainAxisAlignment: MainAxisAlignment.center,
