@@ -36,6 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late String emergencyContact;
   late bool soundAlarm;
   late bool blinkFlashlight;
+  late num blinkSpeed;
 
   String bloodTypeDropDownMenuLabel = "Select blood type";
   String snackBarMessage = "Profile changes saved";
@@ -57,6 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
           "emergencyContact" : emergencyContact = "",
           "soundAlarm" : soundAlarm = true,
           "blinkFlashlight" : blinkFlashlight = true,
+          "blinkSpeed" : blinkSpeed = 250,
         } : doc.data() as Map<String, dynamic>;
       },
     );
@@ -71,6 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
     emergencyContact = userData["emergencyContact"];
     soundAlarm = userData["soundAlarm"];
     blinkFlashlight = userData["blinkFlashlight"];
+    blinkSpeed = userData["blinkSpeed"];
   }
 
   void setFinalVariables() {
@@ -82,6 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
     userData["emergencyContact"] = emergencyContact;
     userData["soundAlarm"] = soundAlarm;
     userData["blinkFlashlight"] = blinkFlashlight;
+    userData["blinkSpeed"] = blinkSpeed;
   }
 
   @override
@@ -282,9 +286,28 @@ class _ProfilePageState extends State<ProfilePage> {
                                           setState(() {
                                             blinkFlashlight = value;
                                           });
+                                          if( value == false ) {
+                                            blinkSpeed = 250;
+                                          }
                                         },
                                       ),
                                     ],
+                                  ),
+                                ),
+                                Center( child: Text( blinkFlashlight ? "Blink speed: ${ blinkSpeed == 1000 ? "1 second" : "${blinkSpeed.truncate()} milliseconds" }" : "Blink flashlight disabled" ) ),
+                                Center(
+                                  child: Slider( // proximity distance in miles
+                                    min: 100,
+                                    max: 1000,
+                                    divisions: 18,
+                                    value: blinkFlashlight ? blinkSpeed.toDouble() : 100.0,
+                                    onChanged: (value) {
+                                      if( blinkFlashlight ) {
+                                        setState(() {
+                                          blinkSpeed = value;
+                                        });
+                                      }
+                                    },
                                   ),
                                 ),
                               ],

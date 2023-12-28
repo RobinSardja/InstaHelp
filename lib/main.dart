@@ -129,9 +129,9 @@ class _InstaHelpState extends State<InstaHelp> {
     if( isTorchAvailable ) {
       while( !muted ) {
         await TorchLight.enableTorch();
-        await Future.delayed( const Duration(milliseconds: 250) );
+        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].toInt() ) );
         await TorchLight.disableTorch();
-        await Future.delayed( const Duration(milliseconds: 250) );
+        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].toInt() ) );
       } 
     }
   }
