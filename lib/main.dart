@@ -170,6 +170,7 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   // determines if all required permissions have been granted
+  PermissionStatus batteryPermStatus = PermissionStatus.denied;
   PermissionStatus mapPermStatus = PermissionStatus.denied;
   PermissionStatus micPermStatus = PermissionStatus.denied;
   PermissionStatus smsPermStatus = PermissionStatus.denied;
@@ -177,21 +178,28 @@ class _InstaHelpState extends State<InstaHelp> {
   // updates all permission variables with current device permissions
   void checkAllPermissions() async {
     final newMapPermStatus = await Permission.location.status;
-    setState( () => mapPermStatus = newMapPermStatus );
     final newMicPermStatus = await Permission.microphone.status;
-    setState( () => micPermStatus = newMicPermStatus );
     final newSmsPermStatus = await Permission.sms.status;
-    setState( () => smsPermStatus = newSmsPermStatus );
+    final newbatteryPermStatus = await Permission.ignoreBatteryOptimizations.status;
+    setState(() {
+      batteryPermStatus = newbatteryPermStatus;
+      mapPermStatus = newMapPermStatus;
+      micPermStatus = newMicPermStatus;
+      smsPermStatus = newSmsPermStatus;
+    });
   }
   
   // requests for all permissions required
   void requestAllPermissions() async {
-    await Permission.location.request().then( (value) async {
-      await Permission.microphone.request().then( (value) async {
-        await Permission.sms.request();
+    await Permission.ignoreBatteryOptimizations.request().then( (value) async {
+      await Permission.location.request().then( (value) async {
+        await Permission.microphone.request().then( (value) async {
+          await Permission.sms.request().then( (value) async {
+            checkAllPermissions();
+          });
+        });
       });
     });
-    checkAllPermissions();
   }
 
   // controls switching between pages
