@@ -290,6 +290,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         onChanged: (value) {
                                           setState(() {
                                             soundAlarm = value;
+                                            VolumeController().getVolume().then((volume) => setVolumeValue = volume);
                                           });
                                         },
                                       ),
