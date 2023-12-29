@@ -41,7 +41,7 @@ class InstaHelp extends StatefulWidget {
 
 class _InstaHelpState extends State<InstaHelp> {
 
-  String message = "We've got your back!";
+  String message = "We're ready to help!";
   bool muted = false;
 
   // initialize porcupine wake word manager
@@ -355,7 +355,7 @@ class _InstaHelpState extends State<InstaHelp> {
         onPressed: () {
           setState(() {
             muted = !muted;
-            message = muted ? "Glad you're safe!" : "We've got your back!";
+            message = muted ? "Glad you're safe!" : "We're ready to help!";
           });
           if( muted ) {
             pauseAudioCapture();
