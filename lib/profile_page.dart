@@ -42,8 +42,7 @@ class _ProfilePageState extends State<ProfilePage> {
   double volumeListenerValue = 0;
   double getVolume = 0;
   double setVolumeValue = 0;
-
-  String bloodTypeDropDownMenuLabel = "Select blood type";
+  
   String snackBarMessage = "Profile changes saved";
 
   // update database
@@ -165,7 +164,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                         onChanged: (value) {
                                           setState(() {
                                             medicalInfo = value;
-                                            bloodTypeDropDownMenuLabel = medicalInfo ? "Select blood type" : "Disabled";
                                           });
                                         },
                                       ),
@@ -174,7 +172,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                                 Center(
                                   child: DropdownMenu( // selected blood type
-                                    label: Text( bloodTypeDropDownMenuLabel ),
+                                    label: Text( medicalInfo ? "Select blood type" : "Disabled" ),
                                     enabled: medicalInfo,
                                     initialSelection: bloodType,
                                     onSelected: (value) => bloodType = value as String,
