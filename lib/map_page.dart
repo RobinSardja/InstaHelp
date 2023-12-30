@@ -5,7 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 // location handling
-late Position position;
+late Position currentPosition;
 
 void initializePosition() async {
   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -32,11 +32,11 @@ void initializePosition() async {
     return Future.error( "Location permissions are reduced, we need precise accuracy." );
   }
 
-  position = await Geolocator.getCurrentPosition();
+  getPosition();
 }
 
 void getPosition() async {
-  position = await Geolocator.getCurrentPosition();
+  currentPosition = await Geolocator.getCurrentPosition();
 }
 
 LatLng? target;
@@ -55,6 +55,7 @@ class _MapPageState extends State<MapPage> {
     mapController = controller;
   }
 
+  bool located = false;
   final positionStream = Geolocator.getPositionStream();
 
   @override
@@ -63,20 +64,30 @@ class _MapPageState extends State<MapPage> {
       stream: positionStream,
       builder: (context, snapshot) {
 
-        positionStream.listen((Position streamPosition) {
-          position = streamPosition;
+        located = snapshot.hasData;
+
+        positionStream.listen((Position? position) {
+          if( position != null ) {
+            currentPosition = position;
+          }
         });
 
         return Scaffold(
-          body: snapshot.hasData ? GoogleMap(
+          body: located ? GoogleMap(
             onMapCreated: onMapCreated,
             initialCameraPosition: CameraPosition(
-              target: LatLng( position.latitude, position.longitude ),
+              target: LatLng( currentPosition.latitude, currentPosition.longitude ),
               zoom: 10,
             ),
           ) : const Center(
-            child: CircularProgressIndicator.adaptive(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircularProgressIndicator.adaptive(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                ),
+                Text( "Loading nearby users" ),
+              ],
             ),
           ),
         );
