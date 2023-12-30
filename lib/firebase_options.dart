@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '854468667727',
     projectId: 'instahelp-sardja',
     storageBucket: 'instahelp-sardja.appspot.com',
+    androidClientId: '854468667727-4295sdrt45f6d5mr2tfrkh88ju16365t.apps.googleusercontent.com',
+    iosClientId: '854468667727-uvqujej61j12i3qiomvri4dq54mc4vpl.apps.googleusercontent.com',
     iosBundleId: 'com.example.instahelp',
   );
 }

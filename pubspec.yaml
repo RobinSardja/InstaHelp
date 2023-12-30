@@ -19,6 +19,7 @@ dependencies:
   flutter_sms:
     path: assets/flutter_sms-master
   geolocator: ^10.1.0
+  google_maps_flutter: ^2.5.0
   google_sign_in: ^6.2.1
   just_audio: ^0.9.36
   permission_handler: ^11.0.1

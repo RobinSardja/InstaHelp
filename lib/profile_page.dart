@@ -80,7 +80,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 
-  static const googleClientID = String.fromEnvironment("google", defaultValue: "none");
+  final googleClientID = ""; // google provider doesn't actually need client ID? package might need updating
 
   bool loggedIn = false;
   final userDetection = FirebaseAuth.instance.authStateChanges();

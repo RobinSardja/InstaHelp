@@ -18,6 +18,8 @@ import 'package:torch_light/torch_light.dart';
 import 'map_page.dart';
 import 'profile_page.dart';
 
+late Position position;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -99,17 +101,40 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
-  // get last known location of user
-  late Position location;
-  void getCurrentLocation() async {
-    location = await getLocation();
+  // get current location of user
+  void getPosition() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if( !serviceEnabled ) {
+      return Future.error( "Location services are disabled." );
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if( permission == LocationPermission.denied ) {
+      permission = await Geolocator.requestPermission();
+
+      if( permission == LocationPermission.denied ) {
+        return Future.error( "Location permissions are denied." );
+      }
+    }
+
+    if( permission == LocationPermission.deniedForever ) {
+      return Future.error( "Location permissions are permanently denied, we cannot request permissions." );
+    }
+
+    LocationAccuracyStatus accuracyStatus = await Geolocator.getLocationAccuracy();
+    if( accuracyStatus == LocationAccuracyStatus.reduced ) {
+      return Future.error( "Location permissions are reduced, we need precise accuracy." );
+    }
+
+    position = await Geolocator.getCurrentPosition();
   }
 
   void sendTextMessageAlert() async {
-    getCurrentLocation();
+    getPosition();
     try {
         await sendSMS(
-          message: "InstaHelp alert! Someone needs your help at www.google.com/maps/search/${location.latitude},${location.longitude}/@${location.latitude},${location.longitude}!",
+          message: "InstaHelp alert! Someone needs your help at www.google.com/maps/search/${position.latitude},${position.longitude}/@${position.latitude},${position.longitude}!",
           recipients: [ userData["emergencyContact"], ],
           sendDirect: true,
         );
@@ -138,35 +163,6 @@ class _InstaHelpState extends State<InstaHelp> {
 
   void turnOffFlashlight() async {
     await TorchLight.disableTorch();
-  }
-
-  // get current location of user
-  Future<Position> getLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if( !serviceEnabled ) {
-      return Future.error( "Location services are disabled." );
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if( permission == LocationPermission.denied ) {
-      permission = await Geolocator.requestPermission();
-
-      if( permission == LocationPermission.denied ) {
-        return Future.error( "Location permissions are denied." );
-      }
-    }
-
-    if( permission == LocationPermission.deniedForever ) {
-      return Future.error( "Location permissions are permanently denied, we cannot request permissions." );
-    }
-
-    LocationAccuracyStatus accuracyStatus = await Geolocator.getLocationAccuracy();
-    if( accuracyStatus == LocationAccuracyStatus.reduced ) {
-      return Future.error( "Location permissions are reduced, we need precise accuracy." );
-    }
-
-    return await Geolocator.getCurrentPosition();
   }
 
   // determines if all required permissions have been granted
@@ -222,7 +218,7 @@ class _InstaHelpState extends State<InstaHelp> {
 
     createPorcupineManager();
     requestAllPermissions();
-    getCurrentLocation();
+    getPosition();
   }
 
   @override
