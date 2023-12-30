@@ -187,179 +187,199 @@ class EditProfilePageState extends State<EditProfilePage> {
         child: ListView(
           shrinkWrap: true,
           children: [
-            Row( // choose to send medical information
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text( "Send medical information" ),
-                Switch(
-                  value: medicalInfo,
-                  onChanged: (value) {
+            Center(
+              child: Row( // choose to send medical information
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text( "Send medical information" ),
+                  Switch(
+                    value: medicalInfo,
+                    onChanged: (value) {
+                      setState(() {
+                        medicalInfo = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Center(
+              child: DropdownMenu( // selected blood type
+                label: Text( medicalInfo ? "Select blood type" : "Disabled" ),
+                enabled: medicalInfo,
+                initialSelection: bloodType,
+                onSelected: (value) => bloodType = value as String,
+                dropdownMenuEntries: const [
+                  DropdownMenuEntry(
+                    value: "O+",
+                    label: "O+",
+                  ),
+                  DropdownMenuEntry(
+                    value: "O-",
+                    label: "O-",
+                  ),
+                  DropdownMenuEntry(
+                    value: "A+",
+                    label: "A+",
+                  ),
+                  DropdownMenuEntry(
+                    value: "A-",
+                    label: "A-",
+                  ),
+                  DropdownMenuEntry(
+                    value: "B+",
+                    label: "B+",
+                  ),
+                  DropdownMenuEntry(
+                    value: "B-",
+                    label: "B-",
+                  ),
+                  DropdownMenuEntry(
+                    value: "AB+",
+                    label: "AB+",
+                  ),
+                  DropdownMenuEntry(
+                    value: "AB-",
+                    label: "AB-",
+                  ),
+                ],
+              ),
+            ),
+            Center(
+              child: Row( // location signal
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text( "Location signal" ),
+                  Switch(
+                    value: locationSignal,
+                    onChanged: (value) {
+                      setState(() {
+                        locationSignal = value;
+                        if( value == false ) {
+                          proximityDistance = 5.0;
+                        }
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Center(child: Text( locationSignal ? "Proximity distance: $proximityDistance ${proximityDistance == 1 ? "mile" : "miles"}" : "Location signal disabled" )),
+            Center(
+              child: Slider( // proximity distance in miles
+                min: 1.0,
+                max: 10.0,
+                divisions: 18,
+                value: locationSignal ? proximityDistance : 1.0,
+                onChanged: (value) {
+                  if( locationSignal ) {
                     setState(() {
-                      medicalInfo = value;
+                      proximityDistance = value;
                     });
-                  },
-                ),
-              ],
+                  }
+                },
+              ),
             ),
-            DropdownMenu( // selected blood type
-              label: Text( medicalInfo ? "Select blood type" : "Disabled" ),
-              enabled: medicalInfo,
-              initialSelection: bloodType,
-              onSelected: (value) => bloodType = value as String,
-              dropdownMenuEntries: const [
-                DropdownMenuEntry(
-                  value: "O+",
-                  label: "O+",
-                ),
-                DropdownMenuEntry(
-                  value: "O-",
-                  label: "O-",
-                ),
-                DropdownMenuEntry(
-                  value: "A+",
-                  label: "A+",
-                ),
-                DropdownMenuEntry(
-                  value: "A-",
-                  label: "A-",
-                ),
-                DropdownMenuEntry(
-                  value: "B+",
-                  label: "B+",
-                ),
-                DropdownMenuEntry(
-                  value: "B-",
-                  label: "B-",
-                ),
-                DropdownMenuEntry(
-                  value: "AB+",
-                  label: "AB+",
-                ),
-                DropdownMenuEntry(
-                  value: "AB-",
-                  label: "AB-",
-                ),
-              ],
+            Center(
+              child: Row( // text message alert
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text( "Text message alert" ),
+                  Switch(
+                    value: textMessageAlert,
+                    onChanged: (value) {
+                      setState(() {
+                        textMessageAlert = value;
+                        if( value == false ) {
+                          emergencyContact = "";
+                        }
+                      });
+                    },
+                  ),
+                ],
+              ),
             ),
-            Row( // location signal
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text( "Location signal" ),
-                Switch(
-                  value: locationSignal,
-                  onChanged: (value) {
+            const Center(child: Text( "Designated emergency contact:")),
+            Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  if( textMessageAlert) {
+                    Contact? value = await contactPicker.selectContact();
                     setState(() {
-                      locationSignal = value;
+                      emergencyContact = value == null ? "" : String.fromCharCodes(value.toString().codeUnits.where((x) => (x ^0x30) <= 9));
+                    });
+                  }
+                },
+                child: Text( textMessageAlert ? emergencyContact == "" ? "No emergency contact selected" : emergencyContact : "Text message alert disabled" ),
+              ),
+            ),
+            Center(
+              child: Row( // sound alarm
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text( "Sound alarm" ),
+                  Switch(
+                    value: soundAlarm,
+                    onChanged: (value) {
+                      setState(() {
+                        soundAlarm = value;
+                        VolumeController().getVolume().then((volume) => setVolumeValue = volume);
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Center(child: Text( soundAlarm ? "Sound volume: ${volumeListenerValue == 0 ? "Muted" : "${(volumeListenerValue * 100).ceil()}%" }" : "Sound alarm disabled" )),
+            Center(
+              child: Slider( // proximity distance in miles
+                min: 0,
+                max: 1,
+                value: soundAlarm ? volumeListenerValue : 0,
+                onChanged: (value) {
+                  if( soundAlarm ) {
+                    setState(() {
+                      setVolumeValue = value;
+                      VolumeController().setVolume(setVolumeValue);
+                    });
+                  }
+                },
+              ),
+            ),
+            Center(
+              child: Row( // text message alert
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text( "Blink flashlight" ),
+                  Switch(
+                    value: blinkFlashlight,
+                    onChanged: (value) {
+                      setState(() {
+                        blinkFlashlight = value;
+                      });
                       if( value == false ) {
-                        proximityDistance = 5.0;
+                        blinkSpeed = 250;
                       }
-                    });
-                  },
-                ),
-              ],
+                    },
+                  ),
+                ],
+              ),
             ),
-            Text( locationSignal ? "Proximity distance: $proximityDistance ${proximityDistance == 1 ? "mile" : "miles"}" : "Location signal disabled" ),
-            Slider( // proximity distance in miles
-              min: 1.0,
-              max: 10.0,
-              divisions: 18,
-              value: locationSignal ? proximityDistance : 1.0,
-              onChanged: (value) {
-                if( locationSignal ) {
-                  setState(() {
-                    proximityDistance = value;
-                  });
-                }
-              },
-            ),
-            Row( // text message alert
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text( "Text message alert" ),
-                Switch(
-                  value: textMessageAlert,
-                  onChanged: (value) {
+            Center(child: Text( blinkFlashlight ? "Blink speed: ${ blinkSpeed == 1000 ? "1 second" : "${blinkSpeed.truncate()} milliseconds" }" : "Blink flashlight disabled" )),
+            Center(
+              child: Slider( // proximity distance in miles
+                min: 100,
+                max: 1000,
+                divisions: 18,
+                value: blinkFlashlight ? blinkSpeed.toDouble() : 100.0,
+                onChanged: (value) {
+                  if( blinkFlashlight ) {
                     setState(() {
-                      textMessageAlert = value;
-                      if( value == false ) {
-                        emergencyContact = "";
-                      }
+                      blinkSpeed = value;
                     });
-                  },
-                ),
-              ],
-            ),
-            const Text( "Designated emergency contact:"),
-            ElevatedButton(
-              onPressed: () async {
-                if( textMessageAlert) {
-                  Contact? value = await contactPicker.selectContact();
-                  setState(() {
-                    emergencyContact = value == null ? "" : String.fromCharCodes(value.toString().codeUnits.where((x) => (x ^0x30) <= 9));
-                  });
-                }
-              },
-              child: Text( textMessageAlert ? emergencyContact == "" ? "No emergency contact selected" : emergencyContact : "Text message alert disabled" ),
-            ),
-            Row( // sound alarm
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text( "Sound alarm" ),
-                Switch(
-                  value: soundAlarm,
-                  onChanged: (value) {
-                    setState(() {
-                      soundAlarm = value;
-                      VolumeController().getVolume().then((volume) => setVolumeValue = volume);
-                    });
-                  },
-                ),
-              ],
-            ),
-            Text( soundAlarm ? "Sound volume: ${volumeListenerValue == 0 ? "Muted" : "${(volumeListenerValue * 100).ceil()}%" }" : "Sound alarm disabled" ),
-            Slider( // proximity distance in miles
-              min: 0,
-              max: 1,
-              value: soundAlarm ? volumeListenerValue : 0,
-              onChanged: (value) {
-                if( soundAlarm ) {
-                  setState(() {
-                    setVolumeValue = value;
-                    VolumeController().setVolume(setVolumeValue);
-                  });
-                }
-              },
-            ),
-            Row( // text message alert
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text( "Blink flashlight" ),
-                Switch(
-                  value: blinkFlashlight,
-                  onChanged: (value) {
-                    setState(() {
-                      blinkFlashlight = value;
-                    });
-                    if( value == false ) {
-                      blinkSpeed = 250;
-                    }
-                  },
-                ),
-              ],
-            ),
-            Text( blinkFlashlight ? "Blink speed: ${ blinkSpeed == 1000 ? "1 second" : "${blinkSpeed.truncate()} milliseconds" }" : "Blink flashlight disabled" ),
-            Slider( // proximity distance in miles
-              min: 100,
-              max: 1000,
-              divisions: 18,
-              value: blinkFlashlight ? blinkSpeed.toDouble() : 100.0,
-              onChanged: (value) {
-                if( blinkFlashlight ) {
-                  setState(() {
-                    blinkSpeed = value;
-                  });
-                }
-              },
+                  }
+                },
+              ),
             ),
           ],
         ),
