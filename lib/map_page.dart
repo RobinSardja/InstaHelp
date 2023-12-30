@@ -49,26 +49,38 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-  late GoogleMapController mapController;
 
+  late GoogleMapController mapController;
   void onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
+  final positionStream = Geolocator.getPositionStream();
+
   @override
   Widget build( BuildContext context ) {
-    return Scaffold(
-      body: target == null ? const Center(
-        child: CircularProgressIndicator.adaptive(
-          valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-        ),
-      ) : GoogleMap(
-        onMapCreated: onMapCreated,
-        initialCameraPosition: CameraPosition(
-          target: target as LatLng,
-          zoom: 10,
-        ),
-      ),
+    return StreamBuilder<Position>(
+      stream: positionStream,
+      builder: (context, snapshot) {
+
+        positionStream.listen((Position streamPosition) {
+          position = streamPosition;
+        });
+
+        return Scaffold(
+          body: snapshot.hasData ? GoogleMap(
+            onMapCreated: onMapCreated,
+            initialCameraPosition: CameraPosition(
+              target: LatLng( position.latitude, position.longitude ),
+              zoom: 10,
+            ),
+          ) : const Center(
+            child: CircularProgressIndicator.adaptive(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+            ),
+          ),
+        );
+      }
     );
   }
 }
