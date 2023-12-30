@@ -2,7 +2,38 @@ import 'package:flutter/material.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'main.dart';
+import 'package:geolocator/geolocator.dart';
+
+late Position position;
+
+// get current location of user
+void getPosition() async {
+  bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  if( !serviceEnabled ) {
+    return Future.error( "Location services are disabled." );
+  }
+
+  LocationPermission permission = await Geolocator.checkPermission();
+
+  if( permission == LocationPermission.denied ) {
+    permission = await Geolocator.requestPermission();
+
+    if( permission == LocationPermission.denied ) {
+      return Future.error( "Location permissions are denied." );
+    }
+  }
+
+  if( permission == LocationPermission.deniedForever ) {
+    return Future.error( "Location permissions are permanently denied, we cannot request permissions." );
+  }
+
+  LocationAccuracyStatus accuracyStatus = await Geolocator.getLocationAccuracy();
+  if( accuracyStatus == LocationAccuracyStatus.reduced ) {
+    return Future.error( "Location permissions are reduced, we need precise accuracy." );
+  }
+
+  position = await Geolocator.getCurrentPosition();
+}
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});

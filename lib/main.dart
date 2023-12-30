@@ -10,15 +10,12 @@ import 'package:porcupine_flutter/porcupine_error.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 
 import 'package:flutter_sms/flutter_sms.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:torch_light/torch_light.dart';
 
 import 'map_page.dart';
 import 'profile_page.dart';
-
-late Position position;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -99,35 +96,6 @@ class _InstaHelpState extends State<InstaHelp> {
     } on PorcupineException {
       // handle any errors
     }
-  }
-
-  // get current location of user
-  void getPosition() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if( !serviceEnabled ) {
-      return Future.error( "Location services are disabled." );
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-
-    if( permission == LocationPermission.denied ) {
-      permission = await Geolocator.requestPermission();
-
-      if( permission == LocationPermission.denied ) {
-        return Future.error( "Location permissions are denied." );
-      }
-    }
-
-    if( permission == LocationPermission.deniedForever ) {
-      return Future.error( "Location permissions are permanently denied, we cannot request permissions." );
-    }
-
-    LocationAccuracyStatus accuracyStatus = await Geolocator.getLocationAccuracy();
-    if( accuracyStatus == LocationAccuracyStatus.reduced ) {
-      return Future.error( "Location permissions are reduced, we need precise accuracy." );
-    }
-
-    position = await Geolocator.getCurrentPosition();
   }
 
   void sendTextMessageAlert() async {
