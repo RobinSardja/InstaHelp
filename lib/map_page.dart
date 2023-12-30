@@ -4,10 +4,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:geolocator/geolocator.dart';
 
+// location handling
 late Position position;
 
-// get current location of user
-void getPosition() async {
+void initializePosition() async {
   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if( !serviceEnabled ) {
     return Future.error( "Location services are disabled." );
@@ -35,6 +35,12 @@ void getPosition() async {
   position = await Geolocator.getCurrentPosition();
 }
 
+void getPosition() async {
+  position = await Geolocator.getCurrentPosition();
+}
+
+LatLng? target;
+
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
 
@@ -44,25 +50,25 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   late GoogleMapController mapController;
-  LatLng target = const LatLng(45.521563, -122.677433);
 
   void onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    setState(() {
-      target = LatLng( position.latitude, position.longitude );
-    });
   }
 
   @override
   Widget build( BuildContext context ) {
     return Scaffold(
-      body: GoogleMap(
+      body: target == null ? const Center(
+        child: CircularProgressIndicator.adaptive(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+        ),
+      ) : GoogleMap(
         onMapCreated: onMapCreated,
         initialCameraPosition: CameraPosition(
-          target: target,
-          zoom: 11.0,
+          target: target as LatLng,
+          zoom: 10,
         ),
-      )
+      ),
     );
   }
 }
