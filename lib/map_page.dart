@@ -7,6 +7,30 @@ import 'package:geolocator/geolocator.dart';
 // location handling
 late Position currentPosition;
 
+// add nearby users to markers set later
+Set<Marker> nearbyUsers = {
+  Marker(
+    markerId: const MarkerId( "Nearby user" ),
+    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueRed ),
+    position: LatLng( currentPosition.latitude + 0.1, currentPosition.longitude + 0.1 ),
+  ),
+  Marker(
+    markerId: const MarkerId( "Nearby user" ),
+    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueRed ),
+    position: LatLng( currentPosition.latitude - 0.1, currentPosition.longitude + 0.1 ),
+  ),
+  Marker(
+    markerId: const MarkerId( "Nearby user" ),
+    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueRed ),
+    position: LatLng( currentPosition.latitude + 0.1, currentPosition.longitude - 0.1 ),
+  ),
+  Marker(
+    markerId: const MarkerId( "Nearby user" ),
+    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueRed ),
+    position: LatLng( currentPosition.latitude - 0.1, currentPosition.longitude - 0.1 ),
+  ),
+};
+
 void initializePosition() async {
   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if( !serviceEnabled ) {
@@ -79,6 +103,8 @@ class _MapPageState extends State<MapPage> {
               target: LatLng( currentPosition.latitude, currentPosition.longitude ),
               zoom: 10,
             ),
+            myLocationEnabled: true,
+            markers: nearbyUsers,
           ) : const Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
