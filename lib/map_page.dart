@@ -7,30 +7,6 @@ import 'package:geolocator/geolocator.dart';
 // location handling
 late Position currentPosition;
 
-// add nearby users to markers set later
-Set<Marker> nearbyUsers = {
-  Marker(
-    markerId: const MarkerId( "Nearby user" ),
-    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueRed ),
-    position: LatLng( currentPosition.latitude + 0.1, currentPosition.longitude + 0.1 ),
-  ),
-  Marker(
-    markerId: const MarkerId( "Nearby user" ),
-    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueRed ),
-    position: LatLng( currentPosition.latitude - 0.1, currentPosition.longitude + 0.1 ),
-  ),
-  Marker(
-    markerId: const MarkerId( "Nearby user" ),
-    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueRed ),
-    position: LatLng( currentPosition.latitude + 0.1, currentPosition.longitude - 0.1 ),
-  ),
-  Marker(
-    markerId: const MarkerId( "Nearby user" ),
-    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueRed ),
-    position: LatLng( currentPosition.latitude - 0.1, currentPosition.longitude - 0.1 ),
-  ),
-};
-
 void initializePosition() async {
   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if( !serviceEnabled ) {
@@ -64,6 +40,30 @@ void getPosition() async {
 }
 
 LatLng? target;
+
+// add nearby users to markers set later
+Set<Marker> nearbyUsers = {
+  Marker(
+    markerId: const MarkerId( "Nearby user 1 (online and safe)" ),
+    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueGreen ),
+    position: LatLng( currentPosition.latitude + 0.1, currentPosition.longitude + 0.1 ),
+  ),
+  Marker(
+    markerId: const MarkerId( "Nearby user 2 (in danger)" ),
+    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueRed ),
+    position: LatLng( currentPosition.latitude - 0.1, currentPosition.longitude + 0.1 ),
+  ),
+  Marker(
+    markerId: const MarkerId( "Nearby user 3 (coming to help you)" ),
+    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueBlue ),
+    position: LatLng( currentPosition.latitude + 0.1, currentPosition.longitude - 0.1 ),
+  ),
+  Marker(
+    markerId: const MarkerId( "Nearby user 4 (offline)" ),
+    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueViolet ),
+    position: LatLng( currentPosition.latitude - 0.1, currentPosition.longitude - 0.1 ),
+  ),
+};
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
