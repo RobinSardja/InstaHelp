@@ -116,6 +116,13 @@ class _MapPageState extends State<MapPage> {
               ],
             ),
           ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+
+            },
+            child: const Icon( Icons.refresh ),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         );
       }
     );
