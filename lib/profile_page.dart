@@ -9,7 +9,7 @@ import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart
 import 'package:volume_controller/volume_controller.dart';
 
 // default values for newly created users
-Map<String, dynamic> userData = {
+final defaultData = {
   "medicalInfo": medicalInfo = true,
   "bloodType": bloodType = "O+",
   "locationSignal" : locationSignal = true,
@@ -20,6 +20,8 @@ Map<String, dynamic> userData = {
   "blinkFlashlight" : blinkFlashlight = true,
   "blinkSpeed" : blinkSpeed = 250,
 };
+
+Map<String, dynamic> userData = defaultData;
 
 late User currentUser;
 late FirebaseFirestore db;
@@ -44,17 +46,7 @@ void updateFirestore() {
   docRef.get().then(
     (DocumentSnapshot doc) {
       if( doc.data() == null ) {
-        userData = {
-          "medicalInfo": medicalInfo = true,
-          "bloodType": bloodType = "O+",
-          "locationSignal" : locationSignal = true,
-          "proximityDistance" : proximityDistance = 5.0,
-          "textMessageAlert" : textMessageAlert = true,
-          "emergencyContact" : emergencyContact = "",
-          "soundAlarm" : soundAlarm = true,
-          "blinkFlashlight" : blinkFlashlight = true,
-          "blinkSpeed" : blinkSpeed = 250,
-        };
+        userData = defaultData;
         db
           .collection( "user_options" )
           .doc( currentUser.uid )
@@ -114,7 +106,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
         // get current user
         userDetection.listen((User? user) {
-          if( user != null ) {
+          if( user == null ) {
+            userData = defaultData;
+          } else {
             currentUser = user;
             updateFirestore();
           }
@@ -145,8 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: const Center( child: Text( "Edit profile" ) ),
             ),
           ],
-        ) : 
-        SignInScreen( // sign in screen to show when no one logged in
+        ) : SignInScreen( // sign in screen to show when no one logged in
           providers: [
             EmailAuthProvider(),
             GoogleProvider( clientId: googleClientID ),
