@@ -105,7 +105,8 @@ class _MapPageState extends State<MapPage> {
             ),
             myLocationEnabled: true,
             markers: nearbyUsers,
-          ) : const Center(
+          ) :
+          const Center( // loading screen
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

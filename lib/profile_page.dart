@@ -342,7 +342,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
-            Center(child: Text( soundAlarm ? "Sound volume: ${volumeListenerValue == 0 ? "Muted" : "${(volumeListenerValue * 100).ceil()}%" }" : "Sound alarm disabled" )),
+            Center(child: Text( soundAlarm ? "Siren volume: ${volumeListenerValue == 0 ? "Muted" : "${(volumeListenerValue * 100).ceil()}%" }" : "Sound alarm disabled" )),
             Center(
               child: Slider( // proximity distance in miles
                 min: 0,

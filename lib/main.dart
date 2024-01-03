@@ -56,6 +56,7 @@ class _InstaHelpState extends State<InstaHelp> {
           "assets/get-away-from-me_en_${platform}_v3_0_0.ppn",
         ],
         wakeWordCallback,
+        sensitivities: [0.9,]
       );
 
       startAudioCapture();
@@ -102,7 +103,8 @@ class _InstaHelpState extends State<InstaHelp> {
     getPosition();
     try {
         await sendSMS(
-          message: "InstaHelp alert! ${currentUser.displayName} needs your help at www.google.com/maps/search/${currentPosition.latitude},${currentPosition.longitude}/@${currentPosition.latitude},${currentPosition.longitude}!",
+          message: "InstaHelp alert! ${currentUser.displayName} needs your help at www.google.com/maps/search/${currentPosition.latitude},${currentPosition.longitude}/@${currentPosition.latitude},${currentPosition.longitude}!"
+            " ${userData["medicalInfo"] ? "Blood Type: ${userData["bloodType"]}" : "" }",
           recipients: [ userData["emergencyContact"], ],
           sendDirect: true,
         );
@@ -268,10 +270,7 @@ class _InstaHelpState extends State<InstaHelp> {
         switchTheme: SwitchThemeData(
           trackColor: MaterialStateProperty.resolveWith<Color?>(
             ( Set<MaterialState> states ) {
-              if( states.contains( MaterialState.selected ) ) {
-                return Colors.red;
-              }
-              return null;
+              return states.contains( MaterialState.selected ) ? Colors.red : null;
             },
           ),
         ),
