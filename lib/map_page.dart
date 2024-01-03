@@ -118,7 +118,7 @@ class _MapPageState extends State<MapPage> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-
+              getPosition();
             },
             child: const Icon( Icons.refresh ),
           ),

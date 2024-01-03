@@ -8,7 +8,18 @@ import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:volume_controller/volume_controller.dart';
 
-Map<String, dynamic> userData = {};
+// default values for newly created users
+Map<String, dynamic> userData = {
+  "medicalInfo": medicalInfo = true,
+  "bloodType": bloodType = "O+",
+  "locationSignal" : locationSignal = true,
+  "proximityDistance" : proximityDistance = 5.0,
+  "textMessageAlert" : textMessageAlert = true,
+  "emergencyContact" : emergencyContact = "",
+  "soundAlarm" : soundAlarm = true,
+  "blinkFlashlight" : blinkFlashlight = true,
+  "blinkSpeed" : blinkSpeed = 250,
+};
 
 late User currentUser;
 late FirebaseFirestore db;
@@ -32,17 +43,25 @@ void updateFirestore() {
   docRef = db.collection( "user_options" ).doc( currentUser.uid );
   docRef.get().then(
     (DocumentSnapshot doc) {
-      userData = doc.data() == null ? { // default values for newly created users
-        "medicalInfo": medicalInfo = true,
-        "bloodType": bloodType = "O+",
-        "locationSignal" : locationSignal = true,
-        "proximityDistance" : proximityDistance = 5.0,
-        "textMessageAlert" : textMessageAlert = true,
-        "emergencyContact" : emergencyContact = "",
-        "soundAlarm" : soundAlarm = true,
-        "blinkFlashlight" : blinkFlashlight = true,
-        "blinkSpeed" : blinkSpeed = 250,
-      } : doc.data() as Map<String, dynamic>;
+      if( doc.data() == null ) {
+        userData = {
+          "medicalInfo": medicalInfo = true,
+          "bloodType": bloodType = "O+",
+          "locationSignal" : locationSignal = true,
+          "proximityDistance" : proximityDistance = 5.0,
+          "textMessageAlert" : textMessageAlert = true,
+          "emergencyContact" : emergencyContact = "",
+          "soundAlarm" : soundAlarm = true,
+          "blinkFlashlight" : blinkFlashlight = true,
+          "blinkSpeed" : blinkSpeed = 250,
+        };
+        db
+          .collection( "user_options" )
+          .doc( currentUser.uid )
+          .set( userData );
+      } else {
+        userData = doc.data() as Map<String, dynamic>;
+      }
     },
   );
 }
