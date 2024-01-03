@@ -4,6 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:geolocator/geolocator.dart';
 
+import 'profile_page.dart';
+
 // location handling
 late Position currentPosition;
 
@@ -96,15 +98,26 @@ class _MapPageState extends State<MapPage> {
           }
         });
 
+        LatLng target = LatLng( currentPosition.latitude, currentPosition.longitude );
+
         return Scaffold(
           body: located ? GoogleMap(
             onMapCreated: onMapCreated,
             initialCameraPosition: CameraPosition(
-              target: LatLng( currentPosition.latitude, currentPosition.longitude ),
+              target: target,
               zoom: 15,
             ),
             myLocationEnabled: true,
             markers: nearbyUsers,
+            circles: {
+              Circle( // map radius of nearby area for users to come help
+                circleId: const CircleId( "Nearby area" ),
+                fillColor: const Color.fromRGBO(255, 0, 0, 0.5),
+                center: target,
+                radius: userData["proximityDistance"] * 1609.34, // converts meters to miles
+                strokeWidth: 1,
+              ),
+            }
           ) :
           const Center( // loading screen
             child: Column(
@@ -125,7 +138,7 @@ class _MapPageState extends State<MapPage> {
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         );
-      }
+      },
     );
   }
 }

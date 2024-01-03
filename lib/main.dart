@@ -56,7 +56,7 @@ class _InstaHelpState extends State<InstaHelp> {
           "assets/get-away-from-me_en_${platform}_v3_0_0.ppn",
         ],
         wakeWordCallback,
-        sensitivities: [0.9,]
+        sensitivities: [0.75,]
       );
 
       startAudioCapture();
