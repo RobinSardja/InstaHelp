@@ -81,8 +81,6 @@ class _MapPageState extends State<MapPage> {
     mapController = controller;
   }
 
-  late LatLng target;
-
   bool located = false;
   final positionStream = Geolocator.getPositionStream();
 
@@ -93,19 +91,12 @@ class _MapPageState extends State<MapPage> {
       builder: (context, snapshot) {
 
         located = snapshot.hasData;
-
-        positionStream.listen((Position? position) {
-          if( position != null ) {
-            currentPosition = position;
-            target = LatLng( currentPosition.latitude, currentPosition.longitude );
-          }
-        });
         
         return Scaffold(
           body: located ? GoogleMap(
             onMapCreated: onMapCreated,
             initialCameraPosition: CameraPosition(
-              target: target,
+              target: LatLng( currentPosition.latitude, currentPosition.longitude ),
               zoom: 15,
             ),
             myLocationEnabled: true,
@@ -114,7 +105,7 @@ class _MapPageState extends State<MapPage> {
               Circle( // map radius of nearby area for users to come help
                 circleId: const CircleId( "Nearby area" ),
                 fillColor: const Color.fromRGBO(255, 0, 0, 0.5),
-                center: target,
+                center: LatLng( currentPosition.latitude, currentPosition.longitude ),
                 radius: userData["proximityDistance"] * 1609.34, // converts meters to miles
                 strokeWidth: 1,
               ),
