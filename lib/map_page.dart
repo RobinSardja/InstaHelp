@@ -81,6 +81,8 @@ class _MapPageState extends State<MapPage> {
     mapController = controller;
   }
 
+  late LatLng target;
+
   bool located = false;
   final positionStream = Geolocator.getPositionStream();
 
@@ -95,11 +97,10 @@ class _MapPageState extends State<MapPage> {
         positionStream.listen((Position? position) {
           if( position != null ) {
             currentPosition = position;
+            target = LatLng( currentPosition.latitude, currentPosition.longitude );
           }
         });
-
-        LatLng target = LatLng( currentPosition.latitude, currentPosition.longitude );
-
+        
         return Scaffold(
           body: located ? GoogleMap(
             onMapCreated: onMapCreated,
