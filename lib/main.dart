@@ -186,9 +186,9 @@ class _InstaHelpState extends State<InstaHelp> {
   void initState() {    
     super.initState();
 
+    initializePosition();
     createPorcupineManager();
     requestAllPermissions();
-    initializePosition();
   }
 
   @override

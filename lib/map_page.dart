@@ -41,8 +41,6 @@ void getPosition() async {
   currentPosition = await Geolocator.getCurrentPosition();
 }
 
-LatLng? target;
-
 // add nearby users to markers set later
 Set<Marker> nearbyUsers = {
   Marker(
@@ -91,9 +89,10 @@ class _MapPageState extends State<MapPage> {
       builder: (context, snapshot) {
 
         located = snapshot.hasData;
+        double? radius = userData["proximityDistance"];
         
         return Scaffold(
-          body: located ? GoogleMap(
+          body: located && radius != null ? GoogleMap(
             onMapCreated: onMapCreated,
             initialCameraPosition: CameraPosition(
               target: LatLng( currentPosition.latitude, currentPosition.longitude ),
@@ -106,7 +105,7 @@ class _MapPageState extends State<MapPage> {
                 circleId: const CircleId( "Nearby area" ),
                 fillColor: const Color.fromRGBO(255, 0, 0, 0.5),
                 center: LatLng( currentPosition.latitude, currentPosition.longitude ),
-                radius: userData["proximityDistance"] * 1609.34, // converts meters to miles
+                radius: radius * 1609.34, // converts meters to miles
                 strokeWidth: 1,
               ),
             }
