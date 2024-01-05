@@ -282,7 +282,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 min: 1.0,
                 max: 10.0,
                 divisions: 18,
-                value: locationSignal ? proximityDistance : defaultData["proximityDistance"] as double,
+                value: locationSignal ? proximityDistance : 1.0,
                 onChanged: (value) {
                   if( locationSignal ) {
                     setState(() {
