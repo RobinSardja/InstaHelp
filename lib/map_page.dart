@@ -41,7 +41,7 @@ void getPosition() async {
   currentPosition = await Geolocator.getCurrentPosition();
 }
 
-// add nearby users to markers set later
+// add nearby users to markers set in future update
 Set<Marker> nearbyUsers = {
   Marker(
     markerId: const MarkerId( "Nearby user 1 (online and safe)" ),
@@ -100,7 +100,7 @@ class _MapPageState extends State<MapPage> {
               zoom: 15,
             ),
             myLocationEnabled: true,
-            markers: nearbyUsers,
+            // markers: nearbyUsers, <-- future update
             circles: signal ? {
               Circle( // map radius of nearby area for users to come help
                 circleId: const CircleId( "Nearby area" ),
@@ -123,9 +123,7 @@ class _MapPageState extends State<MapPage> {
             ),
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              getPosition();
-            },
+            onPressed: () => getPosition(),
             child: const Icon( Icons.refresh ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

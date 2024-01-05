@@ -27,7 +27,7 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((value) =>
     runApp(
       const InstaHelp()
-    )
+    ),
   );
 }
 
@@ -115,7 +115,7 @@ class _InstaHelpState extends State<InstaHelp> {
 
   final player = AudioPlayer()..setAsset("assets/sound-alarm.mp3")..setLoopMode(LoopMode.one);
   void playSoundAlarm() async {
-    await player.seek( const Duration(seconds: 0) ); // reset to beginning of sound effect
+    await player.seek( const Duration(seconds: 0, ), ); // reset to beginning of sound effect
     await player.play();
   }
 
@@ -124,9 +124,9 @@ class _InstaHelpState extends State<InstaHelp> {
     if( isTorchAvailable ) {
       while( !muted ) {
         await TorchLight.enableTorch();
-        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].toInt() ) );
+        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].toInt(), ), );
         await TorchLight.disableTorch();
-        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].toInt() ) );
+        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].toInt(), ), );
       } 
     }
   }
@@ -136,7 +136,6 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   // determines if all required permissions have been granted
-  PermissionStatus batteryPermStatus = PermissionStatus.denied;
   PermissionStatus mapPermStatus = PermissionStatus.denied;
   PermissionStatus micPermStatus = PermissionStatus.denied;
   PermissionStatus smsPermStatus = PermissionStatus.denied;
@@ -146,9 +145,7 @@ class _InstaHelpState extends State<InstaHelp> {
     final newMapPermStatus = await Permission.location.status;
     final newMicPermStatus = await Permission.microphone.status;
     final newSmsPermStatus = await Permission.sms.status;
-    final newbatteryPermStatus = await Permission.ignoreBatteryOptimizations.status;
     setState(() {
-      batteryPermStatus = newbatteryPermStatus;
       mapPermStatus = newMapPermStatus;
       micPermStatus = newMicPermStatus;
       smsPermStatus = newSmsPermStatus;
@@ -157,12 +154,10 @@ class _InstaHelpState extends State<InstaHelp> {
   
   // requests for all permissions required
   void requestAllPermissions() async {
-    await Permission.ignoreBatteryOptimizations.request().then( (value) async {
-      await Permission.location.request().then( (value) async {
-        await Permission.microphone.request().then( (value) async {
-          await Permission.sms.request().then( (value) async {
-            checkAllPermissions();
-          });
+    await Permission.location.request().then( (value) async {
+      await Permission.microphone.request().then( (value) async {
+        await Permission.sms.request().then( (value) async {
+          checkAllPermissions();
         });
       });
     });
@@ -186,9 +181,9 @@ class _InstaHelpState extends State<InstaHelp> {
   void initState() {    
     super.initState();
 
+    requestAllPermissions();
     initializePosition();
     createPorcupineManager();
-    requestAllPermissions();
   }
 
   @override
@@ -214,8 +209,8 @@ class _InstaHelpState extends State<InstaHelp> {
         ),
         elevatedButtonTheme: const ElevatedButtonThemeData(
           style: ButtonStyle(
-            foregroundColor: MaterialStatePropertyAll( Colors.white ),
-            backgroundColor: MaterialStatePropertyAll( Colors.red ),
+            foregroundColor: MaterialStatePropertyAll( Colors.white, ),
+            backgroundColor: MaterialStatePropertyAll( Colors.red, ),
           ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
@@ -227,25 +222,15 @@ class _InstaHelpState extends State<InstaHelp> {
           indicatorColor: Colors.white,
           labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>(
             ( Set<MaterialState> states ) {
-              if( states.contains( MaterialState.selected ) ) {
-                return const TextStyle(
-                  color: Colors.white,
-                );
-              }
-              return const TextStyle(
-                color: Colors.black,
+              return TextStyle(
+                color: states.contains( MaterialState.selected ) ? Colors.white : Colors.black,
               );
             },
           ),
           iconTheme: MaterialStateProperty.resolveWith<IconThemeData>(
             ( Set<MaterialState> states ) {
-              if( states.contains( MaterialState.selected ) ) {
-                return const IconThemeData(
-                  color: Colors.red,
-                );
-              }
-              return const IconThemeData(
-                color: Colors.black,
+              return IconThemeData(
+                color: states.contains( MaterialState.selected ) ? Colors.red : Colors.black,
               );
             },
           ),
@@ -253,7 +238,7 @@ class _InstaHelpState extends State<InstaHelp> {
         dropdownMenuTheme: const DropdownMenuThemeData(
           menuStyle: MenuStyle(
             backgroundColor: MaterialStatePropertyAll( Colors.white ),
-          )
+          ),
         ),
         sliderTheme: const SliderThemeData(
           activeTrackColor: Colors.red,
@@ -283,9 +268,7 @@ class _InstaHelpState extends State<InstaHelp> {
         ),
         body: PageView(
           controller: pageController,
-          onPageChanged: (selectedIndex) => {
-            changeIndex(selectedIndex),
-          },
+          onPageChanged: (selectedIndex) => changeIndex(selectedIndex),
           children: [ // pages shown in app
             const ProfilePage(),
             mapPermStatus.isGranted && micPermStatus.isGranted && smsPermStatus.isGranted ?
@@ -320,7 +303,7 @@ class _InstaHelpState extends State<InstaHelp> {
 
   Widget homePage() {
     return Scaffold(
-      body: Center( child: Text( message, style: const TextStyle( fontSize: 36, ), ), ),
+      body: Center( child: Text( message, style: const TextStyle( fontSize: 36 ), ), ),
       floatingActionButton: FloatingActionButton(
         child: muted ? const Icon( Icons.mic_off ) : const Icon( Icons.mic ),
         onPressed: () {

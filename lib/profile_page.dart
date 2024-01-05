@@ -35,7 +35,7 @@ late bool textMessageAlert;
 late String emergencyContact;
 late bool soundAlarm;
 late bool blinkFlashlight;
-late num blinkSpeed;
+late double blinkSpeed;
 
 // update database
 void updateFirestore() {
@@ -91,8 +91,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 
-  final googleClientID = ""; // google provider doesn't actually need client ID? package might need updating
-
   bool loggedIn = false;
   final userDetection = FirebaseAuth.instance.authStateChanges();
   
@@ -136,13 +134,14 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 );
               },
-              child: const Center( child: Text( "Edit profile" ) ),
+              child: const Center( child: Text( "Edit profile" ), ),
             ),
           ],
-        ) : SignInScreen( // sign in screen to show when no one logged in
+        ) :
+        SignInScreen( // sign in screen to show when no one logged in
           providers: [
             EmailAuthProvider(),
-            GoogleProvider( clientId: googleClientID ),
+            GoogleProvider( clientId: "" ),
           ],
           footerBuilder: (context, action) {
             return const Center( child: Text( "InstaHelp accounts are completely optional" ) );
@@ -167,7 +166,8 @@ class EditProfilePageState extends State<EditProfilePage> {
   double setVolumeValue = 0;
 
   final FlutterContactPicker contactPicker = FlutterContactPicker();
-  String snackBarMessage = "Profile changes saved";
+
+  late String snackBarMessage;
 
   @override
   void initState() {
@@ -177,7 +177,7 @@ class EditProfilePageState extends State<EditProfilePage> {
       setState(() => volumeListenerValue = volume);
     });
 
-    VolumeController().getVolume().then((volume) => setVolumeValue = volume);
+    VolumeController().getVolume().then( (volume) => setVolumeValue = volume );
   }
 
   @override
@@ -192,7 +192,7 @@ class EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Center( child: Text( "Edit profile" ) ),
+        title: const Text( "Edit profile" ),
         centerTitle: true,
       ),
       body: Center(
@@ -276,13 +276,13 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
-            Center(child: Text( locationSignal ? "Proximity distance: $proximityDistance ${proximityDistance == 1 ? "mile" : "miles"}" : "Location signal disabled" )),
+            Center( child: Text( locationSignal ? "Proximity distance: $proximityDistance ${proximityDistance == 1 ? "mile" : "miles"}" : "Location signal disabled" ), ),
             Center(
               child: Slider( // proximity distance in miles
                 min: 1.0,
                 max: 10.0,
                 divisions: 18,
-                value: locationSignal ? proximityDistance : 1.0,
+                value: locationSignal ? proximityDistance : defaultData["proximityDistance"] as double,
                 onChanged: (value) {
                   if( locationSignal ) {
                     setState(() {
@@ -311,14 +311,14 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
-            const Center(child: Text( "Designated emergency contact:")),
+            const Center( child: Text( "Designated emergency contact:"), ),
             Center(
               child: ElevatedButton(
                 onPressed: () async {
                   if( textMessageAlert) {
                     Contact? value = await contactPicker.selectContact();
                     setState(() {
-                      emergencyContact = value == null ? "" : String.fromCharCodes(value.toString().codeUnits.where((x) => (x ^0x30) <= 9));
+                      emergencyContact = value == null ? defaultData["emergencyContact"] as String : String.fromCharCodes( value.toString().codeUnits.where( (x) => (x ^0x30) <= 9 ) );
                     });
                   }
                 },
@@ -335,16 +335,16 @@ class EditProfilePageState extends State<EditProfilePage> {
                     onChanged: (value) {
                       setState(() {
                         soundAlarm = value;
-                        VolumeController().getVolume().then((volume) => setVolumeValue = volume);
+                        VolumeController().getVolume().then( (volume) => setVolumeValue = volume );
                       });
                     },
                   ),
                 ],
               ),
             ),
-            Center(child: Text( soundAlarm ? "Siren volume: ${volumeListenerValue == 0 ? "Muted" : "${(volumeListenerValue * 100).ceil()}%" }" : "Sound alarm disabled" )),
+            Center(child: Text( soundAlarm ? "Siren volume: ${volumeListenerValue == 0 ? "Muted" : "${(volumeListenerValue * 100).round()}%" }" : "Sound alarm disabled" ), ),
             Center(
-              child: Slider( // proximity distance in miles
+              child: Slider( // siren volume
                 min: 0,
                 max: 1,
                 value: soundAlarm ? volumeListenerValue : 0,
@@ -370,20 +370,20 @@ class EditProfilePageState extends State<EditProfilePage> {
                         blinkFlashlight = value;
                       });
                       if( value == false ) {
-                        blinkSpeed = 250;
+                        blinkSpeed = defaultData["blinkSpeed"] as double;
                       }
                     },
                   ),
                 ],
               ),
             ),
-            Center(child: Text( blinkFlashlight ? "Blink speed: ${ blinkSpeed == 1000 ? "1 second" : "${blinkSpeed.truncate()} milliseconds" }" : "Blink flashlight disabled" )),
+            Center(child: Text( blinkFlashlight ? "Blink speed: ${ blinkSpeed == 1000 ? "1 second" : "${blinkSpeed.round()} milliseconds" }" : "Blink flashlight disabled" )),
             Center(
               child: Slider( // proximity distance in miles
                 min: 100,
                 max: 1000,
                 divisions: 18,
-                value: blinkFlashlight ? blinkSpeed.toDouble() : 100.0,
+                value: blinkFlashlight ? blinkSpeed : 100.0,
                 onChanged: (value) {
                   if( blinkFlashlight ) {
                     setState(() {
@@ -410,13 +410,11 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(snackBarMessage),
+              content: Text( snackBarMessage ),
               behavior: SnackBarBehavior.floating,
               action: SnackBarAction(
                 label: "OK",
-                onPressed: () {
-
-                },
+                onPressed: () {},
               ),
             ),
           );
