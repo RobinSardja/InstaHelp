@@ -90,9 +90,10 @@ class _MapPageState extends State<MapPage> {
 
         located = snapshot.hasData;
         double? radius = userData["proximityDistance"];
+        bool? signal = userData["locationSignal"];
         
         return Scaffold(
-          body: located && radius != null ? GoogleMap(
+          body: located && radius != null && signal != null ? GoogleMap(
             onMapCreated: onMapCreated,
             initialCameraPosition: CameraPosition(
               target: LatLng( currentPosition.latitude, currentPosition.longitude ),
@@ -100,7 +101,7 @@ class _MapPageState extends State<MapPage> {
             ),
             myLocationEnabled: true,
             markers: nearbyUsers,
-            circles: {
+            circles: signal ? {
               Circle( // map radius of nearby area for users to come help
                 circleId: const CircleId( "Nearby area" ),
                 fillColor: const Color.fromRGBO(255, 0, 0, 0.5),
@@ -108,7 +109,7 @@ class _MapPageState extends State<MapPage> {
                 radius: radius * 1609.34, // converts meters to miles
                 strokeWidth: 1,
               ),
-            }
+            } : {}
           ) :
           const Center( // loading screen
             child: Column(
