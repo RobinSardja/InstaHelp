@@ -320,7 +320,7 @@ class _InstaHelpState extends State<InstaHelp> {
 
   Widget homePage() {
     return Scaffold(
-      body: Center( child: Text( message ) ),
+      body: Center( child: Text( message, style: const TextStyle( fontSize: 36, ), ), ),
       floatingActionButton: FloatingActionButton(
         child: muted ? const Icon( Icons.mic_off ) : const Icon( Icons.mic ),
         onPressed: () {

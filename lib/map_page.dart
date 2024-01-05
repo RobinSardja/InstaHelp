@@ -109,7 +109,7 @@ class _MapPageState extends State<MapPage> {
                 radius: radius * 1609.34, // converts meters to miles
                 strokeWidth: 1,
               ),
-            } : {}
+            } : {},
           ) :
           const Center( // loading screen
             child: Column(
