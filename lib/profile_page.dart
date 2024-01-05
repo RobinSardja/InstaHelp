@@ -45,7 +45,7 @@ void updateFirestore() {
   docRef = db.collection( "user_options" ).doc( currentUser.uid );
   docRef.get().then(
     (DocumentSnapshot doc) {
-      if( doc.data() == null ) {
+      if( doc.data() == null ) { // newly created users get new document in firestore with default data
         userData = defaultData;
         db
           .collection( "user_options" )
@@ -422,7 +422,6 @@ class EditProfilePageState extends State<EditProfilePage> {
           );
 
           updateFirestore();
-          userData = {};
           Navigator.pop(context);
         },
         destinations: const [
