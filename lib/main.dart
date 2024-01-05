@@ -113,7 +113,7 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
-  final player = AudioPlayer()..setAsset("assets/sound-alarm.mp3")..setLoopMode(LoopMode.one);
+  final player = AudioPlayer()..setAsset("assets/siren.wav")..setLoopMode(LoopMode.one);
   void playSoundAlarm() async {
     await player.seek( const Duration(seconds: 0, ), ); // reset to beginning of sound effect
     await player.play();

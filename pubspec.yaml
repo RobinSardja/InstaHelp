@@ -46,3 +46,4 @@ flutter:
   assets:
     - assets/get-away-from-me_en_android_v3_0_0.ppn
     - assets/get-away-from-me_en_ios_v3_0_0.ppn
+    - assets/siren.wav
