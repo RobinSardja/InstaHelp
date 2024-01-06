@@ -13,7 +13,7 @@ final defaultData = {
   "medicalInfo": medicalInfo = true,
   "bloodType": bloodType = "O+",
   "locationSignal" : locationSignal = true,
-  "proximityDistance" : proximityDistance = 5.0,
+  "proximityDistance" : proximityDistance = 5,
   "textMessageAlert" : textMessageAlert = true,
   "emergencyContact" : emergencyContact = "",
   "soundAlarm" : soundAlarm = true,
@@ -116,9 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ProfileScreen( // profile screen to show when user already logged in
           actions: [
             SignedOutAction( (context) {
-              setState(() {
-                loggedIn = snapshot.hasData;
-              });
+              setState( () => loggedIn = snapshot.hasData );
             }),
           ],
           showDeleteConfirmationDialog: true,
@@ -165,7 +163,8 @@ class EditProfilePageState extends State<EditProfilePage> {
   double getVolume = 0;
   double setVolumeValue = 0;
 
-  final FlutterContactPicker contactPicker = FlutterContactPicker();
+  final contactPicker = FlutterContactPicker();
+  final volumeController = VolumeController();
 
   late String snackBarMessage;
 
@@ -173,16 +172,16 @@ class EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     super.initState();
 
-    VolumeController().listener((volume) {
-      setState(() => volumeListenerValue = volume);
+    volumeController.listener((volume) {
+      setState( () => volumeListenerValue = volume );
     });
 
-    VolumeController().getVolume().then( (volume) => setVolumeValue = volume );
+    volumeController.getVolume().then( (volume) => setVolumeValue = volume );
   }
 
   @override
   void dispose() {
-    VolumeController().removeListener();
+    volumeController.removeListener();
 
     super.dispose();
   }
@@ -193,7 +192,6 @@ class EditProfilePageState extends State<EditProfilePage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text( "Edit profile" ),
-        centerTitle: true,
       ),
       body: Center(
         child: ListView(
@@ -207,9 +205,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                   Switch(
                     value: medicalInfo,
                     onChanged: (value) {
-                      setState(() {
-                        medicalInfo = value;
-                      });
+                      setState( () => medicalInfo = value );
                     },
                   ),
                 ],
@@ -285,9 +281,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 value: locationSignal ? proximityDistance : 1.0,
                 onChanged: (value) {
                   if( locationSignal ) {
-                    setState(() {
-                      proximityDistance = value;
-                    });
+                    setState( () => proximityDistance = value );
                   }
                 },
               ),
@@ -311,15 +305,13 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
-            const Center( child: Text( "Designated emergency contact:"), ),
+            const Center( child: Text( "Designated emergency contact:" ), ),
             Center(
               child: ElevatedButton(
                 onPressed: () async {
                   if( textMessageAlert) {
                     Contact? value = await contactPicker.selectContact();
-                    setState(() {
-                      emergencyContact = value == null ? defaultData["emergencyContact"] as String : String.fromCharCodes( value.toString().codeUnits.where( (x) => (x ^0x30) <= 9 ) );
-                    });
+                    setState( () => emergencyContact = value == null ? "" : String.fromCharCodes( value.toString().codeUnits.where( (x) => (x ^0x30) <= 9 ) ) ); // extracts phone number
                   }
                 },
                 child: Text( textMessageAlert ? emergencyContact == "" ? "No emergency contact selected" : emergencyContact : "Text message alert disabled" ),
@@ -335,7 +327,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                     onChanged: (value) {
                       setState(() {
                         soundAlarm = value;
-                        VolumeController().getVolume().then( (volume) => setVolumeValue = volume );
+                        volumeController.getVolume().then( (volume) => setVolumeValue = volume );
                       });
                     },
                   ),
@@ -352,7 +344,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                   if( soundAlarm ) {
                     setState(() {
                       setVolumeValue = value;
-                      VolumeController().setVolume(setVolumeValue);
+                      volumeController.setVolume(setVolumeValue);
                     });
                   }
                 },
@@ -366,11 +358,9 @@ class EditProfilePageState extends State<EditProfilePage> {
                   Switch(
                     value: blinkFlashlight,
                     onChanged: (value) {
-                      setState(() {
-                        blinkFlashlight = value;
-                      });
+                      setState( () => blinkFlashlight = value );
                       if( value == false ) {
-                        blinkSpeed = defaultData["blinkSpeed"] as double;
+                        blinkSpeed = 250;
                       }
                     },
                   ),
@@ -386,9 +376,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 value: blinkFlashlight ? blinkSpeed : 100.0,
                 onChanged: (value) {
                   if( blinkFlashlight ) {
-                    setState(() {
-                      blinkSpeed = value;
-                    });
+                    setState(() => blinkSpeed = value );
                   }
                 },
               ),

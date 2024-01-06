@@ -41,28 +41,28 @@ void getPosition() async {
   currentPosition = await Geolocator.getCurrentPosition();
 }
 
-// add nearby users to markers set in future update
+// currenty hardcoded, add nearby users to markers set in future update
 Set<Marker> nearbyUsers = {
-  Marker(
-    markerId: const MarkerId( "Nearby user 1 (online and safe)" ),
-    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueGreen ),
-    position: LatLng( currentPosition.latitude + 0.01, currentPosition.longitude + 0.01 ),
-  ),
-  Marker(
-    markerId: const MarkerId( "Nearby user 2 (in danger)" ),
-    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueRed ),
-    position: LatLng( currentPosition.latitude - 0.01, currentPosition.longitude + 0.01 ),
-  ),
-  Marker(
-    markerId: const MarkerId( "Nearby user 3 (coming to help you)" ),
-    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueBlue ),
-    position: LatLng( currentPosition.latitude + 0.01, currentPosition.longitude - 0.01 ),
-  ),
-  Marker(
-    markerId: const MarkerId( "Nearby user 4 (offline)" ),
-    icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueViolet ),
-    position: LatLng( currentPosition.latitude - 0.01, currentPosition.longitude - 0.01 ),
-  ),
+  // Marker(
+  //   markerId: const MarkerId( "Nearby user 1 (online and safe)" ),
+  //   icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueGreen ),
+  //   position: LatLng( currentPosition.latitude + 0.01, currentPosition.longitude + 0.01 ),
+  // ),
+  // Marker(
+  //   markerId: const MarkerId( "Nearby user 2 (in danger)" ),
+  //   icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueRed ),
+  //   position: LatLng( currentPosition.latitude - 0.01, currentPosition.longitude + 0.01 ),
+  // ),
+  // Marker(
+  //   markerId: const MarkerId( "Nearby user 3 (coming to help you)" ),
+  //   icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueBlue ),
+  //   position: LatLng( currentPosition.latitude + 0.01, currentPosition.longitude - 0.01 ),
+  // ),
+  // Marker(
+  //   markerId: const MarkerId( "Nearby user 4 (offline)" ),
+  //   icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueViolet ),
+  //   position: LatLng( currentPosition.latitude - 0.01, currentPosition.longitude - 0.01 ),
+  // ),
 };
 
 class MapPage extends StatefulWidget {
@@ -89,24 +89,24 @@ class _MapPageState extends State<MapPage> {
       builder: (context, snapshot) {
 
         located = snapshot.hasData;
-        double? radius = userData["proximityDistance"];
-        bool? signal = userData["locationSignal"];
+        double? radiusInMiles = userData["proximityDistance"];
+        bool? enableSignal = userData["locationSignal"];
         
         return Scaffold(
-          body: located && radius != null && signal != null ? GoogleMap(
+          body: located && radiusInMiles != null && enableSignal != null ? GoogleMap(
             onMapCreated: onMapCreated,
             initialCameraPosition: CameraPosition(
               target: LatLng( currentPosition.latitude, currentPosition.longitude ),
               zoom: 15,
             ),
             myLocationEnabled: true,
-            // markers: nearbyUsers, <-- future update
-            circles: signal ? {
+            markers: nearbyUsers,
+            circles: enableSignal ? {
               Circle( // map radius of nearby area for users to come help
                 circleId: const CircleId( "Nearby area" ),
                 fillColor: const Color.fromRGBO(255, 0, 0, 0.5),
                 center: LatLng( currentPosition.latitude, currentPosition.longitude ),
-                radius: radius * 1609.34, // converts meters to miles
+                radius: radiusInMiles * 1609.34, // converts miles to meters
                 strokeWidth: 1,
               ),
             } : {},

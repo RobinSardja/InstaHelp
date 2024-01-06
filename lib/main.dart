@@ -65,18 +65,10 @@ class _InstaHelpState extends State<InstaHelp> {
 
   // controls actions when wake word detected
   void wakeWordCallback(keywordIndex) {
-    setState(() {
-      message = "Help is on the way!";
-    });
-    if( userData["textMessageAlert"] ) {
-      sendTextMessageAlert();
-    }
-    if( userData["soundAlarm"] ) {
-      playSoundAlarm();
-    }
-    if( userData["blinkFlashlight"] ) {
-      startBlinkingFlashlight();
-    }
+    setState( () => message = "Help is on the way!" );
+    if( userData["textMessageAlert"] ) sendTextMessageAlert();
+    if( userData["soundAlarm"] ) playSoundAlarm();
+    if( userData["blinkFlashlight"] ) startBlinkingFlashlight();
   }
 
   // start listening for porcupine wake word
@@ -164,14 +156,6 @@ class _InstaHelpState extends State<InstaHelp> {
 
   // controls switching between pages
   int selectedIndex = 0;
-
-  void changeIndex(updatedIndex) {
-    setState(() {
-      selectedIndex = updatedIndex;
-    });
-  }
-
-  // controls swiping between pages
   final pageController = PageController(
     initialPage: 0,
   );
@@ -205,6 +189,7 @@ class _InstaHelpState extends State<InstaHelp> {
       theme: ThemeData.light().copyWith( // app theme
         appBarTheme: const AppBarTheme(
           color: Colors.red,
+          centerTitle: true,
           titleTextStyle: TextStyle(
             color: Colors.white,
             fontSize: 24,
@@ -267,11 +252,10 @@ class _InstaHelpState extends State<InstaHelp> {
       home: Scaffold(
         appBar: AppBar(
           title: const Text("InstaHelp"),
-          centerTitle: true,
         ),
         body: PageView(
           controller: pageController,
-          onPageChanged: (selectedIndex) => changeIndex(selectedIndex),
+          onPageChanged: (changedIndex) => setState( () => selectedIndex = changedIndex ),
           children: [ // pages shown in app
             const ProfilePage(),
             mapPermStatus.isGranted && micPermStatus.isGranted && smsPermStatus.isGranted ?
@@ -280,9 +264,9 @@ class _InstaHelpState extends State<InstaHelp> {
           ],
         ),
         bottomNavigationBar: NavigationBar(
-          onDestinationSelected: (updatedIndex) {
-            changeIndex(updatedIndex);
-            pageController.jumpToPage(updatedIndex);
+          onDestinationSelected: (changedIndex) {
+            setState( () => selectedIndex = changedIndex );
+            pageController.jumpToPage(changedIndex);
           },
           selectedIndex: selectedIndex,
           destinations: const [
