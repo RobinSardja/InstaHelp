@@ -9,7 +9,7 @@ import 'profile_page.dart';
 // location handling
 late Position currentPosition;
 
-void initializePosition() async {
+Future<void> initializePosition() async {
   bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if( !serviceEnabled ) {
     return Future.error( "Location services are disabled." );
@@ -37,7 +37,7 @@ void initializePosition() async {
   getPosition();
 }
 
-void getPosition() async {
+Future<void> getPosition() async {
   currentPosition = await Geolocator.getCurrentPosition();
 }
 

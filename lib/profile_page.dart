@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:instahelp/firebase_options.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide EmailAuthProvider;
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 
@@ -36,6 +39,12 @@ late String emergencyContact;
 late bool soundAlarm;
 late bool blinkFlashlight;
 late double blinkSpeed;
+
+Future<void> initializeFirebase() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+}
 
 // update database
 void updateFirestore() {

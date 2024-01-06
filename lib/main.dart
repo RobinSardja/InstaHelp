@@ -3,9 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'package:instahelp/firebase_options.dart';
-
 import 'package:porcupine_flutter/porcupine_error.dart';
 import 'package:porcupine_flutter/porcupine_manager.dart';
 
@@ -17,11 +14,9 @@ import 'package:torch_light/torch_light.dart';
 import 'map_page.dart';
 import 'profile_page.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await initializeFirebase();
 
   // ensure app stays in portrait mode
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((value) =>
@@ -46,7 +41,7 @@ class _InstaHelpState extends State<InstaHelp> {
   static const accessKey = String.fromEnvironment("picovoice", defaultValue: "none");
   final platform = Platform.isAndroid ? "android" : "ios";
 
-  void createPorcupineManager() async {
+  Future<void> createPorcupineManager() async {
     try {
       porcupineManager = await PorcupineManager.fromKeywordPaths(
         accessKey,
@@ -72,7 +67,7 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   // start listening for porcupine wake word
-  void startAudioCapture() async {
+  Future<void> startAudioCapture() async {
     try {
       await porcupineManager.start();
     } on PorcupineException {
@@ -81,7 +76,7 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   // pause listening for porcupine wake word
-  void pauseAudioCapture() async {
+  Future<void> pauseAudioCapture() async {
     try {
       await porcupineManager.stop();
     } on PorcupineException {
@@ -89,7 +84,7 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
-  void sendTextMessageAlert() async {
+  Future<void> sendTextMessageAlert() async {
     getPosition();
     try {
         await sendSMS(
@@ -104,12 +99,12 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   final player = AudioPlayer()..setAsset("assets/siren.wav")..setLoopMode(LoopMode.one);
-  void playSoundAlarm() async {
+  Future<void> playSoundAlarm() async {
     await player.seek( const Duration(seconds: 0, ), ); // reset to beginning of sound effect
     await player.play();
   }
 
-  void startBlinkingFlashlight() async {
+  Future<void> startBlinkingFlashlight() async {
     final isTorchAvailable = await TorchLight.isTorchAvailable();
     if( isTorchAvailable ) {
       while( !muted ) {
@@ -121,7 +116,7 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
-  void turnOffFlashlight() async {
+  Future<void> turnOffFlashlight() async {
     await TorchLight.disableTorch();
   }
 
@@ -131,7 +126,7 @@ class _InstaHelpState extends State<InstaHelp> {
   PermissionStatus smsPermStatus = PermissionStatus.denied;
 
   // updates all permission variables with current device permissions
-  void checkAllPermissions() async {
+  Future<void> checkAllPermissions() async {
     final newMapPermStatus = await Permission.location.status;
     final newMicPermStatus = await Permission.microphone.status;
     final newSmsPermStatus = await Permission.sms.status;
@@ -143,7 +138,7 @@ class _InstaHelpState extends State<InstaHelp> {
   }
   
   // requests for all permissions required
-  void requestAllPermissions() async {
+  Future<void> requestAllPermissions() async {
     await Permission.location.request().then( (value) async {
       await Permission.microphone.request().then( (value) async {
         await Permission.sms.request().then( (value) async {
