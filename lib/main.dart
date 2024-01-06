@@ -25,9 +25,7 @@ void main() async {
 
   // ensure app stays in portrait mode
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((value) =>
-    runApp(
-      const InstaHelp()
-    ),
+    runApp( const InstaHelp() )
   );
 }
 
@@ -158,6 +156,7 @@ class _InstaHelpState extends State<InstaHelp> {
       await Permission.microphone.request().then( (value) async {
         await Permission.sms.request().then( (value) async {
           checkAllPermissions();
+          initializeAll();
         });
       });
     });
@@ -177,20 +176,24 @@ class _InstaHelpState extends State<InstaHelp> {
     initialPage: 0,
   );
 
-  @override
-  void initState() {    
-    super.initState();
-
-    requestAllPermissions();
+  void initializeAll() {
     initializePosition();
     createPorcupineManager();
   }
 
   @override
+  void initState() {    
+    super.initState();
+
+    requestAllPermissions();
+    initializeAll();
+  }
+
+  @override
   void dispose() {
-    porcupineManager.delete();
     player.dispose();
     turnOffFlashlight();
+    porcupineManager.delete();
 
     super.dispose();
   }
@@ -209,8 +212,8 @@ class _InstaHelpState extends State<InstaHelp> {
         ),
         elevatedButtonTheme: const ElevatedButtonThemeData(
           style: ButtonStyle(
-            foregroundColor: MaterialStatePropertyAll( Colors.white, ),
-            backgroundColor: MaterialStatePropertyAll( Colors.red, ),
+            foregroundColor: MaterialStatePropertyAll( Colors.white ),
+            backgroundColor: MaterialStatePropertyAll( Colors.red ),
           ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
