@@ -16,12 +16,12 @@ import 'profile_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await initializeFirebase();
 
-  // ensure app stays in portrait mode
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((value) =>
-    runApp( const InstaHelp() )
-  );
+  await SystemChrome.setPreferredOrientations( [DeviceOrientation.portraitUp] );
+
+  runApp( const InstaHelp() );
 }
 
 class InstaHelp extends StatefulWidget {
