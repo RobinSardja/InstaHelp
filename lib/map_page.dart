@@ -34,7 +34,7 @@ Future<void> initializePosition() async {
     return Future.error( "Location permissions are reduced, we need precise accuracy." );
   }
 
-  getPosition();
+  await getPosition();
 }
 
 Future<void> getPosition() async {
@@ -79,7 +79,6 @@ class _MapPageState extends State<MapPage> {
     mapController = controller;
   }
 
-  bool located = false;
   final positionStream = Geolocator.getPositionStream();
 
   @override
@@ -88,12 +87,11 @@ class _MapPageState extends State<MapPage> {
       stream: positionStream,
       builder: (context, snapshot) {
 
-        located = snapshot.hasData;
         double? radiusInMiles = userData["proximityDistance"];
         bool? enableSignal = userData["locationSignal"];
         
         return Scaffold(
-          body: located && radiusInMiles != null && enableSignal != null ? GoogleMap(
+          body: snapshot.hasData && radiusInMiles != null && enableSignal != null ? GoogleMap(
             onMapCreated: onMapCreated,
             initialCameraPosition: CameraPosition(
               target: LatLng( currentPosition.latitude, currentPosition.longitude ),
@@ -123,7 +121,7 @@ class _MapPageState extends State<MapPage> {
             ),
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () => getPosition(),
+            onPressed: () async => await getPosition(),
             child: const Icon( Icons.refresh ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

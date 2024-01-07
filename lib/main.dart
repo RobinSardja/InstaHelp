@@ -52,7 +52,7 @@ class _InstaHelpState extends State<InstaHelp> {
         sensitivities: [0.75,],
       );
 
-      startAudioCapture();
+      await porcupineManager.start();
     } on PorcupineException {
       // handle any errors
     }
@@ -66,26 +66,8 @@ class _InstaHelpState extends State<InstaHelp> {
     if( userData["blinkFlashlight"] ) startBlinkingFlashlight();
   }
 
-  // start listening for porcupine wake word
-  Future<void> startAudioCapture() async {
-    try {
-      await porcupineManager.start();
-    } on PorcupineException {
-      // handle any errors
-    }
-  }
-
-  // pause listening for porcupine wake word
-  Future<void> pauseAudioCapture() async {
-    try {
-      await porcupineManager.stop();
-    } on PorcupineException {
-      // handle any errors
-    }
-  }
-
   Future<void> sendTextMessageAlert() async {
-    getPosition();
+    await getPosition();
     try {
         await sendSMS(
           message: "InstaHelp alert! ${currentUser.displayName} needs your help at www.google.com/maps/search/${currentPosition.latitude},${currentPosition.longitude}/@${currentPosition.latitude},${currentPosition.longitude}!"
@@ -100,7 +82,7 @@ class _InstaHelpState extends State<InstaHelp> {
 
   final player = AudioPlayer()..setAsset("assets/siren.wav")..setLoopMode(LoopMode.one);
   Future<void> playSoundAlarm() async {
-    await player.seek( const Duration(seconds: 0, ), ); // reset to beginning of sound effect
+    await player.seek( const Duration( seconds: 0 ), ); // reset to beginning of sound effect
     await player.play();
   }
 
@@ -114,10 +96,6 @@ class _InstaHelpState extends State<InstaHelp> {
         await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].toInt(), ), );
       } 
     }
-  }
-
-  Future<void> turnOffFlashlight() async {
-    await TorchLight.disableTorch();
   }
 
   // determines if all required permissions have been granted
@@ -142,8 +120,9 @@ class _InstaHelpState extends State<InstaHelp> {
     await Permission.location.request().then( (value) async {
       await Permission.microphone.request().then( (value) async {
         await Permission.sms.request().then( (value) async {
-          checkAllPermissions();
-          initializeAll();
+          await checkAllPermissions();
+          await createPorcupineManager();
+          await initializePosition();
         });
       });
     });
@@ -155,24 +134,18 @@ class _InstaHelpState extends State<InstaHelp> {
     initialPage: 0,
   );
 
-  void initializeAll() {
-    initializePosition();
-    createPorcupineManager();
-  }
-
   @override
   void initState() {    
     super.initState();
 
     requestAllPermissions();
-    initializeAll();
   }
 
   @override
-  void dispose() {
-    player.dispose();
-    turnOffFlashlight();
-    porcupineManager.delete();
+  void dispose() async {
+    await player.dispose();
+    await TorchLight.disableTorch();
+    await porcupineManager.delete();
 
     super.dispose();
   }
@@ -288,17 +261,17 @@ class _InstaHelpState extends State<InstaHelp> {
       body: Center( child: Text( message, style: const TextStyle( fontSize: 36 ), ), ),
       floatingActionButton: FloatingActionButton(
         child: muted ? const Icon( Icons.mic_off ) : const Icon( Icons.mic ),
-        onPressed: () {
+        onPressed: () async {
           setState(() {
             muted = !muted;
             message = muted ? "Glad you're safe!" : "We're ready to help!";
           });
           if( muted ) {
-            pauseAudioCapture();
-            player.pause();
-            turnOffFlashlight();
+            await porcupineManager.stop();
+            player.stop();
+            await TorchLight.disableTorch();
           } else {
-            startAudioCapture();
+            await porcupineManager.start();
           }
         },
       ),
@@ -313,7 +286,7 @@ class _InstaHelpState extends State<InstaHelp> {
         children: [
           const Text("Please grant all requested permissions"),
           ElevatedButton(
-            onPressed: () => requestAllPermissions(),
+            onPressed: () async => await requestAllPermissions(),
             child: const Text("Request permissions and check status"),
           ),
           const Text("Alternatively, grant permissions from app settings"),

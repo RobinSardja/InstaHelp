@@ -11,6 +11,8 @@ import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:volume_controller/volume_controller.dart';
 
+Map<String, dynamic> userData = defaultData;
+
 // default values for newly created users
 final defaultData = {
   "medicalInfo": medicalInfo = true,
@@ -23,8 +25,6 @@ final defaultData = {
   "blinkFlashlight" : blinkFlashlight = true,
   "blinkSpeed" : blinkSpeed = 250,
 };
-
-Map<String, dynamic> userData = defaultData;
 
 late User currentUser;
 late FirebaseFirestore db;
@@ -100,16 +100,13 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 
-  bool loggedIn = false;
   final userDetection = FirebaseAuth.instance.authStateChanges();
-  
+
   @override
   Widget build( BuildContext context ) {
     return StreamBuilder<User?>(
       stream: userDetection,
       builder: (context, snapshot) {
-
-        loggedIn = snapshot.hasData;
 
         // get current user
         userDetection.listen((User? user) {
@@ -121,14 +118,10 @@ class _ProfilePageState extends State<ProfilePage> {
           }
         });
       
-        return loggedIn ?
-        ProfileScreen( // profile screen to show when user already logged in
-          actions: [
-            SignedOutAction( (context) {
-              setState( () => loggedIn = snapshot.hasData );
-            }),
-          ],
+        return snapshot.hasData ? ProfileScreen( // profile screen to show when user already logged in
+          showUnlinkConfirmationDialog: true,
           showDeleteConfirmationDialog: true,
+          showMFATile: true,
           children: [
             ElevatedButton( // edit profile button
               onPressed: () {
@@ -150,6 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
             EmailAuthProvider(),
             GoogleProvider( clientId: "" ),
           ],
+          showPasswordVisibilityToggle: true,
           footerBuilder: (context, action) {
             return const Center( child: Text( "InstaHelp accounts are completely optional" ) );
           },
