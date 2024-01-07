@@ -17,7 +17,7 @@ Map<String, dynamic> userData = defaultData;
 final defaultData = {
   "medicalInfo": medicalInfo = true,
   "bloodType": bloodType = "O+",
-  "locationSignal" : locationSignal = true,
+  "alertNearbyUsers" : alertNearbyUsers = true,
   "proximityDistance" : proximityDistance = 5,
   "textMessageAlert" : textMessageAlert = true,
   "emergencyContact" : emergencyContact = "",
@@ -32,7 +32,7 @@ late DocumentReference<Map<String, dynamic>> docRef;
 
 late bool medicalInfo;
 late String bloodType;
-late bool locationSignal;
+late bool alertNearbyUsers;
 late double proximityDistance;
 late bool textMessageAlert;
 late String emergencyContact;
@@ -70,7 +70,7 @@ void updateFirestore() {
 void setTempVariables() {
   medicalInfo = userData["medicalInfo"];
   bloodType = userData["bloodType"];
-  locationSignal = userData["locationSignal"];
+  alertNearbyUsers = userData["alertNearbyUsers"];
   proximityDistance = userData["proximityDistance"];
   textMessageAlert = userData["textMessageAlert"];
   emergencyContact = userData["emergencyContact"];
@@ -82,7 +82,7 @@ void setTempVariables() {
 void setFinalVariables() {
   userData["medicalInfo"] = medicalInfo;
   userData["bloodType"] = bloodType;
-  userData["locationSignal"] = locationSignal;
+  userData["alertNearbyUsers"] = alertNearbyUsers;
   userData["proximityDistance"] = proximityDistance;
   userData["textMessageAlert"] = textMessageAlert;
   userData["emergencyContact"] = emergencyContact;
@@ -257,15 +257,15 @@ class EditProfilePageState extends State<EditProfilePage> {
               ),
             ),
             Center(
-              child: Row( // location signal
+              child: Row( // alert nearby users
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text( "Location signal" ),
+                  const Text( "Alert nearby users" ),
                   Switch(
-                    value: locationSignal,
+                    value: alertNearbyUsers,
                     onChanged: (value) {
                       setState(() {
-                        locationSignal = value;
+                        alertNearbyUsers = value;
                         if( value == false ) {
                           proximityDistance = 5.0;
                         }
@@ -275,18 +275,19 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
-            Center( child: Text( locationSignal ? "Proximity distance: $proximityDistance ${proximityDistance == 1 ? "mile" : "miles"}" : "Location signal disabled" ), ),
+            Center( child: Text( alertNearbyUsers ? "Proximity distance: $proximityDistance ${proximityDistance == 1 ? "mile" : "miles"}" : "Location signal disabled" ), ),
             Center(
               child: Slider( // proximity distance in miles
                 min: 1.0,
                 max: 10.0,
                 divisions: 18,
-                value: locationSignal ? proximityDistance : 1.0,
+                value: alertNearbyUsers ? proximityDistance : 1.0,
                 onChanged: (value) {
-                  if( locationSignal ) {
+                  if( alertNearbyUsers ) {
                     setState( () => proximityDistance = value );
                   }
                 },
+                thumbColor: alertNearbyUsers ? Colors.red : Colors.black,
               ),
             ),
             Center(
@@ -337,7 +338,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
-            Center(child: Text( soundAlarm ? "Siren volume: ${volumeListenerValue == 0 ? "Muted" : "${(volumeListenerValue * 100).round()}%" }" : "Sound alarm disabled" ), ),
+            Center(child: Text( soundAlarm ? "Phone volume: ${volumeListenerValue == 0 ? "Muted" : "${(volumeListenerValue * 100).round()}%" }" : "Sound alarm disabled" ), ),
             Center(
               child: Slider( // siren volume
                 min: 0,
@@ -351,6 +352,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                     });
                   }
                 },
+                thumbColor: soundAlarm ? Colors.red : Colors.black,
               ),
             ),
             Center(
@@ -382,6 +384,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                     setState(() => blinkSpeed = value );
                   }
                 },
+                thumbColor: blinkFlashlight ? Colors.red : Colors.black,
               ),
             ),
           ],

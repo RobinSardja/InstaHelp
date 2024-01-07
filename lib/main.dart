@@ -14,12 +14,14 @@ import 'package:torch_light/torch_light.dart';
 import 'map_page.dart';
 import 'profile_page.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await initializeFirebase();
+  // ensures app stays in portrait mode
+  SystemChrome.setPreferredOrientations( [DeviceOrientation.portraitUp] );
 
-  await SystemChrome.setPreferredOrientations( [DeviceOrientation.portraitUp] );
+  // ensures firebase features work
+  await initializeFirebase();
 
   runApp( const InstaHelp() );
 }
@@ -49,7 +51,6 @@ class _InstaHelpState extends State<InstaHelp> {
           "assets/get-away-from-me_en_${platform}_v3_0_0.ppn",
         ],
         wakeWordCallback,
-        sensitivities: [0.75,],
       );
 
       await porcupineManager.start();
@@ -58,7 +59,7 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
-  // controls actions when wake word detected
+  // features to run when call for help detected
   void wakeWordCallback(keywordIndex) {
     setState( () => message = "Help is on the way!" );
     if( userData["textMessageAlert"] ) sendTextMessageAlert();
@@ -91,9 +92,9 @@ class _InstaHelpState extends State<InstaHelp> {
     if( isTorchAvailable ) {
       while( !muted ) {
         await TorchLight.enableTorch();
-        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].toInt(), ), );
+        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].round(), ), );
         await TorchLight.disableTorch();
-        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].toInt(), ), );
+        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].round(), ), );
       } 
     }
   }
@@ -160,7 +161,7 @@ class _InstaHelpState extends State<InstaHelp> {
           centerTitle: true,
           titleTextStyle: TextStyle(
             color: Colors.white,
-            fontSize: 24,
+            fontSize: 22,
           ),
         ),
         elevatedButtonTheme: const ElevatedButtonThemeData(
@@ -199,7 +200,6 @@ class _InstaHelpState extends State<InstaHelp> {
         sliderTheme: const SliderThemeData(
           activeTrackColor: Colors.red,
           inactiveTrackColor: Colors.black,
-          thumbColor: Colors.red,
         ),
         snackBarTheme: const SnackBarThemeData(
           backgroundColor: Colors.white,
@@ -284,10 +284,10 @@ class _InstaHelpState extends State<InstaHelp> {
       child: Column( 
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text("Please grant all requested permissions"),
+          const Text( "Please grant all required permissions" ),
           ElevatedButton(
             onPressed: () async => await requestAllPermissions(),
-            child: const Text("Request permissions and check status"),
+            child: const Text( "Request permissions and check status" ),
           ),
           const Text("Alternatively, grant permissions from app settings"),
           ElevatedButton(
