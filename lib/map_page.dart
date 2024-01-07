@@ -88,7 +88,7 @@ class _MapPageState extends State<MapPage> {
       builder: (context, snapshot) {
 
         double? radiusInMiles = userData["proximityDistance"];
-        bool? enableSignal = userData["locationSignal"];
+        bool? enableSignal = userData["alertNearbyUsers"];
         
         return Scaffold(
           body: snapshot.hasData && radiusInMiles != null && enableSignal != null ? GoogleMap(
