@@ -41,7 +41,7 @@ Future<void> getPosition() async {
   currentPosition = await Geolocator.getCurrentPosition();
 }
 
-// currenty hardcoded, add nearby users to markers set in future update
+// currenty hardcoded, nearby users will be a feature in the near future
 Set<Marker> nearbyUsers = {
   // Marker(
   //   markerId: const MarkerId( "Nearby user 1 (online and safe)" ),
