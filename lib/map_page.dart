@@ -102,7 +102,7 @@ class _MapPageState extends State<MapPage> {
             circles: enableSignal ? {
               Circle( // map radius of nearby area for users to come help
                 circleId: const CircleId( "Nearby area" ),
-                fillColor: const Color.fromRGBO(255, 0, 0, 0.5),
+                fillColor: Colors.red.withOpacity(0.5),
                 center: LatLng( currentPosition.latitude, currentPosition.longitude ),
                 radius: radiusInMiles * 1609.34, // converts miles to meters
                 strokeWidth: 1,
@@ -114,7 +114,7 @@ class _MapPageState extends State<MapPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CircularProgressIndicator.adaptive(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                  valueColor: AlwaysStoppedAnimation<Color>( Colors.red ),
                 ),
                 Text( "Loading nearby users" ),
               ],

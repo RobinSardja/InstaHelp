@@ -26,10 +26,6 @@ final defaultData = {
   "blinkSpeed" : blinkSpeed = 250,
 };
 
-late User currentUser;
-late FirebaseFirestore db;
-late DocumentReference<Map<String, dynamic>> docRef;
-
 late bool medicalInfo;
 late String bloodType;
 late bool alertNearbyUsers;
@@ -39,6 +35,9 @@ late String emergencyContact;
 late bool soundAlarm;
 late bool blinkFlashlight;
 late double blinkSpeed;
+
+late User currentUser;
+late FirebaseFirestore db;
 
 Future<void> initializeFirebase() async {
   await Firebase.initializeApp(
@@ -51,7 +50,7 @@ void updateFirestore() {
   db = FirebaseFirestore.instance;
 
   // get current user's data
-  docRef = db.collection( "user_options" ).doc( currentUser.uid );
+  final docRef = db.collection( "user_options" ).doc( currentUser.uid );
   docRef.get().then(
     (DocumentSnapshot doc) {
       if( doc.data() == null ) { // newly created users get new document in firestore with default data
@@ -260,7 +259,7 @@ class EditProfilePageState extends State<EditProfilePage> {
               child: Row( // alert nearby users
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text( "Alert nearby users" ),
+                  const Text( "Alert nearby users (coming soon!)" ),
                   Switch(
                     value: alertNearbyUsers,
                     onChanged: (value) {
@@ -315,7 +314,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 onPressed: () async {
                   if( textMessageAlert) {
                     Contact? value = await contactPicker.selectContact();
-                    setState( () => emergencyContact = value == null ? "" : String.fromCharCodes( value.toString().codeUnits.where( (x) => (x ^0x30) <= 9 ) ) ); // extracts phone number
+                    setState( () => emergencyContact = value == null ? "" : value.toString() );
                   }
                 },
                 child: Text( textMessageAlert ? emergencyContact == "" ? "No emergency contact selected" : emergencyContact : "Text message alert disabled" ),
@@ -395,6 +394,7 @@ class EditProfilePageState extends State<EditProfilePage> {
           snackBarMessage = updatedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded";
 
           if( updatedIndex == 0 ) {
+            String.fromCharCodes( emergencyContact.codeUnits.where( (x) => (x ^0x30) <= 9 ) ); // extracts phone number
             setFinalVariables();
             db
               .collection( "user_options" )
