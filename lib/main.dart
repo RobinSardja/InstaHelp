@@ -164,6 +164,11 @@ class _InstaHelpState extends State<InstaHelp> {
             fontSize: 22,
           ),
         ),
+        outlinedButtonTheme: const OutlinedButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStatePropertyAll( Colors.black ),
+          ),
+        ),
         elevatedButtonTheme: const ElevatedButtonThemeData(
           style: ButtonStyle(
             foregroundColor: MaterialStatePropertyAll( Colors.white ),
