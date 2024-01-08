@@ -34,8 +34,8 @@ dev_dependencies:
 
 flutter_launcher_icons:
   android: true
-  adaptive_icon_foreground: "assets/android icon foreground.png"
-  adaptive_icon_background: "assets/android icon background.png"
+  adaptive_icon_foreground: "assets/android adaptive icon foreground.png"
+  adaptive_icon_background: "assets/android adaptive icon background.png"
 
   ios: true
   image_path: 'assets/InstaHelp icon.png'
