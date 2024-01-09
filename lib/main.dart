@@ -158,6 +158,7 @@ class _InstaHelpState extends State<InstaHelp> {
       theme: ThemeData.light().copyWith( // app theme
         colorScheme: const ColorScheme.light(
           primary: Colors.red,
+          secondary: Colors.black,
         ),
         appBarTheme: const AppBarTheme(
           color: Colors.red,
