@@ -179,6 +179,13 @@ class _InstaHelpState extends State<InstaHelp> {
           foregroundColor: Colors.white,
           backgroundColor: Colors.red,
         ),
+        inputDecorationTheme: const InputDecorationTheme(
+          floatingLabelStyle: TextStyle( color: Colors.black ),
+          focusedBorder: UnderlineInputBorder( borderSide: BorderSide( color: Colors.black ), ),
+        ),
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Colors.black,
+        ),
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: Colors.red,
           indicatorColor: Colors.white,
