@@ -156,6 +156,9 @@ class _InstaHelpState extends State<InstaHelp> {
 
     return MaterialApp(
       theme: ThemeData.light().copyWith( // app theme
+        colorScheme: const ColorScheme.light(
+          primary: Colors.red,
+        ),
         appBarTheme: const AppBarTheme(
           color: Colors.red,
           centerTitle: true,
@@ -174,6 +177,11 @@ class _InstaHelpState extends State<InstaHelp> {
             foregroundColor: MaterialStatePropertyAll( Colors.white ),
             backgroundColor: MaterialStatePropertyAll( Colors.red ),
           ),
+        ),
+        textButtonTheme: const TextButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: MaterialStatePropertyAll( Colors.red ),
+          )
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           foregroundColor: Colors.white,
