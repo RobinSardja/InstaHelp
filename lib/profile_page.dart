@@ -122,9 +122,9 @@ class _ProfilePageState extends State<ProfilePage> {
           showDeleteConfirmationDialog: true,
           showMFATile: true,
           actions: [
-            AccountDeletedAction( (context, user) {
+            AccountDeletedAction( (context, user) async {
               // delete user options from firebase when account deleted
-              db.collection("user_options").doc(currentUser.uid).delete();
+              await db.collection("user_options").doc(currentUser.uid).delete();
             }),
           ],
           children: [
