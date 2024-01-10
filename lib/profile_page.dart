@@ -121,6 +121,12 @@ class _ProfilePageState extends State<ProfilePage> {
           showUnlinkConfirmationDialog: true,
           showDeleteConfirmationDialog: true,
           showMFATile: true,
+          actions: [
+            AccountDeletedAction( (context, user) {
+              // delete user options from firebase when account deleted
+              db.collection("user_options").doc(currentUser.uid).delete();
+            }),
+          ],
           children: [
             ElevatedButton( // edit profile button
               onPressed: () {

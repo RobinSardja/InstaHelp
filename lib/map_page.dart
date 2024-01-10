@@ -87,11 +87,11 @@ class _MapPageState extends State<MapPage> {
       stream: positionStream,
       builder: (context, snapshot) {
 
-        double? radiusInMiles = userData["proximityDistance"];
-        bool? enableSignal = userData["alertNearbyUsers"];
+        double radiusInMiles = userData["proximityDistance"] ??= defaultData["proximityDistance"];
+        bool enableSignal = userData["alertNearbyUsers"] ??= defaultData["alertNearbyUsers"];
         
         return Scaffold(
-          body: snapshot.hasData && radiusInMiles != null && enableSignal != null ? GoogleMap(
+          body: snapshot.hasData ? GoogleMap(
             onMapCreated: onMapCreated,
             initialCameraPosition: CameraPosition(
               target: LatLng( currentPosition.latitude, currentPosition.longitude ),

@@ -310,10 +310,10 @@ class _InstaHelpState extends State<InstaHelp> {
             onPressed: () async => await requestAllPermissions(),
             child: const Text( "Request permissions and check status" ),
           ),
-          const Text("Alternatively, grant permissions from app settings"),
+          const Text( "Alternatively, grant permissions from app settings" ),
           ElevatedButton(
             onPressed: () async => await openAppSettings(),
-            child: const Text("Grant permissions from app settings"),
+            child: const Text( "Grant permissions from app settings" ),
           ),
         ],
       ),
