@@ -120,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
         return snapshot.hasData ? ProfileScreen( // profile screen to show when user already logged in
           showUnlinkConfirmationDialog: true,
           showDeleteConfirmationDialog: true,
-          showMFATile: true,
+          // showMFATile: true, // temporarily disabled to prevent firebase premium charges
           actions: [
             AccountDeletedAction( (context, user) async {
               // delete user options from firebase when account deleted
