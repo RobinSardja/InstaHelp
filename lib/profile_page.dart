@@ -222,8 +222,7 @@ class EditProfilePageState extends State<EditProfilePage> {
             Center(
               child: DropdownMenu( // selected blood type
                 label: Text( medicalInfo ? "Select blood type" : "Disabled" ),
-                enabled: medicalInfo,
-                initialSelection: bloodType,
+                initialSelection: medicalInfo ? bloodType : "Disabled",
                 onSelected: (value) => bloodType = value as String,
                 dropdownMenuEntries: const [
                   DropdownMenuEntry(
@@ -257,6 +256,11 @@ class EditProfilePageState extends State<EditProfilePage> {
                   DropdownMenuEntry(
                     value: "AB-",
                     label: "AB-",
+                  ),
+                  DropdownMenuEntry(
+                    value: "Disabled",
+                    label: "Disabled",
+                    enabled: false,
                   ),
                 ],
               ),
