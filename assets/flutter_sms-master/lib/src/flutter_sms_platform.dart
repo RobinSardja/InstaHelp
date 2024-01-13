@@ -25,7 +25,6 @@ class FlutterSmsPlatform extends PlatformInterface {
 
   /// Platform-specific plugins should set this with their own platform-specific
   /// class that extends [FlutterSmsPlatform] when they register themselves.
-  // TODO(amirh): Extract common platform interface logic.
   // https://github.com/flutter/flutter/issues/43368
   static set instance(FlutterSmsPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
@@ -69,9 +68,9 @@ class FlutterSmsPlatform extends PlatformInterface {
     String _phones = numbers.join(';');
     if (body != null) {
       final _body = Uri.encodeComponent(body);
-      return launch('sms:/open?addresses=$_phones${separator}body=$_body');
+      return launchUrl( Uri( scheme:'sms:/open?addresses=$_phones${separator}body=$_body' ) );
     }
-    return launch('sms:/open?addresses=$_phones');
+    return launchUrl( Uri( scheme:'sms:/open?addresses=$_phones' ) );
   }
 
   Future<bool> launchSms(String? number, [String? body]) {
@@ -79,9 +78,9 @@ class FlutterSmsPlatform extends PlatformInterface {
     number ??= '';
     if (body != null) {
       final _body = Uri.encodeComponent(body);
-      return launch('sms:/$number${separator}body=$_body');
+      return launchUrl( Uri( scheme:'sms:/$number${separator}body=$_body' ) );
     }
-    return launch('sms:/$number');
+    return launchUrl( Uri( path:'sms:/$number' ) );
   }
 
   String get separator => isCupertino() ? '&' : '?';
