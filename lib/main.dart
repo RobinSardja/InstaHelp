@@ -49,6 +49,8 @@ class _InstaHelpState extends State<InstaHelp> {
         accessKey,
         [
           "assets/get-away-from-me_en_${platform}_v3_0_0.ppn",
+          "assets/leave-me-alone_en_${platform}_v3_0_0.ppn",
+          "assets/somebody-help_en_${platform}_v3_0_0.ppn",
         ],
         wakeWordCallback,
       );
