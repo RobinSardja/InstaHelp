@@ -43,6 +43,7 @@ flutter_launcher_icons:
 
 flutter:
   uses-material-design: true
+  
   assets:
     - assets/get-away-from-me_en_android_v3_0_0.ppn
     - assets/get-away-from-me_en_ios_v3_0_0.ppn
@@ -51,3 +52,8 @@ flutter:
     - assets/somebody-help_en_android_v3_0_0.ppn
     - assets/somebody-help_en_ios_v3_0_0.ppn
     - assets/siren.wav
+
+  fonts:
+    - family: SocialIcons
+      fonts:
+        - asset: packages/firebase_ui_auth/fonts/SocialIcons.ttf
