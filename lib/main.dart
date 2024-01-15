@@ -73,7 +73,8 @@ class _InstaHelpState extends State<InstaHelp> {
     await getPosition();
     try {
         await sendSMS(
-          message: "InstaHelp alert! ${currentUser.displayName} needs your help at www.google.com/maps/search/${currentPosition.latitude},${currentPosition.longitude}/@${currentPosition.latitude},${currentPosition.longitude}!"
+          message: "InstaHelp alert! ${currentUser.displayName == null || currentUser.displayName!.replaceAll(" ", "" ).isEmpty ? "Someone" : currentUser.displayName} needs your help at"
+            " www.google.com/maps/search/${currentPosition.latitude},${currentPosition.longitude}/@${currentPosition.latitude},${currentPosition.longitude}!"
             " ${userData["medicalInfo"] ? "Blood Type: ${userData["bloodType"]}" : "" }",
           recipients: [ userData["emergencyContact"], ],
           sendDirect: true,
