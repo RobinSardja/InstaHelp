@@ -101,6 +101,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final userDetection = FirebaseAuth.instance.authStateChanges();
 
+  late bool emailVerified;
+
   @override
   Widget build( BuildContext context ) {
     return StreamBuilder<User?>(
@@ -111,8 +113,10 @@ class _ProfilePageState extends State<ProfilePage> {
         userDetection.listen((User? user) {
           if( user == null ) {
             userData = defaultData;
+            emailVerified = false;
           } else {
             currentUser = user;
+            emailVerified = currentUser.emailVerified;
             updateFirestore();
           }
         });
@@ -126,18 +130,34 @@ class _ProfilePageState extends State<ProfilePage> {
               // delete user options from firebase when account deleted
               await db.collection("user_options").doc(currentUser.uid).delete();
             }),
+            EmailVerifiedAction(() {
+              setState( () => emailVerified = true );
+            }),
           ],
           children: [
             ElevatedButton( // edit profile button
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) {
-                      setTempVariables();
-                      return const EditProfilePage();
-                    },
-                  ),
-                );
+                if(emailVerified) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        setTempVariables();
+                        return const EditProfilePage();
+                      },
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: const Text( "Please verify email to edit profile" ),
+                      behavior: SnackBarBehavior.floating,
+                      action: SnackBarAction(
+                        label: "OK",
+                        onPressed: () {},
+                      ),
+                    ),
+                  );
+                }
               },
               child: const Center( child: Text( "Edit profile" ), ),
             ),
