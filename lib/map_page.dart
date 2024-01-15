@@ -72,14 +72,47 @@ class MapPage extends StatefulWidget {
   State<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
+class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
 
   late GoogleMapController mapController;
   void onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
+  bool includeMap = true;
 
   final positionStream = Geolocator.getPositionStream();
+
+  void resetMap() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if(mounted) {
+        setState(() => includeMap = true);
+      }
+    });
+    if(mounted) {
+      setState(() => includeMap = false);
+    }
+  }
+
+  @override
+  initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      resetMap();
+    }
+  }
 
   @override
   Widget build( BuildContext context ) {
@@ -93,11 +126,11 @@ class _MapPageState extends State<MapPage> {
         positionStream.listen( (event) => currentPosition = event );
       
         return Scaffold(
-          body: snapshot.hasData ? GoogleMap(
+          body: snapshot.hasData && includeMap ? GoogleMap(
             onMapCreated: onMapCreated,
             initialCameraPosition: CameraPosition(
               target: LatLng( currentPosition.latitude, currentPosition.longitude ),
-              zoom: 15,
+              zoom: 12,
             ),
             myLocationEnabled: true,
             markers: nearbyUsers,
