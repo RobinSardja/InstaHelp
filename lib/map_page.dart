@@ -83,7 +83,7 @@ class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
   final positionStream = Geolocator.getPositionStream();
 
   void resetMap() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback( (duration) {
       if(mounted) {
         setState(() => includeMap = true);
       }
@@ -156,7 +156,10 @@ class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
             ),
           ),
           floatingActionButton: FloatingActionButton(
-            onPressed: () async => await getPosition(),
+            onPressed: () async {
+              resetMap();
+              await getPosition();
+            },
             child: const Icon( Icons.refresh ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
