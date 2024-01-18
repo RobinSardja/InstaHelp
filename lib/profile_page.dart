@@ -12,6 +12,7 @@ import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart
 import 'package:volume_controller/volume_controller.dart';
 
 bool loggedIn = false;
+bool emailVerified = false;
 
 Map<String, dynamic> userData = defaultData;
 
@@ -103,8 +104,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final userDetection = FirebaseAuth.instance.authStateChanges();
 
-  late bool emailVerified;
-
   @override
   Widget build( BuildContext context ) {
     return StreamBuilder<User?>(
@@ -163,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   );
                 }
               },
-              child: const Center( child: Text( "Edit profile" ), ),
+              child: Center( child: Text( emailVerified ? "Edit profile" : "Please verify email to edit profile" ), ),
             ),
           ],
         ) :
