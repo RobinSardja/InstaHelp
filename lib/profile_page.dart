@@ -11,6 +11,8 @@ import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:volume_controller/volume_controller.dart';
 
+bool loggedIn = false;
+
 Map<String, dynamic> userData = defaultData;
 
 // default values for newly created users
@@ -112,16 +114,18 @@ class _ProfilePageState extends State<ProfilePage> {
         // get current user
         userDetection.listen((User? user) {
           if( user == null ) {
+            loggedIn = false;
             userData = defaultData;
             emailVerified = false;
           } else {
+            loggedIn = true;
             currentUser = user;
             emailVerified = currentUser.emailVerified;
             updateFirestore();
           }
         });
       
-        return snapshot.hasData ? ProfileScreen( // profile screen to show when user already logged in
+        return loggedIn ? ProfileScreen( // profile screen to show when user already logged in
           showUnlinkConfirmationDialog: true,
           showDeleteConfirmationDialog: true,
           // showMFATile: true, // temporarily disabled to prevent firebase premium charges
