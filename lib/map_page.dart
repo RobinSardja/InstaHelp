@@ -42,7 +42,7 @@ Future<void> getPosition() async {
 }
 
 // currenty hardcoded, nearby users will be a feature in the near future
-Set<Marker> nearbyUsers = {
+Set<Marker> _nearbyUsers = {
   // Marker(
   //   markerId: const MarkerId( "Nearby user 1 (online and safe)" ),
   //   icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueGreen ),
@@ -78,18 +78,18 @@ class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
   void onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
-  bool includeMap = true;
+  bool _includeMap = true;
 
-  final positionStream = Geolocator.getPositionStream();
+  final _positionStream = Geolocator.getPositionStream();
 
-  void resetMap() {
+  void _resetMap() {
     WidgetsBinding.instance.addPostFrameCallback( (duration) {
       if(mounted) {
-        setState(() => includeMap = true);
+        setState(() => _includeMap = true);
       }
     });
     if(mounted) {
-      setState(() => includeMap = false);
+      setState(() => _includeMap = false);
     }
   }
 
@@ -110,36 +110,36 @@ class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      resetMap();
+      _resetMap();
     }
   }
 
   @override
   Widget build( BuildContext context ) {
     return StreamBuilder<Position>(
-      stream: positionStream,
+      stream: _positionStream,
       builder: (context, snapshot) {
 
-        double radiusInMiles = userData["proximityDistance"] ??= defaultData["proximityDistance"];
-        bool enableSignal = userData["alertNearbyUsers"] ??= defaultData["alertNearbyUsers"];
+        double _radiusInMiles = userData["proximityDistance"] ??= defaultData["proximityDistance"];
+        bool _enableSignal = userData["alertNearbyUsers"] ??= defaultData["alertNearbyUsers"];
 
-        positionStream.listen( (event) => currentPosition = event );
+        _positionStream.listen( (position) => currentPosition = position );
       
         return Scaffold(
-          body: snapshot.hasData && includeMap ? GoogleMap(
+          body: snapshot.hasData && _includeMap ? GoogleMap(
             onMapCreated: onMapCreated,
             initialCameraPosition: CameraPosition(
               target: LatLng( currentPosition.latitude, currentPosition.longitude ),
               zoom: 12,
             ),
             myLocationEnabled: true,
-            markers: nearbyUsers,
-            circles: enableSignal ? {
+            markers: _nearbyUsers,
+            circles: _enableSignal ? {
               Circle( // map radius of nearby area for users to come help
                 circleId: const CircleId( "Nearby area" ),
                 fillColor: Colors.red.withOpacity(0.5),
                 center: LatLng( currentPosition.latitude, currentPosition.longitude ),
-                radius: radiusInMiles * 1609.34, // converts miles to meters
+                radius: _radiusInMiles * 1609.34, // converts miles to meters
                 strokeWidth: 1,
               ),
             } : {},
@@ -157,7 +157,7 @@ class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () async {
-              resetMap();
+              _resetMap();
               await getPosition();
             },
             child: const Icon( Icons.refresh ),
