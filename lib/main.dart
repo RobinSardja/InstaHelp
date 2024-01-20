@@ -35,27 +35,27 @@ class InstaHelp extends StatefulWidget {
 
 class _InstaHelpState extends State<InstaHelp> {
 
-  String message = "We're ready to help!";
-  bool muted = false;
+  String _message = "We're ready to help!";
+  bool _muted = false;
 
   // initialize porcupine wake word manager
-  late PorcupineManager porcupineManager;
-  static const accessKey = String.fromEnvironment("picovoice", defaultValue: "none");
-  final platform = Platform.isAndroid ? "android" : "ios";
+  late PorcupineManager _porcupineManager;
+  static const _accessKey = String.fromEnvironment("picovoice", defaultValue: "none");
+  final _platform = Platform.isAndroid ? "android" : "ios";
 
   Future<void> createPorcupineManager() async {
     try {
-      porcupineManager = await PorcupineManager.fromKeywordPaths(
-        accessKey,
+      _porcupineManager = await PorcupineManager.fromKeywordPaths(
+        _accessKey,
         [
-          "assets/get-away-from-me_en_${platform}_v3_0_0.ppn",
-          "assets/leave-me-alone_en_${platform}_v3_0_0.ppn",
-          "assets/somebody-help_en_${platform}_v3_0_0.ppn",
+          "assets/get-away-from-me_en_${_platform}_v3_0_0.ppn",
+          "assets/leave-me-alone_en_${_platform}_v3_0_0.ppn",
+          "assets/somebody-help_en_${_platform}_v3_0_0.ppn",
         ],
         wakeWordCallback,
       );
 
-      await porcupineManager.start();
+      await _porcupineManager.start();
     } on PorcupineException {
       // handle any errors
     }
@@ -63,7 +63,7 @@ class _InstaHelpState extends State<InstaHelp> {
 
   // features to run when call for help detected
   void wakeWordCallback(keywordIndex) {
-    setState( () => message = "Help is on the way!" );
+    setState( () => _message = "Help is on the way!" );
     if( userData["textMessageAlert"] ) sendTextMessageAlert();
     if( userData["soundAlarm"] ) playSoundAlarm();
     if( userData["blinkFlashlight"] ) startBlinkingFlashlight();
@@ -87,16 +87,16 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
-  final player = AudioPlayer()..setAsset("assets/siren.wav")..setLoopMode(LoopMode.one);
+  final _player = AudioPlayer()..setAsset("assets/siren.wav")..setLoopMode(LoopMode.one);
   Future<void> playSoundAlarm() async {
-    await player.seek( const Duration( seconds: 0 ), ); // reset to beginning of sound effect
-    await player.play();
+    await _player.seek( const Duration( seconds: 0 ), ); // reset to beginning of sound effect
+    await _player.play();
   }
 
   Future<void> startBlinkingFlashlight() async {
     final isTorchAvailable = await TorchLight.isTorchAvailable();
     if( isTorchAvailable ) {
-      while( !muted ) {
+      while( !_muted ) {
         await TorchLight.enableTorch();
         await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].round(), ), );
         await TorchLight.disableTorch();
@@ -106,9 +106,9 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   // determines if all required permissions have been granted
-  PermissionStatus mapPermStatus = PermissionStatus.denied;
-  PermissionStatus micPermStatus = PermissionStatus.denied;
-  PermissionStatus smsPermStatus = PermissionStatus.denied;
+  PermissionStatus _mapPermStatus = PermissionStatus.denied;
+  PermissionStatus _micPermStatus = PermissionStatus.denied;
+  PermissionStatus _smsPermStatus = PermissionStatus.denied;
 
   // updates all permission variables with current device permissions
   Future<void> checkAllPermissions() async {
@@ -116,9 +116,9 @@ class _InstaHelpState extends State<InstaHelp> {
     final newMicPermStatus = await Permission.microphone.status;
     final newSmsPermStatus = await Permission.sms.status;
     setState(() {
-      mapPermStatus = newMapPermStatus;
-      micPermStatus = newMicPermStatus;
-      smsPermStatus = newSmsPermStatus;
+      _mapPermStatus = newMapPermStatus;
+      _micPermStatus = newMicPermStatus;
+      _smsPermStatus = newSmsPermStatus;
     });
   }
   
@@ -136,7 +136,7 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   // controls switching between pages
-  int selectedIndex = 0;
+  int _selectedIndex = 0;
   final pageController = PageController(
     initialPage: 0,
   );
@@ -150,9 +150,9 @@ class _InstaHelpState extends State<InstaHelp> {
 
   @override
   void dispose() async {
-    await player.dispose();
+    await _player.dispose();
     await TorchLight.disableTorch();
-    await porcupineManager.delete();
+    await _porcupineManager.delete();
 
     super.dispose();
   }
@@ -247,20 +247,20 @@ class _InstaHelpState extends State<InstaHelp> {
         ),
         body: PageView(
           controller: pageController,
-          onPageChanged: (changedIndex) => setState( () => selectedIndex = changedIndex ),
+          onPageChanged: (changedIndex) => setState( () => _selectedIndex = changedIndex ),
           children: [ // pages shown in app
             const ProfilePage(),
-            mapPermStatus.isGranted && micPermStatus.isGranted && smsPermStatus.isGranted ?
+            _mapPermStatus.isGranted && _micPermStatus.isGranted && _smsPermStatus.isGranted ?
             homePage() : permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
             const MapPage(),
           ],
         ),
         bottomNavigationBar: NavigationBar(
           onDestinationSelected: (changedIndex) {
-            setState( () => selectedIndex = changedIndex );
+            setState( () => _selectedIndex = changedIndex );
             pageController.jumpToPage(changedIndex);
           },
-          selectedIndex: selectedIndex,
+          selectedIndex: _selectedIndex,
           destinations: const [
             NavigationDestination(
               icon: Icon( Icons.person ),
@@ -282,20 +282,20 @@ class _InstaHelpState extends State<InstaHelp> {
 
   Widget homePage() {
     return Scaffold(
-      body: Center( child: Text( message, style: const TextStyle( fontSize: 36 ), ), ),
+      body: Center( child: Text( _message, style: const TextStyle( fontSize: 36 ), ), ),
       floatingActionButton: FloatingActionButton(
-        child: muted ? const Icon( Icons.mic_off ) : const Icon( Icons.mic ),
+        child: _muted ? const Icon( Icons.mic_off ) : const Icon( Icons.mic ),
         onPressed: () async {
           setState(() {
-            muted = !muted;
-            message = muted ? "Glad you're safe!" : "We're ready to help!";
+            _muted = !_muted;
+            _message = _muted ? "Glad you're safe!" : "We're ready to help!";
           });
-          if( muted ) {
-            await porcupineManager.stop();
-            player.stop();
+          if( _muted ) {
+            await _porcupineManager.stop();
+            _player.stop();
             await TorchLight.disableTorch();
           } else {
-            await porcupineManager.start();
+            await _porcupineManager.start();
           }
         },
       ),
