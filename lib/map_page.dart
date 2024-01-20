@@ -120,8 +120,8 @@ class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
       stream: _positionStream,
       builder: (context, snapshot) {
 
-        double _radiusInMiles = userData["proximityDistance"] ??= defaultData["proximityDistance"];
-        bool _enableSignal = userData["alertNearbyUsers"] ??= defaultData["alertNearbyUsers"];
+        double radiusInMiles = userData["proximityDistance"] ??= defaultData["proximityDistance"];
+        bool enableSignal = userData["alertNearbyUsers"] ??= defaultData["alertNearbyUsers"];
 
         _positionStream.listen( (position) => currentPosition = position );
       
@@ -134,12 +134,12 @@ class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
             ),
             myLocationEnabled: true,
             markers: _nearbyUsers,
-            circles: _enableSignal ? {
+            circles: enableSignal ? {
               Circle( // map radius of nearby area for users to come help
                 circleId: const CircleId( "Nearby area" ),
                 fillColor: Colors.red.withOpacity(0.5),
                 center: LatLng( currentPosition.latitude, currentPosition.longitude ),
-                radius: _radiusInMiles * 1609.34, // converts miles to meters
+                radius: radiusInMiles * 1609.34, // converts miles to meters
                 strokeWidth: 1,
               ),
             } : {},

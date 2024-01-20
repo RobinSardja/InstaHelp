@@ -167,12 +167,9 @@ class _InstaHelpState extends State<InstaHelp> {
           secondary: Colors.black,
         ),
         appBarTheme: const AppBarTheme(
-          color: Colors.red,
           centerTitle: true,
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-          ),
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
         ),
         outlinedButtonTheme: const OutlinedButtonThemeData(
           style: ButtonStyle(
