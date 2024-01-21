@@ -69,30 +69,6 @@ void updateFirestore() {
   );
 }
 
-void setTempVariables() {
-  medicalInfo = userData["medicalInfo"];
-  bloodType = userData["bloodType"];
-  alertNearbyUsers = userData["alertNearbyUsers"];
-  proximityDistance = userData["proximityDistance"];
-  textMessageAlert = userData["textMessageAlert"];
-  emergencyContact = userData["emergencyContact"];
-  soundAlarm = userData["soundAlarm"];
-  blinkFlashlight = userData["blinkFlashlight"];
-  blinkSpeed = userData["blinkSpeed"];
-}
-
-void setFinalVariables() {
-  userData["medicalInfo"] = medicalInfo;
-  userData["bloodType"] = bloodType;
-  userData["alertNearbyUsers"] = alertNearbyUsers;
-  userData["proximityDistance"] = proximityDistance;
-  userData["textMessageAlert"] = textMessageAlert;
-  userData["emergencyContact"] = emergencyContact;
-  userData["soundAlarm"] = soundAlarm;
-  userData["blinkFlashlight"] = blinkFlashlight;
-  userData["blinkSpeed"] = blinkSpeed;
-}
-
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
@@ -102,16 +78,28 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
 
-  final userDetection = FirebaseAuth.instance.authStateChanges();
+  final _userDetection = FirebaseAuth.instance.authStateChanges();
+
+  void _setTempVariables() {
+    medicalInfo = userData["medicalInfo"];
+    bloodType = userData["bloodType"];
+    alertNearbyUsers = userData["alertNearbyUsers"];
+    proximityDistance = userData["proximityDistance"];
+    textMessageAlert = userData["textMessageAlert"];
+    emergencyContact = userData["emergencyContact"];
+    soundAlarm = userData["soundAlarm"];
+    blinkFlashlight = userData["blinkFlashlight"];
+    blinkSpeed = userData["blinkSpeed"];
+  }
 
   @override
   Widget build( BuildContext context ) {
     return StreamBuilder<User?>(
-      stream: userDetection,
+      stream: _userDetection,
       builder: (context, snapshot) {
 
         // get current user
-        userDetection.listen((User? user) {
+        _userDetection.listen((User? user) {
           if( user == null ) {
             loggedIn = false;
             userData = defaultData;
@@ -144,7 +132,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
-                        setTempVariables();
+                        _setTempVariables();
                         return const EditProfilePage();
                       },
                     ),
@@ -190,29 +178,38 @@ class EditProfilePage extends StatefulWidget {
 
 class EditProfilePageState extends State<EditProfilePage> {
 
-  double volumeListenerValue = 0;
-  double getVolume = 0;
-  double setVolumeValue = 0;
+  double _volumeListenerValue = 0;
+  double _setVolumeValue = 0;
 
-  final contactPicker = FlutterContactPicker();
-  final volumeController = VolumeController();
+  final _contactPicker = FlutterContactPicker();
+  final _volumeController = VolumeController();
 
-  late String snackBarMessage;
+  void _setFinalVariables() {
+    userData["medicalInfo"] = medicalInfo;
+    userData["bloodType"] = bloodType;
+    userData["alertNearbyUsers"] = alertNearbyUsers;
+    userData["proximityDistance"] = proximityDistance;
+    userData["textMessageAlert"] = textMessageAlert;
+    userData["emergencyContact"] = emergencyContact;
+    userData["soundAlarm"] = soundAlarm;
+    userData["blinkFlashlight"] = blinkFlashlight;
+    userData["blinkSpeed"] = blinkSpeed;
+  }
 
   @override
   void initState() {
     super.initState();
 
-    volumeController.listener((volume) {
-      setState( () => volumeListenerValue = volume );
+    _volumeController.listener((volume) {
+      setState( () => _volumeListenerValue = volume );
     });
 
-    volumeController.getVolume().then( (volume) => setVolumeValue = volume );
+    _volumeController.getVolume().then( (volume) => _setVolumeValue = volume );
   }
 
   @override
   void dispose() {
-    volumeController.removeListener();
+    _volumeController.removeListener();
 
     super.dispose();
   }
@@ -346,7 +343,7 @@ class EditProfilePageState extends State<EditProfilePage> {
               child: ElevatedButton(
                 onPressed: () async {
                   if( textMessageAlert) {
-                    Contact? value = await contactPicker.selectContact();
+                    Contact? value = await _contactPicker.selectContact();
                     setState( () => emergencyContact = value == null ? "" : value.toString() );
                   }
                 },
@@ -363,24 +360,24 @@ class EditProfilePageState extends State<EditProfilePage> {
                     onChanged: (value) {
                       setState(() {
                         soundAlarm = value;
-                        volumeController.getVolume().then( (volume) => setVolumeValue = volume );
+                        _volumeController.getVolume().then( (volume) => _setVolumeValue = volume );
                       });
                     },
                   ),
                 ],
               ),
             ),
-            Center(child: Text( soundAlarm ? "Phone volume: ${volumeListenerValue == 0 ? "Muted" : "${(volumeListenerValue * 100).round()}%" }" : "Sound alarm disabled" ), ),
+            Center(child: Text( soundAlarm ? "Phone volume: ${_volumeListenerValue == 0 ? "Muted" : "${(_volumeListenerValue * 100).round()}%" }" : "Sound alarm disabled" ), ),
             Center(
               child: Slider( // siren volume
                 min: 0,
                 max: 1,
-                value: soundAlarm ? volumeListenerValue : 0,
+                value: soundAlarm ? _volumeListenerValue : 0,
                 onChanged: (value) {
                   if( soundAlarm ) {
                     setState(() {
-                      setVolumeValue = value;
-                      volumeController.setVolume(setVolumeValue);
+                      _setVolumeValue = value;
+                      _volumeController.setVolume(_setVolumeValue);
                     });
                   }
                 },
@@ -424,11 +421,11 @@ class EditProfilePageState extends State<EditProfilePage> {
       ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (updatedIndex) {
-          snackBarMessage = updatedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded";
+          final String snackBarMessage = updatedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded";
 
           if( updatedIndex == 0 ) {
             String.fromCharCodes( emergencyContact.codeUnits.where( (x) => (x ^0x30) <= 9 ) ); // extracts phone number
-            setFinalVariables();
+            _setFinalVariables();
             db
               .collection( "user_options" )
               .doc( currentUser.uid )
