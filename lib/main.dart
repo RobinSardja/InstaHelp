@@ -73,7 +73,7 @@ class _InstaHelpState extends State<InstaHelp> {
 
     for( int i = 0; i < userData["emergencyContacts"].length; i++ ) { // extracts phone number
       userData["emergencyContacts"][i] = String.fromCharCodes( userData["emergencyContacts"][i].toString().codeUnits.where( (x) => (x ^0x30) <= 9 ) );
-    } // TODO: text message not sending
+    } // TODO: text message not sending. phone number extraction works just fine though
 
     await getPosition();
     try {
@@ -84,7 +84,7 @@ class _InstaHelpState extends State<InstaHelp> {
             "www.google.com/maps/search/${currentPosition.latitude},${currentPosition.longitude}"
             "/@${currentPosition.latitude},${currentPosition.longitude}! "
             "${userData["medicalInfo"] ? "Blood Type: ${userData["bloodType"]}" : "" }",
-          recipients: userData["emergencyContacts"],
+          recipients: userData["emergencyContacts"] ??= defaultData["emergencyContacts"],
           sendDirect: true,
         );
     } on Error {
