@@ -133,7 +133,6 @@ class _ProfilePageState extends State<ProfilePage> {
                     MaterialPageRoute(
                       builder: (context) {
                         _setTempVariables();
-                        print( emergencyContacts );
                         return const EditProfilePage();
                       },
                     ),
@@ -332,13 +331,12 @@ class EditProfilePageState extends State<EditProfilePage> {
                 },
               ),
             ),
-            const Center( child: Text( "Designated emergency contacts:" ), ),
             Center( // button to add emergency contacts
               child: ElevatedButton(
                 onPressed: () async {
                   if( textMessageAlert && emergencyContacts.length < _maxEmergencyContacts ) {
                     Contact? value = await _contactPicker.selectContact();                                                            
-                    if( value != null && !emergencyContacts.contains(value) ) { // TODO: prevent adding duplicate contacts
+                    if( value != null && !emergencyContacts.contains(value.toString()) ) {
                       setState( () => emergencyContacts.add( value.toString() ) );
                     }
                   }
@@ -348,7 +346,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
             ),
-            ListView.builder(
+            ListView.builder( // TODO: not discarding on back button
               shrinkWrap: true,
               physics: const ClampingScrollPhysics(),
               itemCount: emergencyContacts.length,
@@ -358,8 +356,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                   trailing: IconButton(
                     icon: const Icon( Icons.delete ),
                     onPressed: () {
-                      // TODO: remove emergency contact
-                      // emergencyContacts.removeAt( index );
+                      setState( () => emergencyContacts.remove( emergencyContacts[index] ) );
                     },
                   ),
                 );
