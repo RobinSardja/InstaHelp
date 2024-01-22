@@ -133,6 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     MaterialPageRoute(
                       builder: (context) {
                         _setTempVariables();
+                        print( emergencyContacts );
                         return const EditProfilePage();
                       },
                     ),
@@ -239,6 +240,7 @@ class EditProfilePageState extends State<EditProfilePage> {
             ),
             Center(
               child: DropdownMenu( // selected blood type
+                enabled: medicalInfo,
                 label: Text( medicalInfo ? "Select blood type" : "Disabled" ),
                 initialSelection: medicalInfo ? bloodType : "Disabled",
                 onSelected: (value) => bloodType = value as String,
@@ -336,15 +338,32 @@ class EditProfilePageState extends State<EditProfilePage> {
                 onPressed: () async {
                   if( textMessageAlert && emergencyContacts.length < _maxEmergencyContacts ) {
                     Contact? value = await _contactPicker.selectContact();                                                            
-                    if( value != null ) {                                                                           // extracts phone number
-                      setState( () => emergencyContacts.add( String.fromCharCodes( value.toString().codeUnits.where( (x) => (x ^0x30) <= 9 ) ) ) );
+                    if( value != null && !emergencyContacts.contains(value) ) { // TODO: prevent adding duplicate contacts
+                      setState( () => emergencyContacts.add( value.toString() ) );
                     }
                   }
                 },
                 child: Text(
-                  textMessageAlert ? emergencyContacts.length == _maxEmergencyContacts ? "Maximum $_maxEmergencyContacts emergency contacts" : "TEXT MESSAGE ALERT TRUE" : "TEXT MESSAGE ALERT FALSE"
+                  textMessageAlert ? emergencyContacts.length == _maxEmergencyContacts ? "Maximum $_maxEmergencyContacts emergency contacts" : "Add new emergency contact" : "Text message alert disabled"
                 ),
               ),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const ClampingScrollPhysics(),
+              itemCount: emergencyContacts.length,
+              itemBuilder: (_, int index) {
+                return ListTile(
+                  title: Text( emergencyContacts[index] ),
+                  trailing: IconButton(
+                    icon: const Icon( Icons.delete ),
+                    onPressed: () {
+                      // TODO: remove emergency contact
+                      // emergencyContacts.removeAt( index );
+                    },
+                  ),
+                );
+              },
             ),
             ListTile( // play loud siren
               title: const Text( "Sound alarm" ),

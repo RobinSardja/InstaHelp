@@ -70,6 +70,11 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   Future<void> sendTextMessageAlert() async {
+
+    for( int i = 0; i < userData["emergencyContacts"].length; i++ ) { // extracts phone number
+      userData["emergencyContacts"][i] = String.fromCharCodes( userData["emergencyContacts"][i].toString().codeUnits.where( (x) => (x ^0x30) <= 9 ) );
+    }
+
     await getPosition();
     try {
         await sendSMS(
