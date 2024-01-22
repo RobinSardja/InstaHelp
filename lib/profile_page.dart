@@ -228,18 +228,13 @@ class EditProfilePageState extends State<EditProfilePage> {
         child: ListView(
           shrinkWrap: true,
           children: [
-            Center(
-              child: Row( // choose to send medical information
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text( "Send medical information" ),
-                  Switch(
-                    value: medicalInfo,
-                    onChanged: (value) {
-                      setState( () => medicalInfo = value );
-                    },
-                  ),
-                ],
+            ListTile( // choose to send medical information
+              title: const Text( "Send medical information" ),
+              trailing: Switch(
+                value: medicalInfo,
+                onChanged: (value) {
+                  setState( () => medicalInfo = value );
+                },
               ),
             ),
             Center(
@@ -288,23 +283,18 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
-            Center(
-              child: Row( // alert nearby users
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text( "Alert nearby users (coming soon!)" ),
-                  Switch(
-                    value: alertNearbyUsers,
-                    onChanged: (value) {
-                      setState(() {
-                        alertNearbyUsers = value;
-                        if( value == false ) {
-                          proximityDistance = 5.0;
-                        }
-                      });
-                    },
-                  ),
-                ],
+            ListTile( // alert nearby users
+              title: const Text( "Alert nearby users (in future!)" ),
+              trailing: Switch(
+                value: alertNearbyUsers,
+                onChanged: (value) {
+                  setState(() {
+                    alertNearbyUsers = value;
+                    if( value == false ) {
+                      proximityDistance = 5.0;
+                    }
+                  });
+                },
               ),
             ),
             Center(
@@ -326,23 +316,18 @@ class EditProfilePageState extends State<EditProfilePage> {
                 thumbColor: alertNearbyUsers ? Colors.red : Colors.black,
               ),
             ),
-            Center(
-              child: Row( // text message alert
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text( "Text message alert" ),
-                  Switch(
-                    value: textMessageAlert,
-                    onChanged: (value) {
-                      setState(() {
-                        textMessageAlert = value;
-                        if( value == false ) {
-                          emergencyContacts = [];
-                        }
-                      });
-                    },
-                  ),
-                ],
+            ListTile( // send text message to designated emergency contacts
+              title: const Text( "Text message alert" ),
+              trailing: Switch(
+                value: textMessageAlert,
+                onChanged: (value) {
+                  setState(() {
+                    textMessageAlert = value;
+                    if( value == false ) {
+                      emergencyContacts = [];
+                    }
+                  });
+                },
               ),
             ),
             const Center( child: Text( "Designated emergency contacts:" ), ),
@@ -361,21 +346,16 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ),
               ),
             ),
-            Center(
-              child: Row( // sound alarm
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text( "Sound alarm" ),
-                  Switch(
-                    value: soundAlarm,
-                    onChanged: (value) {
-                      setState(() {
-                        soundAlarm = value;
-                        _volumeController.getVolume().then( (volume) => _setVolumeValue = volume );
-                      });
-                    },
-                  ),
-                ],
+            ListTile( // play loud siren
+              title: const Text( "Sound alarm" ),
+              trailing: Switch(
+                value: soundAlarm,
+                onChanged: (value) {
+                  setState(() {
+                    soundAlarm = value;
+                    _volumeController.getVolume().then( (volume) => _setVolumeValue = volume );
+                  });
+                },
               ),
             ),
             Center(
@@ -399,21 +379,16 @@ class EditProfilePageState extends State<EditProfilePage> {
                 thumbColor: soundAlarm ? Colors.red : Colors.black,
               ),
             ),
-            Center(
-              child: Row( // text message alert
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text( "Blink flashlight" ),
-                  Switch(
-                    value: blinkFlashlight,
-                    onChanged: (value) {
-                      setState( () => blinkFlashlight = value );
-                      if( value == false ) {
-                        blinkSpeed = 250;
-                      }
-                    },
-                  ),
-                ],
+            ListTile( // turn flashlight on and off like a blinker
+              title: const Text( "Blink flashlight" ),
+              trailing: Switch(
+                value: blinkFlashlight,
+                onChanged: (value) {
+                  setState( () => blinkFlashlight = value );
+                  if( value == false ) {
+                    blinkSpeed = 250;
+                  }
+                },
               ),
             ),
             Center(
