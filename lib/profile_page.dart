@@ -23,7 +23,7 @@ final defaultData = {
   "alertNearbyUsers" : alertNearbyUsers = true,
   "proximityDistance" : proximityDistance = 5,
   "textMessageAlert" : textMessageAlert = true,
-  "emergencyContact" : emergencyContact = "",
+  "emergencyContacts" : emergencyContacts = [],
   "soundAlarm" : soundAlarm = true,
   "blinkFlashlight" : blinkFlashlight = true,
   "blinkSpeed" : blinkSpeed = 250,
@@ -34,7 +34,7 @@ late String bloodType;
 late bool alertNearbyUsers;
 late double proximityDistance;
 late bool textMessageAlert;
-late String emergencyContact;
+late List<dynamic> emergencyContacts;
 late bool soundAlarm;
 late bool blinkFlashlight;
 late double blinkSpeed;
@@ -86,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
     alertNearbyUsers = userData["alertNearbyUsers"];
     proximityDistance = userData["proximityDistance"];
     textMessageAlert = userData["textMessageAlert"];
-    emergencyContact = userData["emergencyContact"];
+    emergencyContacts = userData["emergencyContacts"];
     soundAlarm = userData["soundAlarm"];
     blinkFlashlight = userData["blinkFlashlight"];
     blinkSpeed = userData["blinkSpeed"];
@@ -184,13 +184,15 @@ class EditProfilePageState extends State<EditProfilePage> {
   final _contactPicker = FlutterContactPicker();
   final _volumeController = VolumeController();
 
+  final _maxEmergencyContacts = 5;
+
   void _setFinalVariables() {
     userData["medicalInfo"] = medicalInfo;
     userData["bloodType"] = bloodType;
     userData["alertNearbyUsers"] = alertNearbyUsers;
     userData["proximityDistance"] = proximityDistance;
     userData["textMessageAlert"] = textMessageAlert;
-    userData["emergencyContact"] = emergencyContact;
+    userData["emergencyContacts"] = emergencyContacts;
     userData["soundAlarm"] = soundAlarm;
     userData["blinkFlashlight"] = blinkFlashlight;
     userData["blinkSpeed"] = blinkSpeed;
@@ -216,6 +218,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build( BuildContext context ) {
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -304,7 +307,11 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
-            Center( child: Text( alertNearbyUsers ? "Proximity distance: $proximityDistance ${proximityDistance == 1 ? "mile" : "miles"}" : "Location signal disabled" ), ),
+            Center(
+              child: Text(
+                alertNearbyUsers ? "Proximity distance: $proximityDistance ${proximityDistance == 1 ? "mile" : "miles"}" : "Location signal disabled"
+              ),
+            ),
             Center(
               child: Slider( // proximity distance in miles
                 min: 1.0,
@@ -330,7 +337,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                       setState(() {
                         textMessageAlert = value;
                         if( value == false ) {
-                          emergencyContact = "";
+                          emergencyContacts = [];
                         }
                       });
                     },
@@ -338,16 +345,20 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
-            const Center( child: Text( "Designated emergency contact:" ), ),
-            Center(
+            const Center( child: Text( "Designated emergency contacts:" ), ),
+            Center( // button to add emergency contacts
               child: ElevatedButton(
                 onPressed: () async {
-                  if( textMessageAlert) {
-                    Contact? value = await _contactPicker.selectContact();
-                    setState( () => emergencyContact = value == null ? "" : value.toString() );
+                  if( textMessageAlert && emergencyContacts.length < _maxEmergencyContacts ) {
+                    Contact? value = await _contactPicker.selectContact();                                                            
+                    if( value != null ) {                                                                           // extracts phone number
+                      setState( () => emergencyContacts.add( String.fromCharCodes( value.toString().codeUnits.where( (x) => (x ^0x30) <= 9 ) ) ) );
+                    }
                   }
                 },
-                child: Text( textMessageAlert ? emergencyContact == "" ? "No emergency contact selected" : emergencyContact : "Text message alert disabled" ),
+                child: Text(
+                  textMessageAlert ? emergencyContacts.length == _maxEmergencyContacts ? "Maximum $_maxEmergencyContacts emergency contacts" : "TEXT MESSAGE ALERT TRUE" : "TEXT MESSAGE ALERT FALSE"
+                ),
               ),
             ),
             Center(
@@ -367,7 +378,11 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
-            Center(child: Text( soundAlarm ? "Phone volume: ${_volumeListenerValue == 0 ? "Muted" : "${(_volumeListenerValue * 100).round()}%" }" : "Sound alarm disabled" ), ),
+            Center(
+              child: Text(
+                soundAlarm ? "Phone volume: ${_volumeListenerValue == 0 ? "Muted" : "${(_volumeListenerValue * 100).round()}%" }" : "Sound alarm disabled"
+              ),
+            ),
             Center(
               child: Slider( // siren volume
                 min: 0,
@@ -401,7 +416,11 @@ class EditProfilePageState extends State<EditProfilePage> {
                 ],
               ),
             ),
-            Center(child: Text( blinkFlashlight ? "Blink speed: ${ blinkSpeed == 1000 ? "1 second" : "${blinkSpeed.round()} milliseconds" }" : "Blink flashlight disabled" )),
+            Center(
+              child: Text(
+                blinkFlashlight ? "Blink speed: ${ blinkSpeed == 1000 ? "1 second" : "${blinkSpeed.round()} milliseconds" }" : "Blink flashlight disabled"
+              ),
+            ),
             Center(
               child: Slider( // proximity distance in miles
                 min: 100,
@@ -421,10 +440,8 @@ class EditProfilePageState extends State<EditProfilePage> {
       ),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: (updatedIndex) {
-          final String snackBarMessage = updatedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded";
 
           if( updatedIndex == 0 ) {
-            String.fromCharCodes( emergencyContact.codeUnits.where( (x) => (x ^0x30) <= 9 ) ); // extracts phone number
             _setFinalVariables();
             db
               .collection( "user_options" )
@@ -434,7 +451,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text( snackBarMessage ),
+              content: Text( updatedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded" ),
               behavior: SnackBarBehavior.floating,
               action: SnackBarAction(
                 label: "OK",

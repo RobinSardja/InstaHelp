@@ -79,7 +79,7 @@ class _InstaHelpState extends State<InstaHelp> {
             "www.google.com/maps/search/${currentPosition.latitude},${currentPosition.longitude}"
             "/@${currentPosition.latitude},${currentPosition.longitude}! "
             "${userData["medicalInfo"] ? "Blood Type: ${userData["bloodType"]}" : "" }",
-          recipients: [ userData["emergencyContact"], ],
+          recipients: [ userData["emergencyContacts"], ],
           sendDirect: true,
         );
     } on Error {
