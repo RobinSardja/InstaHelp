@@ -348,7 +348,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                   ),
                 ),
               ),
-              ListView.builder( // TODO: not discarding on back button
+              ListView.builder(
                 shrinkWrap: true,
                 physics: const ClampingScrollPhysics(),
                 itemCount: emergencyContacts.length,
