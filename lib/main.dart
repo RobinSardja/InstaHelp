@@ -237,6 +237,7 @@ class _InstaHelpState extends State<InstaHelp> {
           contentTextStyle: TextStyle(
             color: Colors.black,
           ),
+          behavior: SnackBarBehavior.floating,
         ),
         switchTheme: SwitchThemeData(
           trackColor: MaterialStateProperty.resolveWith<Color?>(

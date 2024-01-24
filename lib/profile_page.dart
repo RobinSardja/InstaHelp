@@ -12,6 +12,7 @@ import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart
 import 'package:volume_controller/volume_controller.dart';
 
 bool loggedIn = false;
+bool emailVerified = false;
 
 Map<String, dynamic> userData = defaultData;
 
@@ -108,9 +109,11 @@ class _ProfilePageState extends State<ProfilePage> {
           if( user == null ) {
             loggedIn = false;
             userData = defaultData;
+            emailVerified = false;
           } else {
             loggedIn = true;
             currentUser = user;
+            emailVerified = currentUser.emailVerified;
           }
         });
       
@@ -125,12 +128,16 @@ class _ProfilePageState extends State<ProfilePage> {
             }),
           ],
           children: [
-            ElevatedButton( // edit profile button doubles and email verification button
-              onPressed: () {
+            ElevatedButton( // edit profile button doubles as email verification button
+              onPressed: () async {
 
-                // TODO: update email verification status
-                
-                if( currentUser.emailVerified ) {
+                await currentUser.reload();
+                currentUser = FirebaseAuth.instance.currentUser as User;
+                setState( () => emailVerified = currentUser.emailVerified );
+
+                if( !mounted ) return;
+
+                if( emailVerified ) {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
@@ -143,7 +150,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: const Text( "Email still not yet verified" ),
-                      behavior: SnackBarBehavior.floating,
                       action: SnackBarAction(
                         label: "OK",
                         onPressed: () {},
@@ -152,7 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   );
                 }
               },
-              child: Center( child: Text( currentUser.emailVerified ? "Edit profile" : "Check email verification" ), ),
+              child: Center( child: Text( emailVerified ? "Edit profile" : "Check email verification status" ), ),
             ),
           ],
         ) :
@@ -449,7 +455,6 @@ class EditProfilePageState extends State<EditProfilePage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text( updatedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded" ),
-                behavior: SnackBarBehavior.floating,
                 action: SnackBarAction(
                   label: "OK",
                   onPressed: () {},
