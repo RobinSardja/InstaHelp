@@ -42,17 +42,10 @@ late double blinkSpeed;
 late User currentUser;
 late FirebaseFirestore db;
 
-late String accessKey;
-
 Future<void> initializeFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  db = FirebaseFirestore.instance;
-  final docRef = db.collection( "picovoice" ).doc( "porcupine" );
-  final doc = await docRef.get();
-  accessKey = doc.get("api_key");
 }
 
 // update database
