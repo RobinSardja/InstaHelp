@@ -38,15 +38,14 @@ class _InstaHelpState extends State<InstaHelp> {
   String _message = "We're ready to help!";
   bool _muted = false;
 
-  // initialize porcupine wake word manager
+  // Implementation of Porcupine Wake Word by Picovoice
   late PorcupineManager _porcupineManager;
-  static const _accessKey = String.fromEnvironment("picovoice", defaultValue: "none");
   final _platform = Platform.isAndroid ? "android" : "ios";
 
   Future<void> createPorcupineManager() async {
     try {
       _porcupineManager = await PorcupineManager.fromKeywordPaths(
-        _accessKey,
+        accessKey,
         [
           "assets/get-away-from-me_en_${_platform}_v3_0_0.ppn",
           "assets/leave-me-alone_en_${_platform}_v3_0_0.ppn",
