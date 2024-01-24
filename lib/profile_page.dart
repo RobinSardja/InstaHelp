@@ -12,7 +12,6 @@ import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart
 import 'package:volume_controller/volume_controller.dart';
 
 bool loggedIn = false;
-bool emailVerified = false;
 
 Map<String, dynamic> userData = defaultData;
 
@@ -109,12 +108,9 @@ class _ProfilePageState extends State<ProfilePage> {
           if( user == null ) {
             loggedIn = false;
             userData = defaultData;
-            emailVerified = false;
           } else {
             loggedIn = true;
             currentUser = user;
-            emailVerified = currentUser.emailVerified;
-            updateFirestore();
           }
         });
       
@@ -127,14 +123,14 @@ class _ProfilePageState extends State<ProfilePage> {
               // delete user options from firebase when account deleted
               await db.collection("user_options").doc(currentUser.uid).delete();
             }),
-            EmailVerifiedAction(() {
-              setState( () => emailVerified = true );
-            }),
           ],
           children: [
-            ElevatedButton( // edit profile button
+            ElevatedButton( // edit profile button doubles and email verification button
               onPressed: () {
-                if(emailVerified) {
+
+                // TODO: update email verification status
+                
+                if( currentUser.emailVerified ) {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
@@ -146,7 +142,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text( "Please verify email to edit profile" ),
+                      content: const Text( "Email still not yet verified" ),
                       behavior: SnackBarBehavior.floating,
                       action: SnackBarAction(
                         label: "OK",
@@ -156,7 +152,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   );
                 }
               },
-              child: Center( child: Text( emailVerified ? "Edit profile" : "Please verify email to edit profile" ), ),
+              child: Center( child: Text( currentUser.emailVerified ? "Edit profile" : "Check email verification" ), ),
             ),
           ],
         ) :
@@ -207,6 +203,8 @@ class EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
+
+    updateFirestore();
 
     _volumeController.listener((volume) {
       setState( () => _volumeListenerValue = volume );

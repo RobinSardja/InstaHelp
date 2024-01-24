@@ -167,7 +167,7 @@ class _InstaHelpState extends State<InstaHelp> {
   Widget build(BuildContext context) {
 
     return MaterialApp(
-      theme: ThemeData.light().copyWith( // app theme
+      theme: ThemeData( // app theme
         colorScheme: const ColorScheme.light(
           primary: Colors.red,
           secondary: Colors.black,
