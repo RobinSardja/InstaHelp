@@ -132,12 +132,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ElevatedButton( // edit profile button doubles as email verification button
               onPressed: () async {
 
-                await currentUser.reload();
-                currentUser = FirebaseAuth.instance.currentUser as User;
-                setState( () => emailVerified = currentUser.emailVerified );
-
-                if( !mounted ) return;
-
                 if( emailVerified ) {
                   Navigator.of(context).push(
                     MaterialPageRoute(
@@ -148,9 +142,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   );
                 } else {
+                  await currentUser.reload();
+                  currentUser = FirebaseAuth.instance.currentUser as User;
+                  setState( () => emailVerified = currentUser.emailVerified );
+
+                  if(!mounted) return;
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text( "Email still not yet verified" ),
+                      content: Text( emailVerified ? "Email successfully verified!" : "Email still not yet verified" ),
                       action: SnackBarAction(
                         label: "OK",
                         onPressed: () {},
@@ -210,6 +210,8 @@ class EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
+
+    updateFirestore();
 
     _volumeController.listener((volume) {
       setState( () => _volumeListenerValue = volume );
