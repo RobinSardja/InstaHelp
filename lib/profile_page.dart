@@ -114,6 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
             loggedIn = true;
             currentUser = user;
             emailVerified = currentUser.emailVerified;
+            updateFirestore();
           }
         });
       
@@ -209,8 +210,6 @@ class EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
-
-    updateFirestore();
 
     _volumeController.listener((volume) {
       setState( () => _volumeListenerValue = volume );
