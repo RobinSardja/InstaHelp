@@ -87,12 +87,12 @@ class _ProfilePageState extends State<ProfilePage> {
     medicalInfo = userData["medicalInfo"];
     bloodType = userData["bloodType"];
     alertNearbyUsers = userData["alertNearbyUsers"];
-    proximityDistance = userData["proximityDistance"] * 1.0;
+    proximityDistance = userData["proximityDistance"];
     textMessageAlert = userData["textMessageAlert"];
     emergencyContacts = userData["emergencyContacts"];
     soundAlarm = userData["soundAlarm"];
     blinkFlashlight = userData["blinkFlashlight"];
-    blinkSpeed = userData["blinkSpeed"] * 1.0;
+    blinkSpeed = userData["blinkSpeed"];
   }
 
   @override
@@ -121,6 +121,7 @@ class _ProfilePageState extends State<ProfilePage> {
           // showMFATile: true, // temporarily disabled to prevent firebase premium charges
           actions: [
             SignedOutAction((context) {
+              // reset user data to default upon sign out
               userData = defaultData;
             }),
             AccountDeletedAction( (context, user) async {
@@ -133,7 +134,6 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: () async {
 
                 if( emailVerified ) {
-                  print( "WHAT IS GOING ON ${ userData["proximityDistance"].runtimeType } ${userData["proximityDistance"]}");
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
