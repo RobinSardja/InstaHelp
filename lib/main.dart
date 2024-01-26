@@ -43,7 +43,7 @@ class _InstaHelpState extends State<InstaHelp> {
   final _platform = Platform.isAndroid ? "android" : "ios";
   static const _accessKey = String.fromEnvironment("picovoice", defaultValue: "none");
 
-  Future<void> createPorcupineManager() async {
+  Future<void> _createPorcupineManager() async {
     try {
       _porcupineManager = await PorcupineManager.fromKeywordPaths(
         _accessKey,
@@ -52,7 +52,7 @@ class _InstaHelpState extends State<InstaHelp> {
           "assets/leave-me-alone_en_${_platform}_v3_0_0.ppn",
           "assets/somebody-help_en_${_platform}_v3_0_0.ppn",
         ],
-        wakeWordCallback,
+        _wakeWordCallback,
       );
 
       await _porcupineManager.start();
@@ -62,14 +62,14 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   // features to run when call for help detected
-  void wakeWordCallback(keywordIndex) {
+  void _wakeWordCallback(keywordIndex) {
     setState( () => _message = "Help is on the way!" );
-    if( userData["textMessageAlert"] ) sendTextMessageAlert();
-    if( userData["soundAlarm"] ) playSoundAlarm();
-    if( userData["blinkFlashlight"] ) startBlinkingFlashlight();
+    if( userData["textMessageAlert"] ) _sendTextMessageAlert();
+    if( userData["soundAlarm"] ) _playSoundAlarm();
+    if( userData["blinkFlashlight"] ) _startBlinkingFlashlight();
   }
 
-  Future<void> sendTextMessageAlert() async {
+  Future<void> _sendTextMessageAlert() async {
 
     List<String> recipients = [];
 
@@ -95,12 +95,12 @@ class _InstaHelpState extends State<InstaHelp> {
   }
 
   final _player = AudioPlayer()..setAsset("assets/siren.wav")..setLoopMode(LoopMode.one);
-  Future<void> playSoundAlarm() async {
+  Future<void> _playSoundAlarm() async {
     await _player.seek( const Duration( seconds: 0 ), ); // reset to beginning of sound effect
     await _player.play();
   }
 
-  Future<void> startBlinkingFlashlight() async {
+  Future<void> _startBlinkingFlashlight() async {
     final isTorchAvailable = await TorchLight.isTorchAvailable();
     if( isTorchAvailable ) {
       while( !_muted ) {
@@ -118,7 +118,7 @@ class _InstaHelpState extends State<InstaHelp> {
   PermissionStatus _smsPermStatus = PermissionStatus.denied;
 
   // updates all permission variables with current device permissions
-  Future<void> checkAllPermissions() async {
+  Future<void> _checkAllPermissions() async {
     final newMapPermStatus = await Permission.location.status;
     final newMicPermStatus = await Permission.microphone.status;
     final newSmsPermStatus = await Permission.sms.status;
@@ -130,12 +130,12 @@ class _InstaHelpState extends State<InstaHelp> {
   }
   
   // requests for all permissions required
-  Future<void> requestAllPermissions() async {
+  Future<void> _requestAllPermissions() async {
     await Permission.location.request().then( (value) async {
       await Permission.microphone.request().then( (value) async {
         await Permission.sms.request().then( (value) async {
-          await checkAllPermissions();
-          await createPorcupineManager();
+          await _checkAllPermissions();
+          await _createPorcupineManager();
           await initializePosition();
         });
       });
@@ -144,7 +144,7 @@ class _InstaHelpState extends State<InstaHelp> {
 
   // controls switching between pages
   int _selectedIndex = 0;
-  final pageController = PageController(
+  final _pageController = PageController(
     initialPage: 0,
   );
 
@@ -152,7 +152,7 @@ class _InstaHelpState extends State<InstaHelp> {
   void initState() {    
     super.initState();
 
-    requestAllPermissions();
+    _requestAllPermissions();
   }
 
   @override
@@ -197,6 +197,9 @@ class _InstaHelpState extends State<InstaHelp> {
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           foregroundColor: Colors.white,
           backgroundColor: Colors.red,
+        ),
+        progressIndicatorTheme: const ProgressIndicatorThemeData(
+          color: Colors.red,
         ),
         inputDecorationTheme: const InputDecorationTheme(
           floatingLabelStyle: TextStyle( color: Colors.black ),
@@ -254,19 +257,19 @@ class _InstaHelpState extends State<InstaHelp> {
           title: const Text("InstaHelp"),
         ),
         body: PageView(
-          controller: pageController,
+          controller: _pageController,
           onPageChanged: (changedIndex) => setState( () => _selectedIndex = changedIndex ),
           children: [ // pages shown in app
             const ProfilePage(),
             _mapPermStatus.isGranted && _micPermStatus.isGranted && _smsPermStatus.isGranted ?
-            homePage() : permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
+            _homePage() : _permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
             const MapPage(),
           ],
         ),
         bottomNavigationBar: NavigationBar(
           onDestinationSelected: (changedIndex) {
             setState( () => _selectedIndex = changedIndex );
-            pageController.jumpToPage(changedIndex);
+            _pageController.jumpToPage(changedIndex);
           },
           selectedIndex: _selectedIndex,
           destinations: const [
@@ -288,7 +291,7 @@ class _InstaHelpState extends State<InstaHelp> {
     );
   }
 
-  Widget homePage() {
+  Widget _homePage() {
     return Scaffold(
       body: Center( child: Text( _message, style: const TextStyle( fontSize: 36 ), ), ),
       floatingActionButton: FloatingActionButton(
@@ -311,14 +314,14 @@ class _InstaHelpState extends State<InstaHelp> {
     );
   }
 
-  Widget permissionRequestPage() {
+  Widget _permissionRequestPage() {
     return Center(
       child: Column( 
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text( "Please grant all required permissions" ),
           ElevatedButton(
-            onPressed: () async => await requestAllPermissions(),
+            onPressed: () async => await _requestAllPermissions(),
             child: const Text( "Request permissions and check status" ),
           ),
           const Text( "Alternatively, grant permissions from app settings" ),

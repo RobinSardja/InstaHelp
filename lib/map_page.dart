@@ -42,7 +42,7 @@ Future<void> getPosition() async {
 }
 
 // currenty hardcoded, nearby users will be a feature in the near future
-Set<Marker> _nearbyUsers = {
+Set<Marker> nearbyUsers = {
   // Marker(
   //   markerId: const MarkerId( "Nearby user 1 (online and safe)" ),
   //   icon: BitmapDescriptor.defaultMarkerWithHue( BitmapDescriptor.hueGreen ),
@@ -74,22 +74,17 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
 
-  late GoogleMapController mapController;
-  void onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
-  bool _includeMap = true;
-
   final _positionStream = Geolocator.getPositionStream();
 
+  bool _includeMap = true;
   void _resetMap() {
     WidgetsBinding.instance.addPostFrameCallback( (duration) {
       if(mounted) {
-        setState(() => _includeMap = true);
+        setState( () => _includeMap = true );
       }
     });
     if(mounted) {
-      setState(() => _includeMap = false);
+      setState( () => _includeMap = false );
     }
   }
 
@@ -127,13 +122,12 @@ class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
       
         return Scaffold(
           body: snapshot.hasData && _includeMap ? GoogleMap(
-            onMapCreated: onMapCreated,
             initialCameraPosition: CameraPosition(
               target: LatLng( currentPosition.latitude, currentPosition.longitude ),
               zoom: 12,
             ),
             myLocationEnabled: true,
-            markers: _nearbyUsers,
+            markers: nearbyUsers,
             circles: enableSignal ? {
               Circle( // map radius of nearby area for users to come help
                 circleId: const CircleId( "Nearby area" ),
@@ -148,9 +142,7 @@ class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircularProgressIndicator.adaptive(
-                  valueColor: AlwaysStoppedAnimation<Color>( Colors.red ),
-                ),
+                CircularProgressIndicator.adaptive(),
                 Text( "Loading nearby users" ),
               ],
             ),

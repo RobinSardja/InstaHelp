@@ -212,8 +212,6 @@ class EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     super.initState();
 
-    updateFirestore();
-
     _volumeController.listener((volume) {
       setState( () => _volumeListenerValue = volume );
     });
@@ -465,6 +463,7 @@ class EditProfilePageState extends State<EditProfilePage> {
             );
       
             updateFirestore();
+
             Navigator.pop(context);
           },
           destinations: const [
