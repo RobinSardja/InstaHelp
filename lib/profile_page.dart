@@ -18,29 +18,30 @@ Map<String, dynamic> userData = defaultData;
 
 // default values for newly created users
 final defaultData = {
-  "medicalInfo": medicalInfo = true,
-  "bloodType": bloodType = "O+",
-  "alertNearbyUsers" : alertNearbyUsers = true,
-  "proximityDistance" : proximityDistance = 5,
-  "textMessageAlert" : textMessageAlert = true,
-  "emergencyContacts" : emergencyContacts = [],
-  "soundAlarm" : soundAlarm = true,
-  "blinkFlashlight" : blinkFlashlight = true,
-  "blinkSpeed" : blinkSpeed = 250,
+  "medicalInfo": true,
+  "bloodType": "O+",
+  "alertNearbyUsers": true,
+  "proximityDistance": 5.0,
+  "textMessageAlert": true,
+  "emergencyContacts": [],
+  "soundAlarm": true,
+  "blinkFlashlight": true,
+  "blinkSpeed": 250.0,
 };
 
-late bool medicalInfo;
-late String bloodType;
-late bool alertNearbyUsers;
-late double proximityDistance;
-late bool textMessageAlert;
-late List<dynamic> emergencyContacts;
-late bool soundAlarm;
-late bool blinkFlashlight;
-late double blinkSpeed;
+bool medicalInfo = true;
+String bloodType = "O+";
+bool alertNearbyUsers = true;
+double proximityDistance = 5.0;
+bool textMessageAlert = true;
+List<dynamic> emergencyContacts = [];
+bool soundAlarm = true;
+bool blinkFlashlight = true;
+double blinkSpeed = 250.0;
 
 late User currentUser;
-late FirebaseFirestore db;
+
+final db = FirebaseFirestore.instance;
 
 Future<void> initializeFirebase() async {
   await Firebase.initializeApp(
@@ -50,6 +51,9 @@ Future<void> initializeFirebase() async {
 
 // update database
 void updateFirestore() {
+
+  // ensures Firestore operations only occur if a user is logged in
+  if( !loggedIn ) return;
 
   // get current user's data
   final docRef = db.collection( "user_options" ).doc( currentUser.uid );
@@ -83,12 +87,12 @@ class _ProfilePageState extends State<ProfilePage> {
     medicalInfo = userData["medicalInfo"];
     bloodType = userData["bloodType"];
     alertNearbyUsers = userData["alertNearbyUsers"];
-    proximityDistance = userData["proximityDistance"];
+    proximityDistance = userData["proximityDistance"] * 1.0;
     textMessageAlert = userData["textMessageAlert"];
     emergencyContacts = userData["emergencyContacts"];
     soundAlarm = userData["soundAlarm"];
     blinkFlashlight = userData["blinkFlashlight"];
-    blinkSpeed = userData["blinkSpeed"];
+    blinkSpeed = userData["blinkSpeed"] * 1.0;
   }
 
   @override
@@ -107,8 +111,8 @@ class _ProfilePageState extends State<ProfilePage> {
             loggedIn = true;
             currentUser = user;
             emailVerified = currentUser.emailVerified;
-            updateFirestore();
           }
+          updateFirestore();
         });
       
         return loggedIn ? ProfileScreen( // profile screen to show when user already logged in
@@ -116,9 +120,12 @@ class _ProfilePageState extends State<ProfilePage> {
           showDeleteConfirmationDialog: true,
           // showMFATile: true, // temporarily disabled to prevent firebase premium charges
           actions: [
+            SignedOutAction((context) {
+              userData = defaultData;
+            }),
             AccountDeletedAction( (context, user) async {
               // delete user options from firebase when account deleted
-              await db.collection("user_options").doc(currentUser.uid).delete();
+              await db.collection("user_options").doc(user.uid).delete();
             }),
           ],
           children: [
@@ -126,6 +133,7 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: () async {
 
                 if( emailVerified ) {
+                  print( "WHAT IS GOING ON ${ userData["proximityDistance"].runtimeType } ${userData["proximityDistance"]}");
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
