@@ -392,7 +392,9 @@ class EditProfilePageState extends State<EditProfilePage> {
               Center(
                 child: Text(
                   userData.getAlertNearbyUsers() ?
-                  "Proximity distance: ${userData.getProximityDistance()} ${userData.getProximityDistance() == 1 ?"mile" : "miles"}" :
+                  "Proximity distance: "
+                  "${userData.getProximityDistance()} "
+                  "${userData.getProximityDistance() == 1 ? "mile" : "miles"}" :
                   "Location signal disabled"
                 ),
               ),
