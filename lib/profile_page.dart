@@ -11,33 +11,133 @@ import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:volume_controller/volume_controller.dart';
 
+// user_options from Firestore
+class UserData {
+
+  // user data in map structure for reading and writing to Firestore
+  Map<String, dynamic> dataMap = {
+    "medicalInfo" : true,
+    "bloodType" : "O+",
+    "alertNearbyUsers" : true,
+    "proximityDistance" : 5.0,
+    "textMessageAlert" : true,
+    "emergencyContacts" : [],
+    "soundAlarm" : true,
+    "blinkFlashlight" : true,
+    "blinkSpeed" : 250.0,
+  };
+
+  // whether to send user's medical info when distress detected
+  bool _medicalInfo = true;
+  void setMedicalInfo( bool value ) => _medicalInfo = value;
+  bool getMedicalInfo() => _medicalInfo;
+
+  // blood type as part of user's medical info
+  String _bloodType = "O+";
+  void setBloodType( String value ) => _bloodType = value;
+  String getBloodType() => _bloodType;
+
+  // whether to alert InstaHelp users close by to user
+  bool _alertNearbyUsers = true;
+  void setAlertNearbyUsers( bool value ) => _alertNearbyUsers = value;
+  bool getAlertNearbyUsers() => _alertNearbyUsers;
+
+  // distance radius from user to alert nearby users in
+  double _proximityDistance = 5.0;
+  void setProximityDistance( double value ) => _proximityDistance = value;
+  double getProximityDistance() => _proximityDistance;
+
+  // whether to send a text message to designated emergency contacts
+  bool _textMessageAlert = true;
+  void setTextMessageAlert( bool value ) => _textMessageAlert = value;
+  bool getTextMessageAlert() => _textMessageAlert;
+
+  // emergency contacts to send text messages to when distress detected
+  List<dynamic> _emergencyContacts = [];
+  void setEmergencyContacts( List<dynamic> value ) => _emergencyContacts = value;
+  List<dynamic> getEmergencyContacts() => _emergencyContacts;
+
+  // whether to play a loud siren from user's phone when distress detected
+  bool _soundAlarm = true;
+  void setSoundAlarm( bool value ) => _soundAlarm = value;
+  bool getSoundAlarm() => _soundAlarm;
+
+  // whether to blink the user's phone flashlight when distress detected
+  bool _blinkFlashlight = true;
+  void setBlinkFlashlight( bool value ) => _blinkFlashlight = value;
+  bool getBlinkFlashlight() => _blinkFlashlight;
+
+  // how fast to blink the flashlight
+  double _blinkSpeed = 250.0;
+  void setBlinkSpeed( double value ) => _blinkSpeed = value;
+  double getBlinkSpeed() => _blinkSpeed;
+
+  void setTempVariables() {
+    _medicalInfo = dataMap["medicalInfo"];
+    _bloodType = dataMap["bloodType"];
+    _alertNearbyUsers = dataMap["alertNearbyUsers"];
+    _proximityDistance = dataMap["proximityDistance"];
+    _textMessageAlert = dataMap["textMessageAlert"];
+    _emergencyContacts = dataMap["emergencyContacts"];
+    _soundAlarm = dataMap["soundAlarm"];
+    _blinkFlashlight = dataMap["blinkFlashlight"];
+    _blinkSpeed = dataMap["blinkSpeed"];
+  }
+
+  void setDataMap() {
+    dataMap["medicalInfo"] = _medicalInfo;
+    dataMap["bloodType"] = _bloodType;
+    dataMap["alertNearbyUsers"] = _alertNearbyUsers;
+    dataMap["proximityDistance"] = _proximityDistance;
+    dataMap["textMessageAlert"] = _textMessageAlert;
+    dataMap["emergencyContacts"] = _emergencyContacts;
+    dataMap["soundAlarm"] = _soundAlarm;
+    dataMap["blinkFlashlight"] = _blinkFlashlight;
+    dataMap["blinkSpeed"] = _blinkSpeed;
+  }
+
+  // default values for newly created users
+  void resetData(String field) {
+    switch( field ) {
+      case "medicalInfo":
+        _medicalInfo = true;
+      case "bloodType":
+        _bloodType = "O+";
+      case "alertNearbyUsers":
+        _alertNearbyUsers = true;
+      case "proximityDistance":
+        _proximityDistance = 5.0;
+      case "textMessageAlert":
+        _textMessageAlert = true;
+      case "emergencyContacts":
+        _emergencyContacts = [];
+      case "soundAlarm":
+        _soundAlarm = true;
+      case "blinkFlashlight":
+        _blinkFlashlight = true;
+      case "blinkSpeed":
+        _blinkSpeed = 250.0;
+      case "all":
+        _medicalInfo = true;
+        _bloodType = "O+";
+        _alertNearbyUsers = true;
+        _proximityDistance = 5.0;
+        _textMessageAlert = true;
+        _emergencyContacts = [];
+        _soundAlarm = true;
+        _blinkFlashlight = true;
+        _blinkSpeed = 250.0;
+    }
+  }
+
+}
+
+UserData userData = UserData();
+
 bool loggedIn = false;
 bool emailVerified = false;
 
-Map<String, dynamic> userData = defaultData;
-
 // default values for newly created users
-final defaultData = {
-  "medicalInfo": true,
-  "bloodType": "O+",
-  "alertNearbyUsers": true,
-  "proximityDistance": 5.0,
-  "textMessageAlert": true,
-  "emergencyContacts": [],
-  "soundAlarm": true,
-  "blinkFlashlight": true,
-  "blinkSpeed": 250.0,
-};
-
-bool medicalInfo = true;
-String bloodType = "O+";
-bool alertNearbyUsers = true;
-double proximityDistance = 5.0;
-bool textMessageAlert = true;
-List<dynamic> emergencyContacts = [];
-bool soundAlarm = true;
-bool blinkFlashlight = true;
-double blinkSpeed = 250.0;
 
 late User currentUser;
 
@@ -59,14 +159,17 @@ void updateFirestore() {
   final docRef = db.collection( "user_options" ).doc( currentUser.uid );
   docRef.get().then(
     (DocumentSnapshot doc) {
-      if( doc.data() == null ) { // newly created users get new document in firestore with default data
-        userData = defaultData;
+      if( doc.data() == null ) {
+        // newly created users get new document in Firestore with default data
+        userData.resetData("all");
         db
           .collection( "user_options" )
           .doc( currentUser.uid )
-          .set( userData );
+          .set( userData.dataMap );
       } else {
-        userData = doc.data() as Map<String, dynamic>;
+        // existing users get their data stored in UserData as a map
+        userData.dataMap = doc.data() as Map<String, dynamic>;
+        userData.setTempVariables();
       }
     },
   );
@@ -83,18 +186,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   final _userDetection = FirebaseAuth.instance.authStateChanges();
 
-  void _setTempVariables() {
-    medicalInfo = userData["medicalInfo"];
-    bloodType = userData["bloodType"];
-    alertNearbyUsers = userData["alertNearbyUsers"];
-    proximityDistance = userData["proximityDistance"];
-    textMessageAlert = userData["textMessageAlert"];
-    emergencyContacts = userData["emergencyContacts"];
-    soundAlarm = userData["soundAlarm"];
-    blinkFlashlight = userData["blinkFlashlight"];
-    blinkSpeed = userData["blinkSpeed"];
-  }
-
   @override
   Widget build( BuildContext context ) {
     return StreamBuilder<User?>(
@@ -105,7 +196,6 @@ class _ProfilePageState extends State<ProfilePage> {
         _userDetection.listen((User? user) {
           if( user == null ) {
             loggedIn = false;
-            userData = defaultData;
             emailVerified = false;
           } else {
             loggedIn = true;
@@ -122,7 +212,8 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: [
             SignedOutAction((context) {
               // reset user data to default upon sign out
-              userData = defaultData;
+              userData.resetData("all");
+              userData.setDataMap();
             }),
             AccountDeletedAction( (context, user) async {
               // delete user options from firebase when account deleted
@@ -137,7 +228,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
-                        _setTempVariables();
+                        userData.setTempVariables();
                         return const EditProfilePage();
                       },
                     ),
@@ -196,18 +287,6 @@ class EditProfilePageState extends State<EditProfilePage> {
 
   final _maxEmergencyContacts = 5;
 
-  void _setFinalVariables() {
-    userData["medicalInfo"] = medicalInfo;
-    userData["bloodType"] = bloodType;
-    userData["alertNearbyUsers"] = alertNearbyUsers;
-    userData["proximityDistance"] = proximityDistance;
-    userData["textMessageAlert"] = textMessageAlert;
-    userData["emergencyContacts"] = emergencyContacts;
-    userData["soundAlarm"] = soundAlarm;
-    userData["blinkFlashlight"] = blinkFlashlight;
-    userData["blinkSpeed"] = blinkSpeed;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -243,18 +322,18 @@ class EditProfilePageState extends State<EditProfilePage> {
               ListTile( // choose to send medical information
                 title: const Text( "Send medical information" ),
                 trailing: Switch(
-                  value: medicalInfo,
+                  value: userData.getMedicalInfo(),
                   onChanged: (value) {
-                    setState( () => medicalInfo = value );
+                    setState( () => userData.setMedicalInfo(value) );
                   },
                 ),
               ),
               Center(
                 child: DropdownMenu( // selected blood type
-                  enabled: medicalInfo,
-                  label: Text( medicalInfo ? "Select blood type" : "Disabled" ),
-                  initialSelection: medicalInfo ? bloodType : "Disabled",
-                  onSelected: (value) => bloodType = value as String,
+                  enabled: userData.getMedicalInfo(),
+                  label: Text( userData.getMedicalInfo() ? "Select blood type" : "Disabled" ),
+                  initialSelection: userData.getMedicalInfo() ? userData.getBloodType() : "Disabled",
+                  onSelected: (value) => userData.setBloodType(value as String),
                   dropdownMenuEntries: const [
                     DropdownMenuEntry(
                       value: "O+",
@@ -299,12 +378,12 @@ class EditProfilePageState extends State<EditProfilePage> {
               ListTile( // alert nearby users
                 title: const Text( "Alert nearby users (in future!)" ),
                 trailing: Switch(
-                  value: alertNearbyUsers,
+                  value: userData.getAlertNearbyUsers(),
                   onChanged: (value) {
                     setState(() {
-                      alertNearbyUsers = value;
+                      userData.setAlertNearbyUsers(value);
                       if( value == false ) {
-                        proximityDistance = 5.0;
+                        userData.resetData("proximityDistance");
                       }
                     });
                   },
@@ -312,7 +391,9 @@ class EditProfilePageState extends State<EditProfilePage> {
               ),
               Center(
                 child: Text(
-                  alertNearbyUsers ? "Proximity distance: $proximityDistance ${proximityDistance == 1 ? "mile" : "miles"}" : "Location signal disabled"
+                  userData.getAlertNearbyUsers() ?
+                  "Proximity distance: ${userData.getProximityDistance()} ${userData.getProximityDistance() == 1 ?"mile" : "miles"}" :
+                  "Location signal disabled"
                 ),
               ),
               Center(
@@ -320,24 +401,24 @@ class EditProfilePageState extends State<EditProfilePage> {
                   min: 1.0,
                   max: 10.0,
                   divisions: 18,
-                  value: alertNearbyUsers ? proximityDistance : 1.0,
+                  value: userData.getAlertNearbyUsers() ? userData.getProximityDistance() : 1.0,
                   onChanged: (value) {
-                    if( alertNearbyUsers ) {
-                      setState( () => proximityDistance = value );
+                    if( userData.getAlertNearbyUsers() ) {
+                      setState( () => userData.setProximityDistance(value) );
                     }
                   },
-                  thumbColor: alertNearbyUsers ? Colors.red : Colors.black,
+                  thumbColor: userData.getAlertNearbyUsers() ? Colors.red : Colors.black,
                 ),
               ),
               ListTile( // send text message to designated emergency contacts
                 title: const Text( "Text message alert" ),
                 trailing: Switch(
-                  value: textMessageAlert,
+                  value: userData.getTextMessageAlert(),
                   onChanged: (value) {
                     setState(() {
-                      textMessageAlert = value;
+                      userData.setTextMessageAlert(value);
                       if( value == false ) {
-                        emergencyContacts = [];
+                        userData.resetData("emergencyContacts");
                       }
                     });
                   },
@@ -346,29 +427,33 @@ class EditProfilePageState extends State<EditProfilePage> {
               Center( // button to add emergency contacts
                 child: ElevatedButton(
                   onPressed: () async {
-                    if( textMessageAlert && emergencyContacts.length < _maxEmergencyContacts ) {
+                    if( userData.getTextMessageAlert() && userData.getEmergencyContacts().length < _maxEmergencyContacts ) {
                       Contact? value = await _contactPicker.selectContact();                                                            
-                      if( value != null && !emergencyContacts.contains(value.toString()) ) {
-                        setState( () => emergencyContacts.add( value.toString() ) );
+                      if( value != null && !userData.getEmergencyContacts().contains(value.toString()) ) {
+                        setState( () => userData.getEmergencyContacts().add( value.toString() ) );
                       }
                     }
                   },
                   child: Text(
-                    textMessageAlert ? emergencyContacts.length == _maxEmergencyContacts ? "Maximum $_maxEmergencyContacts emergency contacts" : "Add new emergency contact" : "Text message alert disabled"
+                    userData.getTextMessageAlert() ?
+                    userData.getEmergencyContacts().length == _maxEmergencyContacts ?
+                    "Maximum $_maxEmergencyContacts emergency contacts" :
+                    "Add new emergency contact" :
+                    "Text message alert disabled"
                   ),
                 ),
               ),
               ListView.builder(
                 shrinkWrap: true,
                 physics: const ClampingScrollPhysics(),
-                itemCount: emergencyContacts.length,
+                itemCount: userData.getEmergencyContacts().length,
                 itemBuilder: (_, int index) {
                   return ListTile(
-                    title: Text( emergencyContacts[index] ),
+                    title: Text( userData.getEmergencyContacts()[index] ),
                     trailing: IconButton(
                       icon: const Icon( Icons.delete ),
                       onPressed: () {
-                        setState( () => emergencyContacts.remove( emergencyContacts[index] ) );
+                        setState( () => userData.getEmergencyContacts().remove( userData.getEmergencyContacts()[index] ) );
                       },
                     ),
                   );
@@ -377,10 +462,10 @@ class EditProfilePageState extends State<EditProfilePage> {
               ListTile( // play loud siren
                 title: const Text( "Sound alarm" ),
                 trailing: Switch(
-                  value: soundAlarm,
+                  value: userData.getSoundAlarm(),
                   onChanged: (value) {
                     setState(() {
-                      soundAlarm = value;
+                      userData.setSoundAlarm(value);
                       _volumeController.getVolume().then( (volume) => _setVolumeValue = volume );
                     });
                   },
@@ -388,40 +473,48 @@ class EditProfilePageState extends State<EditProfilePage> {
               ),
               Center(
                 child: Text(
-                  soundAlarm ? "Phone volume: ${_volumeListenerValue == 0 ? "Muted" : "${(_volumeListenerValue * 100).round()}%" }" : "Sound alarm disabled"
+                  userData.getSoundAlarm() ?
+                  "Phone volume: ${_volumeListenerValue == 0 ?
+                  "Muted" :
+                  "${(_volumeListenerValue * 100).round()}%" }" :
+                  "Sound alarm disabled"
                 ),
               ),
               Center(
                 child: Slider( // siren volume
                   min: 0,
                   max: 1,
-                  value: soundAlarm ? _volumeListenerValue : 0,
+                  value: userData.getSoundAlarm() ? _volumeListenerValue : 0,
                   onChanged: (value) {
-                    if( soundAlarm ) {
+                    if( userData.getSoundAlarm() ) {
                       setState(() {
                         _setVolumeValue = value;
                         _volumeController.setVolume(_setVolumeValue);
                       });
                     }
                   },
-                  thumbColor: soundAlarm ? Colors.red : Colors.black,
+                  thumbColor: userData.getSoundAlarm() ? Colors.red : Colors.black,
                 ),
               ),
               ListTile( // turn flashlight on and off like a blinker
                 title: const Text( "Blink flashlight" ),
                 trailing: Switch(
-                  value: blinkFlashlight,
+                  value: userData.getBlinkFlashlight(),
                   onChanged: (value) {
-                    setState( () => blinkFlashlight = value );
+                    setState( () => userData.setBlinkFlashlight(value) );
                     if( value == false ) {
-                      blinkSpeed = 250;
+                      userData.resetData("blinkSpeed");
                     }
                   },
                 ),
               ),
               Center(
                 child: Text(
-                  blinkFlashlight ? "Blink speed: ${ blinkSpeed == 1000 ? "1 second" : "${blinkSpeed.round()} milliseconds" }" : "Blink flashlight disabled"
+                  userData.getBlinkFlashlight() ?
+                  "Blink speed: ${ userData.getBlinkSpeed() == 1000 ?
+                  "1 second" :
+                  "${userData.getBlinkSpeed().round()} milliseconds" }" :
+                  "Blink flashlight disabled"
                 ),
               ),
               Center(
@@ -429,13 +522,13 @@ class EditProfilePageState extends State<EditProfilePage> {
                   min: 100,
                   max: 1000,
                   divisions: 18,
-                  value: blinkFlashlight ? blinkSpeed : 100.0,
+                  value: userData.getBlinkFlashlight() ? userData.getBlinkSpeed() : 100.0,
                   onChanged: (value) {
-                    if( blinkFlashlight ) {
-                      setState(() => blinkSpeed = value );
+                    if( userData.getBlinkFlashlight() ) {
+                      setState( () => userData.setBlinkSpeed(value) );
                     }
                   },
-                  thumbColor: blinkFlashlight ? Colors.red : Colors.black,
+                  thumbColor: userData.getBlinkFlashlight() ? Colors.red : Colors.black,
                 ),
               ),
             ],
@@ -445,11 +538,11 @@ class EditProfilePageState extends State<EditProfilePage> {
           onDestinationSelected: (updatedIndex) {
       
             if( updatedIndex == 0 ) {
-              _setFinalVariables();
+              userData.setDataMap();
               db
                 .collection( "user_options" )
                 .doc( currentUser.uid )
-                .set( userData );
+                .set( userData.dataMap );
             }
       
             ScaffoldMessenger.of(context).showSnackBar(

@@ -64,17 +64,17 @@ class _InstaHelpState extends State<InstaHelp> {
   // features to run when call for help detected
   void _wakeWordCallback(keywordIndex) {
     setState( () => _message = "Help is on the way!" );
-    if( userData["textMessageAlert"] ) _sendTextMessageAlert();
-    if( userData["soundAlarm"] ) _playSoundAlarm();
-    if( userData["blinkFlashlight"] ) _startBlinkingFlashlight();
+    if( userData.getTextMessageAlert() ) _sendTextMessageAlert();
+    if( userData.getSoundAlarm() ) _playSoundAlarm();
+    if( userData.getBlinkFlashlight() ) _startBlinkingFlashlight();
   }
 
   Future<void> _sendTextMessageAlert() async {
 
     List<String> recipients = [];
 
-    for( int i = 0; i < userData["emergencyContacts"].length; i++ ) { // extracts phone number
-      recipients.add( String.fromCharCodes( userData["emergencyContacts"][i].toString().codeUnits.where( (x) => (x ^0x30) <= 9 ) ) );
+    for( int i = 0; i < userData.getEmergencyContacts().length; i++ ) { // extracts phone number
+      recipients.add( String.fromCharCodes( userData.getEmergencyContacts()[i].toString().codeUnits.where( (x) => (x ^0x30) <= 9 ) ) );
     }
 
     await getPosition();
@@ -85,7 +85,7 @@ class _InstaHelpState extends State<InstaHelp> {
             "Someone" : currentUser.displayName} needs your help at "
             "www.google.com/maps/search/${currentPosition.latitude},${currentPosition.longitude}"
             "/@${currentPosition.latitude},${currentPosition.longitude}! "
-            "${userData["medicalInfo"] ? "Blood Type: ${userData["bloodType"]}" : "" }",
+            "${userData.getMedicalInfo() ? "Blood Type: ${userData.getBloodType()}" : "" }",
           recipients: recipients,
           sendDirect: true,
         );
@@ -105,9 +105,9 @@ class _InstaHelpState extends State<InstaHelp> {
     if( isTorchAvailable ) {
       while( !_muted ) {
         await TorchLight.enableTorch();
-        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].round(), ), );
+        await Future.delayed( Duration( milliseconds: userData.getBlinkSpeed().round(), ), );
         await TorchLight.disableTorch();
-        await Future.delayed( Duration( milliseconds: userData["blinkSpeed"].round(), ), );
+        await Future.delayed( Duration( milliseconds: userData.getBlinkSpeed().round(), ), );
       } 
     }
   }
@@ -262,7 +262,7 @@ class _InstaHelpState extends State<InstaHelp> {
           children: [ // pages shown in app
             const ProfilePage(),
             _mapPermStatus.isGranted && _micPermStatus.isGranted && _smsPermStatus.isGranted ?
-            _homePage() : _permissionRequestPage(), // cannot replace condition with function, have to use really long and statement
+            _homePage() : _permissionRequestPage(),
             const MapPage(),
           ],
         ),
@@ -316,7 +316,7 @@ class _InstaHelpState extends State<InstaHelp> {
 
   Widget _permissionRequestPage() {
     return Center(
-      child: Column( 
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text( "Please grant all required permissions" ),

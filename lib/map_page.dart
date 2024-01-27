@@ -115,8 +115,8 @@ class _MapPageState extends State<MapPage> with WidgetsBindingObserver {
       stream: _positionStream,
       builder: (context, snapshot) {
 
-        double radiusInMiles = userData["proximityDistance"] ??= defaultData["proximityDistance"];
-        bool enableSignal = userData["alertNearbyUsers"] ??= defaultData["alertNearbyUsers"];
+        double radiusInMiles = userData.getProximityDistance();
+        bool enableSignal = userData.getAlertNearbyUsers();
 
         _positionStream.listen( (position) => currentPosition = position );
       
