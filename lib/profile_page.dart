@@ -11,7 +11,52 @@ import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:volume_controller/volume_controller.dart';
 
-// user_options from Firestore
+// Variables and functions related to Firebase
+class FirebaseClass {
+
+  late FirebaseFirestore db;
+  late User currentUser;
+
+  bool loggedIn = false;
+  bool emailVerified = false;
+
+  // initialize Firebase when first running app
+  Future<void> initializeFirebase() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    // immediately initialize connection to Firestore after Firebase connection made
+    db = FirebaseFirestore.instance;
+  }
+
+  void updateFirestore() {
+
+    // ensures Firestore operations only occur if a user is logged in
+    if( !loggedIn ) return;
+
+    // get current user's data
+    final docRef = db.collection( "user_options" ).doc( currentUser.uid );
+    docRef.get().then(
+      (DocumentSnapshot doc) {
+        if( doc.data() == null ) {
+          // newly created users get new document in Firestore with default data
+          userData.resetData("all");
+          db
+            .collection( "user_options" )
+            .doc( currentUser.uid )
+            .set( userData.dataMap );
+        } else {
+          // existing users get their data stored in UserData as a map
+          userData.dataMap = doc.data() as Map<String, dynamic>;
+          userData.setTempVariables();
+        }
+      },
+    );
+  }
+}
+
+// User options from Firestore
 class UserData {
 
   // user data in map structure for reading and writing to Firestore
@@ -132,48 +177,8 @@ class UserData {
 
 }
 
+FirebaseClass firebaseClass = FirebaseClass();
 UserData userData = UserData();
-
-bool loggedIn = false;
-bool emailVerified = false;
-
-// default values for newly created users
-
-late User currentUser;
-
-final db = FirebaseFirestore.instance;
-
-Future<void> initializeFirebase() async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-}
-
-// update database
-void updateFirestore() {
-
-  // ensures Firestore operations only occur if a user is logged in
-  if( !loggedIn ) return;
-
-  // get current user's data
-  final docRef = db.collection( "user_options" ).doc( currentUser.uid );
-  docRef.get().then(
-    (DocumentSnapshot doc) {
-      if( doc.data() == null ) {
-        // newly created users get new document in Firestore with default data
-        userData.resetData("all");
-        db
-          .collection( "user_options" )
-          .doc( currentUser.uid )
-          .set( userData.dataMap );
-      } else {
-        // existing users get their data stored in UserData as a map
-        userData.dataMap = doc.data() as Map<String, dynamic>;
-        userData.setTempVariables();
-      }
-    },
-  );
-}
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -195,17 +200,17 @@ class _ProfilePageState extends State<ProfilePage> {
         // get current user
         _userDetection.listen((User? user) {
           if( user == null ) {
-            loggedIn = false;
-            emailVerified = false;
+            firebaseClass.loggedIn = false;
+            firebaseClass.emailVerified = false;
           } else {
-            loggedIn = true;
-            currentUser = user;
-            emailVerified = currentUser.emailVerified;
+            firebaseClass.loggedIn = true;
+            firebaseClass.currentUser = user;
+            firebaseClass.emailVerified = firebaseClass.currentUser.emailVerified;
           }
-          updateFirestore();
+          firebaseClass.updateFirestore();
         });
       
-        return loggedIn ? ProfileScreen( // profile screen to show when user already logged in
+        return firebaseClass.loggedIn ? ProfileScreen( // profile screen to show when user already logged in
           showUnlinkConfirmationDialog: true,
           showDeleteConfirmationDialog: true,
           // showMFATile: true, // temporarily disabled to prevent firebase premium charges
@@ -217,14 +222,14 @@ class _ProfilePageState extends State<ProfilePage> {
             }),
             AccountDeletedAction( (context, user) async {
               // delete user options from firebase when account deleted
-              await db.collection("user_options").doc(user.uid).delete();
+              await firebaseClass.db.collection("user_options").doc(user.uid).delete();
             }),
           ],
           children: [
             ElevatedButton( // edit profile button doubles as email verification button
               onPressed: () async {
 
-                if( emailVerified ) {
+                if( firebaseClass.emailVerified ) {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
@@ -234,15 +239,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   );
                 } else {
-                  await currentUser.reload();
-                  currentUser = FirebaseAuth.instance.currentUser as User;
-                  setState( () => emailVerified = currentUser.emailVerified );
+                  await firebaseClass.currentUser.reload();
+                  firebaseClass.currentUser = FirebaseAuth.instance.currentUser as User;
+                  setState( () => firebaseClass.emailVerified = firebaseClass.currentUser.emailVerified );
 
                   if(!mounted) return;
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text( emailVerified ? "Email successfully verified!" : "Email still not yet verified" ),
+                      content: Text( firebaseClass.emailVerified ? "Email successfully verified!" : "Email still not yet verified" ),
                       action: SnackBarAction(
                         label: "OK",
                         onPressed: () {},
@@ -251,7 +256,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   );
                 }
               },
-              child: Center( child: Text( emailVerified ? "Edit profile" : "Check email verification status" ), ),
+              child: Center( child: Text( firebaseClass.emailVerified ? "Edit profile" : "Check email verification status" ), ),
             ),
           ],
         ) :
@@ -309,7 +314,7 @@ class EditProfilePageState extends State<EditProfilePage> {
   Widget build( BuildContext context ) {
 
     return PopScope(
-      onPopInvoked: (didPop) => updateFirestore(),
+      onPopInvoked: (didPop) => firebaseClass.updateFirestore(),
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -541,9 +546,9 @@ class EditProfilePageState extends State<EditProfilePage> {
       
             if( updatedIndex == 0 ) {
               userData.setDataMap();
-              db
+              firebaseClass.db
                 .collection( "user_options" )
-                .doc( currentUser.uid )
+                .doc( firebaseClass.currentUser.uid )
                 .set( userData.dataMap );
             }
       
@@ -557,7 +562,7 @@ class EditProfilePageState extends State<EditProfilePage> {
               ),
             );
       
-            updateFirestore();
+            firebaseClass.updateFirestore();
 
             Navigator.pop(context);
           },

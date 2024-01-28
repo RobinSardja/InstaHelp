@@ -21,7 +21,7 @@ void main() async {
   SystemChrome.setPreferredOrientations( [DeviceOrientation.portraitUp] );
 
   // ensures firebase features work
-  await initializeFirebase();
+  await firebaseClass.initializeFirebase();
 
   runApp( const InstaHelp() );
 }
@@ -80,9 +80,9 @@ class _InstaHelpState extends State<InstaHelp> {
     await getPosition();
     try {
         await sendSMS(
-          message: "InstaHelp alert! ${currentUser.displayName == null ||
-            currentUser.displayName!.replaceAll(" ", "").isEmpty ?
-            "Someone" : currentUser.displayName} needs your help at "
+          message: "InstaHelp alert! ${firebaseClass.currentUser.displayName == null ||
+            firebaseClass.currentUser.displayName!.replaceAll(" ", "").isEmpty ?
+            "Someone" : firebaseClass.currentUser.displayName} needs your help at "
             "www.google.com/maps/search/${currentPosition.latitude},${currentPosition.longitude}"
             "/@${currentPosition.latitude},${currentPosition.longitude}! "
             "${userData.getMedicalInfo() ? "Blood Type: ${userData.getBloodType()}" : "" }",
