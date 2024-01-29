@@ -246,7 +246,11 @@ class _ProfilePageState extends State<ProfilePage> {
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text( firebaseClass.emailVerified ? "Email successfully verified!" : "Email still not yet verified" ),
+                      content: Text(
+                        firebaseClass.emailVerified ?
+                        "Email successfully verified!" :
+                        "Email still not yet verified"
+                      ),
                       action: SnackBarAction(
                         label: "OK",
                         onPressed: () {},
@@ -255,7 +259,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   );
                 }
               },
-              child: Center( child: Text( firebaseClass.emailVerified ? "Edit profile" : "Check email verification status" ), ),
+              child: Center(
+                child: Text(
+                  firebaseClass.emailVerified ?
+                  "Edit profile" :
+                  "Check email verification status"
+                ),
+              ),
             ),
           ],
         ) :
