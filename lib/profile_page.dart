@@ -36,9 +36,8 @@ class FirebaseClass {
     if( !loggedIn ) return;
 
     // get current user's data
-    final docRef = db.collection( "user_options" ).doc( currentUser.uid );
-    docRef.get().then(
-      (DocumentSnapshot doc) {
+    db.collection( "user_options" ).doc( currentUser.uid ).get().then(
+      (doc) {
         if( doc.data() == null ) {
           // newly created users get new document in Firestore with default data
           userData.resetData("all");
