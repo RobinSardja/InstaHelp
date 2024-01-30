@@ -30,7 +30,7 @@ class FirebaseClass {
     db = FirebaseFirestore.instance;
   }
 
-  void updateFirestore() {
+  void loadFromFirestore() {
 
     // ensures Firestore operations only occur if a user is logged in
     if( !loggedIn ) return;
@@ -52,6 +52,15 @@ class FirebaseClass {
         }
       },
     );
+  }
+
+  // saves user data in Firestore when users presses save button in edit profile page
+  void saveToFirestore() {
+    userData.setDataMap();
+    firebaseClass.db
+      .collection( "user_options" )
+      .doc( firebaseClass.currentUser.uid )
+      .set( userData.dataMap );
   }
 }
 
@@ -206,7 +215,7 @@ class _ProfilePageState extends State<ProfilePage> {
             firebaseClass.currentUser = user;
             firebaseClass.emailVerified = firebaseClass.currentUser.emailVerified;
           }
-          firebaseClass.updateFirestore();
+          firebaseClass.loadFromFirestore();
         });
       
         return firebaseClass.loggedIn ? ProfileScreen( // profile screen to show when user already logged in
@@ -323,7 +332,7 @@ class EditProfilePageState extends State<EditProfilePage> {
   Widget build( BuildContext context ) {
 
     return PopScope(
-      onPopInvoked: (didPop) => firebaseClass.updateFirestore(),
+      onPopInvoked: (didPop) => firebaseClass.loadFromFirestore(),
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -554,11 +563,7 @@ class EditProfilePageState extends State<EditProfilePage> {
           onDestinationSelected: (updatedIndex) {
       
             if( updatedIndex == 0 ) {
-              userData.setDataMap();
-              firebaseClass.db
-                .collection( "user_options" )
-                .doc( firebaseClass.currentUser.uid )
-                .set( userData.dataMap );
+              firebaseClass.saveToFirestore();
             }
       
             ScaffoldMessenger.of(context).showSnackBar(
@@ -571,7 +576,7 @@ class EditProfilePageState extends State<EditProfilePage> {
               ),
             );
       
-            firebaseClass.updateFirestore();
+            firebaseClass.loadFromFirestore();
 
             Navigator.pop(context);
           },
