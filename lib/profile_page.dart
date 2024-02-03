@@ -9,7 +9,6 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 
 import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
-import 'package:volume_controller/volume_controller.dart';
 
 // Variables and functions related to Firebase
 class FirebaseClass {
@@ -302,31 +301,9 @@ class EditProfilePage extends StatefulWidget {
 
 class EditProfilePageState extends State<EditProfilePage> {
 
-  double _volumeListenerValue = 0;
-  double _setVolumeValue = 0;
-
   final _contactPicker = FlutterContactPicker();
-  final _volumeController = VolumeController();
 
   final _maxEmergencyContacts = 5;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _volumeController.listener((volume) {
-      setState( () => _volumeListenerValue = volume );
-    });
-
-    _volumeController.getVolume().then( (volume) => _setVolumeValue = volume );
-  }
-
-  @override
-  void dispose() {
-    _volumeController.removeListener();
-
-    super.dispose();
-  }
 
   @override
   Widget build( BuildContext context ) {
@@ -491,34 +468,8 @@ class EditProfilePageState extends State<EditProfilePage> {
                   onChanged: (value) {
                     setState(() {
                       userData.setSoundAlarm(value);
-                      _volumeController.getVolume().then( (volume) => _setVolumeValue = volume );
                     });
                   },
-                ),
-              ),
-              Center(
-                child: Text(
-                  userData.getSoundAlarm() ?
-                  "Phone volume: ${_volumeListenerValue == 0 ?
-                  "Muted" :
-                  "${(_volumeListenerValue * 100).round()}%" }" :
-                  "Sound alarm disabled"
-                ),
-              ),
-              Center(
-                child: Slider( // siren volume
-                  min: 0,
-                  max: 1,
-                  value: userData.getSoundAlarm() ? _volumeListenerValue : 0,
-                  onChanged: (value) {
-                    if( userData.getSoundAlarm() ) {
-                      setState(() {
-                        _setVolumeValue = value;
-                        _volumeController.setVolume(_setVolumeValue);
-                      });
-                    }
-                  },
-                  thumbColor: userData.getSoundAlarm() ? Colors.red : Colors.black,
                 ),
               ),
               ListTile( // turn flashlight on and off like a blinker

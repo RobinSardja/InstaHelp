@@ -10,6 +10,7 @@ import 'package:flutter_sms/flutter_sms.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:torch_light/torch_light.dart';
+import 'package:volume_controller/volume_controller.dart';
 
 import 'map_page.dart';
 import 'profile_page.dart';
@@ -65,7 +66,11 @@ class _InstaHelpState extends State<InstaHelp> {
   void _wakeWordCallback(keywordIndex) {
     setState( () => _message = "Help is on the way!" );
     if( userData.getTextMessageAlert() ) _sendTextMessageAlert();
-    if( userData.getSoundAlarm() ) _playSoundAlarm();
+    if( userData.getSoundAlarm() ) {
+      _volumeController.getVolume().then( (volume) => _previousVolume = volume );
+      _volumeController.maxVolume();
+      _playSoundAlarm();
+    }
     if( userData.getBlinkFlashlight() ) _startBlinkingFlashlight();
   }
 
@@ -98,6 +103,8 @@ class _InstaHelpState extends State<InstaHelp> {
     }
   }
 
+  final _volumeController = VolumeController();
+  late double _previousVolume;
   final _player = AudioPlayer()..setAsset("assets/siren.wav")..setLoopMode(LoopMode.one);
   Future<void> _playSoundAlarm() async {
     await _player.seek( const Duration( seconds: 0 ), ); // reset to beginning of sound effect
@@ -164,6 +171,8 @@ class _InstaHelpState extends State<InstaHelp> {
     await _player.dispose();
     await TorchLight.disableTorch();
     await _porcupineManager.delete();
+
+    _volumeController.removeListener();
 
     super.dispose();
   }
@@ -308,6 +317,7 @@ class _InstaHelpState extends State<InstaHelp> {
           if( _muted ) {
             await _porcupineManager.stop();
             _player.stop();
+            _volumeController.setVolume( _previousVolume );
             await TorchLight.disableTorch();
           } else {
             await _porcupineManager.start();
