@@ -472,6 +472,11 @@ class EditProfilePageState extends State<EditProfilePage> {
                   },
                 ),
               ),
+              if( userData.getSoundAlarm() ) const Center(
+                child: Text(
+                  "Remove earbuds before using sound alarm"
+                )
+              ),
               ListTile( // turn flashlight on and off like a blinker
                 title: const Text( "Blink flashlight" ),
                 trailing: Switch(
