@@ -29,7 +29,8 @@
                   feedback-link="">
     
       <google-codelab-step label="About the App" duration="0">
-        <p>InstaHelp is an emergency contact mobile application that detects natural human responses to stressful situations.</p>
+        <p class="image-container"><img style="width: 256.00px" src="img\\2f29994a3e381689.png"></p>
+<p>InstaHelp is a voice-activated emergency contact mobile application that detects natural human responses to stressful situations.</p>
 <p>Upon activation, InstaHelp can send a text message to the user&#39;s designated emergency contacts and attract the attention of nearby bystanders by playing a loud siren from the user&#39;s phone and blinking the user&#39;s phone&#39;s flashlight.</p>
 <p>InstaHelp provides a faster and more discreet emergency contact solution by removing the dependence on proprietary activation phrases that users may not recall in their time of need and attackers may recognize as the user&#39;s attempt to call for help.</p>
 <p>With InstaHelp, safety is our speciality.</p>
@@ -38,12 +39,21 @@
       </google-codelab-step>
     
       <google-codelab-step label="First-Time Setup" duration="0">
-        <ol type="1">
-<li><a href="https://github.com/RobinSardja/InstaHelp" target="_blank">Clone the GitHub repo</a></li>
-<li><a href="https://docs.flutter.dev/get-started/install" target="_blank">Download The Flutter SDK</a></li>
-<li><a href="https://console.picovoice.ai/signup" target="_blank">Sign Up with Picovoice</a></li>
-<li>flutter run –dart-define=picovoice=(YOUR PICOVOICE ACCESS KEY)</li>
-</ol>
+        <h2 is-upgraded>1. Clone our GitHub repo</h2>
+<p>The fully functional InstaHelp prototype is available on our <a href="https://github.com/RobinSardja/InstaHelp" target="_blank">GitHub</a>. Visit the link to download our ZIP file or use git to clone our repository with the following command.</p>
+<pre>git clone https://github.com/RobinSardja/InstaHelp.git
+</pre>
+<h2 is-upgraded>2. Download the Flutter SDK</h2>
+<p>Running InstaHelp requires <a href="https://docs.flutter.dev/get-started/install" target="_blank">the Flutter SDK</a>. All instructions for getting started on all major platforms are available through the provided link.</p>
+<h2 is-upgraded>3. Sign Up with Picovoice</h2>
+<p>Our voice activation feature requires an access key from <a href="https://console.picovoice.ai/signup" target="_blank">Picovoice</a>. Your account will provide you with your own access key to enable the Picovoice API.</p>
+<h2 is-upgraded>4. Flutter run</h2>
+<p>Open a terminal in the same directory as the InstaHelp repository. You&#39;ll first need to get all of our dependencies with the following command.</p>
+<pre>flutter pub get
+</pre>
+<p>Now run The Flutter SDK with your Picovoice access key. For example, if &#34;abcd&#34; is your answer key, enter the following command into your terminal.</p>
+<pre>flutter run --dart-define=picovoice=abcd
+</pre>
 
 
       </google-codelab-step>
@@ -69,7 +79,7 @@
 <h2 is-upgraded>Firebase</h2>
 <p>Firebase is the home of authentication and database management for InstaHelp. The provided Firebase UI packages for user authentication proved especially handy for integrating user accounts in a timely manner.</p>
 <h2 is-upgraded>Flutter</h2>
-<p>All front-end mobile development took place in The Flutter SDK. To reach as wide of an audience as possible, InstaHelp needs to be available on all major mobile platforms. For that, nothing beats The Flutter SDK.</p>
+<p>All front-end mobile development took place in the Flutter SDK. To reach as wide of an audience as possible, InstaHelp needs to be available on all major mobile platforms. For that, nothing beats the Flutter SDK.</p>
 <h2 is-upgraded>Google Maps Platform</h2>
 <p>Google Maps Platform will be the main focus of our future. We are ambitiously building the ability to see and send alerts to trusted nearby InstaHelp users with Google Maps Platform at our core.</p>
 
@@ -78,7 +88,7 @@
     
       <google-codelab-step label="Form Responses" duration="0">
         <h2 is-upgraded>Project Overview</h2>
-<p>InstaHelp is an emergency contact mobile application that detects natural human responses to stressful situations. Upon activation, InstaHelp can send a text message to the user&#39;s designated emergency contacts and attract the attention of nearby bystanders by playing a loud siren from the user&#39;s phone and blinking the user&#39;s phone&#39;s flashlight. InstaHelp provides a faster and more discreet emergency contact solution by removing the dependence on proprietary activation phrases that users may not recall in their time of need and attackers may recognize as the user&#39;s attempt to call for help.</p>
+<p>InstaHelp is a voice-activated emergency contact mobile application that detects natural human responses to stressful situations. Upon activation, InstaHelp can send a text message to the user&#39;s designated emergency contacts and attract the attention of nearby bystanders by playing a loud siren from the user&#39;s phone and blinking the user&#39;s phone&#39;s flashlight. InstaHelp provides a faster and more discreet emergency contact solution by removing the dependence on proprietary activation phrases that users may not recall in their time of need and attackers may recognize as the user&#39;s attempt to call for help.</p>
 <h2 is-upgraded>Project Setup</h2>
 <h2 is-upgraded>Implementation</h2>
 <h2 is-upgraded>Feedback / Testing / Iteration</h2>
@@ -90,6 +100,7 @@
     
       <google-codelab-step label="Acknowledgements" duration="0">
         <p>Special thanks to the Google Developer Student Clubs at the University of South Florida</p>
+<p class="image-container"><img src="img\\eeb657eb27a8aca0.jpeg"></p>
 <p><a href="https://gdsc.community.dev/university-of-south-florida" target="_blank">USF GDSC Community Page</a></p>
 <p>Made with 💚 💛 by Robin Sardja</p>
 <p><a href="https://gdsc.community.dev/u/mjvvwh" target="_blank">My GDSC Profile</a></p>
