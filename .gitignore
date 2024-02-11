@@ -43,5 +43,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Markdown file for first-time setup codelab
+# Markdown file for instahelp.dev
 /codelab.md
+codelab_images/
