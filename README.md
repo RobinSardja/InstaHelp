@@ -6,7 +6,7 @@ A faster and more discreet emergency contact solution
 
 ### 1. Clone our GitHub repo
 
-The fully functional bruh InstaHelp prototype is available on our [GitHub](https://github.com/RobinSardja/InstaHelp). Visit the link to download our ZIP file or use git to clone our repository with the following command.
+The fully functional InstaHelp prototype is available on our [GitHub](https://github.com/RobinSardja/InstaHelp). Visit the link to download our ZIP file or use git to clone our repository with the following command.
 ```console
 git clone https://github.com/RobinSardja/InstaHelp.git
 ```
@@ -31,7 +31,7 @@ Open a terminal in the same directory as the InstaHelp repository. You'll first 
 flutter pub get
 ```
 
-Now run The Flutter SDK with your Picovoice access key. For example, if "abcd" is your answer key, enter the following command into your terminal.
+Now run The Flutter SDK with your Picovoice access key. For example, if "abcd" is your access key, enter the following command into your terminal.
 ```console
 flutter run --dart-define=picovoice=abcd
 ```
