@@ -68,11 +68,11 @@ class UserData {
 
   // user data in map structure for reading and writing to Firestore
   Map<String, dynamic> dataMap = {
-    "medicalInfo" : true,
+    "medicalInfo" : false,
     "bloodType" : "O+",
-    "alertNearbyUsers" : true,
+    "alertNearbyUsers" : false,
     "proximityDistance" : 5.0,
-    "textMessageAlert" : true,
+    "textMessageAlert" : false,
     "emergencyContacts" : [],
     "soundAlarm" : true,
     "blinkFlashlight" : true,
@@ -152,15 +152,15 @@ class UserData {
   void resetData(String field) {
     switch( field ) {
       case "medicalInfo":
-        _medicalInfo = true;
+        _medicalInfo = false;
       case "bloodType":
         _bloodType = "O+";
       case "alertNearbyUsers":
-        _alertNearbyUsers = true;
+        _alertNearbyUsers = false;
       case "proximityDistance":
         _proximityDistance = 5.0;
       case "textMessageAlert":
-        _textMessageAlert = true;
+        _textMessageAlert = false;
       case "emergencyContacts":
         _emergencyContacts = [];
       case "soundAlarm":
@@ -170,11 +170,11 @@ class UserData {
       case "blinkSpeed":
         _blinkSpeed = 250.0;
       case "all":
-        _medicalInfo = true;
+        _medicalInfo = false;
         _bloodType = "O+";
         _alertNearbyUsers = true;
         _proximityDistance = 5.0;
-        _textMessageAlert = true;
+        _textMessageAlert = false;
         _emergencyContacts = [];
         _soundAlarm = true;
         _blinkFlashlight = true;
@@ -325,6 +325,9 @@ class EditProfilePageState extends State<EditProfilePage> {
                   value: userData.getMedicalInfo(),
                   onChanged: (value) {
                     setState( () => userData.setMedicalInfo(value) );
+                    if( value == false ) {
+                        userData.resetData("bloodType");
+                      }
                   },
                 ),
               ),
