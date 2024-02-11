@@ -47,6 +47,8 @@ flutter:
   assets:
     - assets/get-away-from-me_en_android_v3_0_0.ppn
     - assets/get-away-from-me_en_ios_v3_0_0.ppn
+    - assets/i-cant-get-up_en_android_v3_0_0.ppn
+    - assets/i-cant-get-up_en_ios_v3_0_0.ppn
     - assets/leave-me-alone_en_android_v3_0_0.ppn
     - assets/leave-me-alone_en_ios_v3_0_0.ppn
     - assets/somebody-help_en_android_v3_0_0.ppn

@@ -50,6 +50,7 @@ class _InstaHelpState extends State<InstaHelp> {
         _accessKey,
         [
           "assets/get-away-from-me_en_${_platform}_v3_0_0.ppn",
+          "assets/i-cant-get-up_en_${_platform}_v3_0_0.ppn",
           "assets/leave-me-alone_en_${_platform}_v3_0_0.ppn",
           "assets/somebody-help_en_${_platform}_v3_0_0.ppn",
         ],
