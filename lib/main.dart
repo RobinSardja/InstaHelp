@@ -90,11 +90,20 @@ class _InstaHelpState extends State<InstaHelp> {
     await getPosition();
     try {
         await sendSMS(
-          message: "InstaHelp alert! ${firebaseClass.currentUser.displayName == null ||
+          message: "InstaHelp alert! "
+
+            // send username. If empty, just say "someone"
+            "${firebaseClass.currentUser.displayName == null ||
             firebaseClass.currentUser.displayName!.replaceAll(" ", "").isEmpty ?
-            "Someone" : firebaseClass.currentUser.displayName} needs your help at "
+            "Someone" : firebaseClass.currentUser.displayName} "
+
+            "needs your help at "
+
+            // send current location of the user
             "www.google.com/maps/search/${currentPosition.latitude},${currentPosition.longitude}"
             "/@${currentPosition.latitude},${currentPosition.longitude}! "
+
+            // if enabled by the user, send the user's medical information
             "${userData.getMedicalInfo() ? "Blood Type: ${userData.getBloodType()}" : "" }",
           recipients: recipients,
           sendDirect: true,
