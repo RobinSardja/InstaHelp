@@ -53,7 +53,7 @@ class FirebaseClass {
     );
   }
 
-  // saves user data in Firestore when users presses save button in edit profile page
+  // saves user data in Firestore when users press save button in edit profile page
   void saveToFirestore() {
     userData.setDataMap();
     firebaseClass.db
@@ -181,7 +181,6 @@ class UserData {
         _blinkSpeed = 250.0;
     }
   }
-
 }
 
 FirebaseClass firebaseClass = FirebaseClass();
@@ -235,12 +234,11 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             ElevatedButton( // edit profile button doubles as email verification button
               onPressed: () async {
-
                 if( firebaseClass.emailVerified ) {
+                  userData.setTempVariables();
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
-                        userData.setTempVariables();
                         return const EditProfilePage();
                       },
                     ),
@@ -519,15 +517,15 @@ class EditProfilePageState extends State<EditProfilePage> {
           ),
         ),
         bottomNavigationBar: NavigationBar(
-          onDestinationSelected: (updatedIndex) {
+          onDestinationSelected: (selectedIndex) {
       
-            if( updatedIndex == 0 ) {
+            if( selectedIndex == 0 ) {
               firebaseClass.saveToFirestore();
             }
       
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text( updatedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded" ),
+                content: Text( selectedIndex == 0 ? "Profile changes saved!" : "Profile changes discarded" ),
                 action: SnackBarAction(
                   label: "OK",
                   onPressed: () {},

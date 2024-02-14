@@ -181,7 +181,6 @@ class _InstaHelpState extends State<InstaHelp> {
     await _player.dispose();
     await TorchLight.disableTorch();
     await _porcupineManager.delete();
-
     _volumeController.removeListener();
 
     super.dispose();
@@ -318,7 +317,7 @@ class _InstaHelpState extends State<InstaHelp> {
     return Scaffold(
       body: Center( child: Text( _message, style: const TextStyle( fontSize: 36 ), ), ),
       floatingActionButton: FloatingActionButton(
-        child: _muted ? const Icon( Icons.mic_off ) : const Icon( Icons.mic ),
+        child: Icon( _muted ? Icons.mic_off : Icons.mic ),
         onPressed: () async {
           setState(() {
             _muted = !_muted;
