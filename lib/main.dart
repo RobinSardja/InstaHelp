@@ -79,12 +79,8 @@ class _InstaHelpState extends State<InstaHelp> {
 
     List<String> recipients = [];
 
-    for( int i = 0; i < userData.getEmergencyContacts().length; i++ ) {
-      recipients.add(
-        String.fromCharCodes( // extracts phone number
-          userData.getEmergencyContacts()[i].toString().codeUnits.where( (x) => (x ^0x30) <= 9 )
-        ) 
-      );
+    for( int i = 0; i < userData.getEmergencyContacts().values.toList().length; i++ ) {
+      recipients.add( userData.getEmergencyContacts().values.toList()[i].toString() );
     }
 
     await getPosition();

@@ -105,9 +105,9 @@ class UserData {
   bool getTextMessageAlert() => _textMessageAlert;
 
   // emergency contacts to send text messages to when distress detected
-  List<dynamic> _emergencyContacts = [];
-  void setEmergencyContacts( List<dynamic> value ) => _emergencyContacts = value;
-  List<dynamic> getEmergencyContacts() => _emergencyContacts;
+  Map<String, dynamic> _emergencyContacts = {};
+  void setEmergencyContacts(  Map<String, dynamic> value ) => _emergencyContacts = value;
+   Map<String, dynamic> getEmergencyContacts() => _emergencyContacts;
 
   // whether to play a loud siren from user's phone when distress detected
   bool _soundAlarm = true;
@@ -162,7 +162,7 @@ class UserData {
       case "textMessageAlert":
         _textMessageAlert = false;
       case "emergencyContacts":
-        _emergencyContacts = [];
+        _emergencyContacts = {};
       case "soundAlarm":
         _soundAlarm = true;
       case "blinkFlashlight":
@@ -175,7 +175,7 @@ class UserData {
         _alertNearbyUsers = true;
         _proximityDistance = 5.0;
         _textMessageAlert = false;
-        _emergencyContacts = [];
+        _emergencyContacts = {};
         _soundAlarm = true;
         _blinkFlashlight = true;
         _blinkSpeed = 250.0;
@@ -431,9 +431,9 @@ class EditProfilePageState extends State<EditProfilePage> {
                 child: ElevatedButton(
                   onPressed: () async {
                     if( userData.getTextMessageAlert() && userData.getEmergencyContacts().length < _maxEmergencyContacts ) {
-                      Contact? value = await _contactPicker.selectContact();                                                            
-                      if( value != null && !userData.getEmergencyContacts().contains(value.toString()) ) {
-                        setState( () => userData.getEmergencyContacts().add( value.toString() ) );
+                      Contact? value = await _contactPicker.selectContact();
+                      if( value != null && !userData.getEmergencyContacts().containsKey(value.fullName) ) {
+                        setState( () => userData.getEmergencyContacts()[value.fullName as String] = value.phoneNumbers );
                       }
                     }
                   },
@@ -452,11 +452,11 @@ class EditProfilePageState extends State<EditProfilePage> {
                 itemCount: userData.getEmergencyContacts().length,
                 itemBuilder: (_, int index) {
                   return ListTile(
-                    title: Text( userData.getEmergencyContacts()[index] ),
+                    title: Text( "${userData.getEmergencyContacts().keys.toList()[index]} ${userData.getEmergencyContacts().values.toList()[index]}" ),
                     trailing: IconButton(
                       icon: const Icon( Icons.delete ),
                       onPressed: () {
-                        setState( () => userData.getEmergencyContacts().remove( userData.getEmergencyContacts()[index] ) );
+                        setState( () => userData.getEmergencyContacts().remove( userData.getEmergencyContacts().keys.toList()[index] ) );
                       },
                     ),
                   );
