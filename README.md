@@ -15,13 +15,13 @@ git clone https://github.com/RobinSardja/InstaHelp.git
 
 Running InstaHelp requires [the Flutter SDK](https://docs.flutter.dev/get-started/install). All instructions for getting started on all major platforms are available through the provided link.
 
-<img src="codelab_images/flutter website.png">
+<img src="docs/img/7ad57a27c285ca06.png">
 
 ### 3. Sign Up with Picovoice
 
 Our voice activation feature requires an access key from [Picovoice](https://console.picovoice.ai/signup). Your account will provide you with your own access key to enable the Picovoice API.
 
-<img src="codelab_images/picovoice website.png">
+<img src="docs/img/f889ed04769bf395.png">
 
 ### 4. Flutter run
 
