@@ -1,6 +1,25 @@
 # InstaHelp
 
-A faster and more discreet emergency contact solution
+<style>
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+</style>
+
+<div class="center">
+    <img src="docs/img/8355c983889916b2.gif">
+    <img src="docs/img/4e729f4a05f2a30d.gif">
+    <img src="docs/img/2d43d366b2e5aca4.gif">
+</div>
+
+InstaHelp is a voice-activated emergency contact mobile application that detects natural human responses to emergency situations.
+
+Upon activation, InstaHelp can send a text message to the user's designated emergency contacts and attract the attention of people nearby by blaring a loud siren from the user's phone and blinking the user's phone's flashlight.
+
+InstaHelp provides a faster and more discreet emergency contact solution by removing the dependence on proprietary activation phrases that users may not recall in their time of need and attackers may recognize as the user's attempt to call for help.
 
 ## First-Time Setup
 
