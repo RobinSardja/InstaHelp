@@ -1,15 +1,6 @@
 # InstaHelp
 
-<style>
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
-}
-</style>
-
-<div class="center">
+<div style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
     <img src="docs/img/8355c983889916b2.gif">
     <img src="docs/img/4e729f4a05f2a30d.gif">
     <img src="docs/img/2d43d366b2e5aca4.gif">
