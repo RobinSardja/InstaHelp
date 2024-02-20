@@ -11,6 +11,8 @@ The fully functional InstaHelp prototype is available on our [GitHub](https://gi
 git clone https://github.com/RobinSardja/InstaHelp.git
 ```
 
+<img src="docs/img/a4964857b98b0381.png">
+
 ### 2. Download the Flutter SDK
 
 Running InstaHelp requires [the Flutter SDK](https://docs.flutter.dev/get-started/install). All instructions for getting started on all major platforms are available through the provided link.
