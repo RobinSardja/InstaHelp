@@ -1,10 +1,10 @@
 # InstaHelp
 
-<div style="display: block; margin-left: auto; margin-right: auto; width: 50%;">
+<p align="center">
     <img src="docs/img/8355c983889916b2.gif">
     <img src="docs/img/4e729f4a05f2a30d.gif">
     <img src="docs/img/2d43d366b2e5aca4.gif">
-</div>
+</p>
 
 InstaHelp is a voice-activated emergency contact mobile application that detects natural human responses to emergency situations.
 
