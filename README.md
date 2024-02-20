@@ -12,6 +12,10 @@ Upon activation, InstaHelp can send a text message to the user's designated emer
 
 InstaHelp provides a faster and more discreet emergency contact solution by removing the dependence on proprietary activation phrases that users may not recall in their time of need and attackers may recognize as the user's attempt to call for help.
 
+<p align="center">
+    <img src="assets/InstaHelp icon.png" width="256" height="256">
+</p>
+
 ## First-Time Setup
 
 ### 1. Clone our GitHub repo
@@ -47,3 +51,7 @@ Now run The Flutter SDK with your Picovoice access key. For example, if "abcd" i
 ```console
 flutter run --dart-define=picovoice=abcd
 ```
+
+## Website
+
+For more details, please visit our website at [instahelp.dev](https://instahelp.dev)
