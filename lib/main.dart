@@ -67,11 +67,7 @@ class _InstaHelpState extends State<InstaHelp> {
   void _wakeWordCallback(keywordIndex) {
     setState( () => _message = "Help is on the way!" );
     if( userData.getTextMessageAlert() ) _sendTextMessageAlert();
-    if( userData.getSoundAlarm() ) {
-      _volumeController.getVolume().then( (volume) => _previousVolume = volume );
-      _volumeController.maxVolume();
-      _playSoundAlarm();
-    }
+    if( userData.getSoundAlarm() ) _playSoundAlarm();
     if( userData.getBlinkFlashlight() ) _startBlinkingFlashlight();
   }
 
@@ -113,6 +109,8 @@ class _InstaHelpState extends State<InstaHelp> {
   late double _previousVolume;
   final _player = AudioPlayer()..setAsset("assets/siren.wav")..setLoopMode(LoopMode.one);
   Future<void> _playSoundAlarm() async {
+    _volumeController.getVolume().then( (volume) => _previousVolume = volume );
+    _volumeController.maxVolume();
     await _player.seek( const Duration( seconds: 0 ), ); // reset to beginning of sound effect
     await _player.play();
   }
