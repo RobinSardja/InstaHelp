@@ -47,9 +47,9 @@ Open a terminal in the same directory as the InstaHelp repository. You'll first 
 flutter pub get
 ```
 
-Now run The Flutter SDK with your Picovoice access key. For example, if "abcd" is your access key, enter the following command into your terminal.
+Now run the Flutter SDK with your Picovoice access key. For example, if "iloveusfgdsc" is your access key, enter the following command into your terminal.
 ```console
-flutter run --dart-define=picovoice=abcd
+flutter run --dart-define=picovoice=iloveusfgdsc
 ```
 
 ## Website
